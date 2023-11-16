@@ -2,6 +2,8 @@ from database.adatabase import ADatabase
 import pandas as pd
 from processor.processor import Processor as p
 from xgboost import XGBRegressor
+
+## run this code on a monthly basis
 fed = ADatabase("fed")
 
 fed.connect()
@@ -20,6 +22,8 @@ recommendation_data = model_data[model_data["year"]>=2021].copy().reset_index()
 
 model.fit(training_data[factors],training_data["y"])
 recommendation_data["prediction"] = model.predict(recommendation_data[factors])
+
+## note the format of this db is year quarter prediction
 fed.connect()
 fed.drop("sp500_projections")
 fed.store("sp500_projections",recommendation_data[["year","quarter","prediction"]])
