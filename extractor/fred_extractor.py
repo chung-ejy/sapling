@@ -106,3 +106,17 @@ class FREDExtractor(object):
         url = "https://api.stlouisfed.org/fred/series/observations"
         requestBody = r.get(url,params=params,headers=headers)
         return pd.DataFrame(requestBody.json()["observations"])
+
+    @classmethod
+    def ffrate(self):
+        headers = {
+            "accept":"application/json"
+        }
+        params = {
+            "api_key":token,
+            "series_id":"DGS1",
+            "file_type":"json"
+        }
+        url = "https://api.stlouisfed.org/fred/series/observations"
+        requestBody = r.get(url,params=params,headers=headers)
+        return pd.DataFrame(requestBody.json()["observations"])

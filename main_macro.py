@@ -7,12 +7,23 @@ from xgboost import XGBRegressor
 fed = ADatabase("fed")
 
 fed.connect()
-us_macro = p.column_date_processing(fed.retrieve("us_macro"))
-sp500 = p.column_date_processing(fed.retrieve("sp500")).rename(columns={"value":"sp500"})
+cpi = p.column_date_processing(fed.retrieve("cpi").rename(columns={"value":"cpi"}))
+exports = p.column_date_processing(fed.retrieve("exports").rename(columns={"value":"exports"}))
+gdp = p.column_date_processing(fed.retrieve("gdp").rename(columns={"value":"gdp"}))
+unrate = p.column_date_processing(fed.retrieve("unrate").rename(columns={"value":"unrate"}))
+treasury_yields = p.column_date_processing(fed.retrieve("treasury_yields").rename(columns={"value":"treasury_yields"}))
+oil = p.column_date_processing(fed.retrieve("oil").rename(columns={"value":"oil"}))
+sp500 = p.column_date_processing(fed.retrieve("sp500").rename(columns={"value":"sp500"}))
 fed.disconnect()
-
-factors = [x for x in us_macro.columns if x not in ["year","date"]]
-model_data = p.merge(sp500,us_macro,on="date").dropna()
+factor_sets = [cpi,exports,gdp,unrate,oil,treasury_yields]
+base = sp500
+for factor_set in factor_sets:
+    base = p.merge(base,factor_set,on="date")
+base = base.ffill().bfill().dropna()
+print(base.columns)
+factors = ["cpi","exports","gdp","unrate","oil","sp500"]
+base.to_csv("us_macro.csv")
+model_data = p.merge(sp500,base,on="date").dropna()
 model_data = model_data.drop("date",axis=1).groupby(["year","quarter"]).mean().reset_index()
 model_data.sort_values(["year","quarter"],inplace=True)
 model_data["y"] = model_data["sp500"].shift(-4)
