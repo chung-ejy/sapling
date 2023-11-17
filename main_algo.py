@@ -10,19 +10,21 @@ market.connect()
 sp100 = market.retrieve("sp100")
 market.disconnect()
 
-start = datetime.now() - timedelta(days=365)
+start = datetime.now() - timedelta(days=365) - timedelta(days=140)
 end = datetime.now() - timedelta(days=1)
 
 
-tickers = sp100["ticker"]
+# tickers = sp100["ticker"]
 tickers = pd.read_csv("tickers.csv")["ticker"]
-
+rr = 0.05
+std = 50
 sim = []
-print(tickers)
+
 for ticker in tqdm(tickers):
     try:
         prices = p.column_date_processing(alp.prices(ticker,start,end))
         prices["prediction"] = prices["adjclose"].rolling(100).mean()
+        prices["std"] = prices["adjclose"].rolling(100).std()
         prices["signal"] = (prices["prediction"] - prices["adjclose"]) / prices["adjclose"]
         prices["abs"] = prices["signal"].abs()
         prices["direction"] = prices["signal"] / prices["abs"]
@@ -37,6 +39,8 @@ for ticker in tqdm(tickers):
 
 simulation = pd.concat(sim)
 trades = simulation[simulation["weekday"]==4]
+trades = trades[trades["std"]<=std]
+trades = trades[trades["abs"]>=rr]
 trades = trades.sort_values("abs",ascending=False).groupby(["date"]).first().reset_index()
 trades.to_csv("trades.csv")
 trades["cr"] = trades["return"].cumprod()
