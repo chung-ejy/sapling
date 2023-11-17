@@ -31,7 +31,8 @@ for ticker in tqdm(tickers[::10]):
         prices["direction"] = prices["signal"] / prices["abs"]
         prices["buy_price"] = prices["adjclose"].shift(-1)
         prices["buy_date"] = prices["date"].shift(-1)
-        prices["sell_price"] = prices["adjclose"].shift(-5)
+        # prices["sell_price"] = prices["adjclose"].shift(-5)
+        prices["sell_price"] = prices["adjclose"].shift(-1) * 0.95
         prices["sell_date"] = prices["date"].shift(-5)
         prices["return"] = (prices["sell_price"] - prices["buy_price"]) / prices["buy_price"] * prices["direction"] + 1
         sim.append(prices.iloc[100:].fillna(1))
@@ -40,6 +41,7 @@ for ticker in tqdm(tickers[::10]):
 
 simulation = pd.concat(sim)
 trades = simulation[simulation["weekday"]==4]
+trades = simulation[simulation["direction"]==1]
 trades = trades[trades["std"]<=std]
 trades = trades[trades["abs"]>=rr]
 trades = trades.sort_values("abs",ascending=True).groupby(["date"]).first().reset_index()
