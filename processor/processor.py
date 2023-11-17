@@ -4,7 +4,7 @@ class Processor(object):
 
     @classmethod
     def column_date_processing(self,data):
-        data["date"] = pd.to_datetime(data["date"],utc=False)
+        data["date"] = pd.to_datetime(data["date"],utc=True)
         data["year"] = [x.year for x in data["date"]]
         data["quarter"] = [x.quarter for x in data["date"]]
         data["month"] = [x.month for x in data["date"]]
