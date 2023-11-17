@@ -6,22 +6,24 @@ from tqdm import tqdm
 import pandas as pd
 import matplotlib.pyplot as plt
 from random import shuffle
+from time import sleep
+
 market = ADatabase("market")
 market.connect()
-sp500 = market.retrieve("sp500")
+sp100 = market.retrieve("sp100")
 market.disconnect()
 
-start = datetime.now() - timedelta(days=365) - timedelta(days=140)
+start = datetime.now() - timedelta(days=100) - timedelta(days=140)
 end = datetime.now() - timedelta(days=1)
 
-rolling_val = 50
-tickers = sp500["ticker"].values
+live = False
+rolling_val = 100
+tickers = sp100["ticker"].values
 # tickers = pd.read_csv("tickers.csv")["ticker"]
 rr = 0.00
 std = 100
 sim = []
-shuffle(tickers)
-for ticker in tqdm(tickers[:10]):
+for ticker in tqdm(tickers):
     try:
         prices = p.column_date_processing(alp.prices(ticker,start,end))
         prices["prediction"] = prices["adjclose"].rolling(rolling_val).mean()
@@ -48,4 +50,39 @@ trades["cr"] = trades["return"].cumprod() * 100
 trades.sort_values("date",inplace=True)
 plt.plot(trades["date"].values,trades["cr"].values)
 plt.show()
-print(trades.tail(1))
+
+
+seats = trades.tail(1)
+account = alp.account()
+cash = float(account["cash"])
+
+for row in seats.iterrows():
+    direction = row[1]["direction"]
+    ticker = row[1]["ticker"]
+    adjclose = row[1]["adjclose"]
+    date = row[1]["date"]
+    qty = int(cash/adjclose)
+    amount = qty * adjclose
+    if direction == 1:
+        print(date,ticker,adjclose,qty,amount,"buy")
+        # alp.buy(ticker,qty)
+    else:
+        print(date,ticker,adjclose,qty,amount,"sell")
+        # alp.sell(ticker,qty)
+
+if live:
+    alp.close()
+    sleep(300)
+    for row in seats.iterrows():
+        direction = row[1]["direction"]
+        ticker = row[1]["ticker"]
+        adjclose = row[1]["adjclose"]
+        date = row[1]["date"]
+        qty = int(cash/adjclose)
+        amount = qty * adjclose
+        if direction == 1:
+            print(date,ticker,adjclose,qty,amount,"buy")
+            alp.buy(ticker,qty)
+        else:
+            print(date,ticker,adjclose,qty,amount,"sell")
+            alp.sell(ticker,qty)     
