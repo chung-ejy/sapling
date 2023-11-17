@@ -5,26 +5,27 @@ from datetime import datetime, timedelta
 from tqdm import tqdm
 import pandas as pd
 import matplotlib.pyplot as plt
+from random import shuffle
 market = ADatabase("market")
 market.connect()
-sp100 = market.retrieve("sp100")
+sp500 = market.retrieve("sp100")
 market.disconnect()
 
 start = datetime.now() - timedelta(days=365) - timedelta(days=140)
 end = datetime.now() - timedelta(days=1)
 
 
-# tickers = sp100["ticker"]
-tickers = pd.read_csv("tickers.csv")["ticker"]
-rr = 0.05
-std = 50
+tickers = sp500["ticker"].values
+# tickers = pd.read_csv("tickers.csv")["ticker"]
+rr = 0.00
+std = 300
 sim = []
-
-for ticker in tqdm(tickers):
+shuffle(tickers)
+for ticker in tqdm(tickers[::10]):
     try:
         prices = p.column_date_processing(alp.prices(ticker,start,end))
         prices["prediction"] = prices["adjclose"].rolling(100).mean()
-        prices["std"] = prices["adjclose"].rolling(100).std()
+        prices["std"] = prices["adjclose"].rolling(50).std()
         prices["signal"] = (prices["prediction"] - prices["adjclose"]) / prices["adjclose"]
         prices["abs"] = prices["signal"].abs()
         prices["direction"] = prices["signal"] / prices["abs"]
@@ -41,9 +42,9 @@ simulation = pd.concat(sim)
 trades = simulation[simulation["weekday"]==4]
 trades = trades[trades["std"]<=std]
 trades = trades[trades["abs"]>=rr]
-trades = trades.sort_values("abs",ascending=False).groupby(["date"]).first().reset_index()
+trades = trades.sort_values("abs",ascending=True).groupby(["date"]).first().reset_index()
 trades.to_csv("trades.csv")
-trades["cr"] = trades["return"].cumprod()
+trades["cr"] = trades["return"].cumprod() * 100
 trades.sort_values("date",inplace=True)
 plt.plot(trades["date"].values,trades["cr"].values)
 plt.show()
