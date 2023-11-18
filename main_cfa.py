@@ -28,6 +28,7 @@ for ticker in tqdm(sp100["ticker"]):
         sim = p.merge(sim,yields,on="date")
         sim["sp500_var"] = sim["sp500"].rolling(100).var()
         sim["sp500_cov"] = sim["sp500"].rolling(100).cov(sim["adjclose"].rolling(100).mean())
+        sim["market_return"] = (sim["sp500"].shift(-262) - sim["sp500"]) / sim["sp500"]
         sim["market_expected_return"] = (sim["sp500_prediction"] - sim["sp500"]) / sim["sp500"]
         sim["beta"] = sim["sp500_cov"] / sim["sp500_var"]
         sim["signal"] = (sim["adjclose"].rolling(100).mean() - sim["adjclose"]) / sim["adjclose"] - sim["yield1"] + sim["beta"] * (sim["market_expected_return"]-sim["yield1"])
@@ -38,7 +39,7 @@ for ticker in tqdm(sp100["ticker"]):
         sim["buy_price"] = sim["adjclose"].shift(-1)
         sim["bond_return"] = .05
         sim["stock_return"] = (sim["sell_price"] - sim["buy_price"])/sim["buy_price"] 
-        sim["return"] = (sim["stock_return"] * 0.6 + sim["bond_return"] * 0.4) * float(1/positions)
+        sim["return"] = (sim["stock_return"] * 0.5 + sim["bond_return"] * 0.4 + sim["market_return"] * 0.1) * float(1/positions)
         sim = sim[sim["year"]>=2021][["year","date","week","weekday","ticker","signal","abs","direction","adjclose","buy_price","sell_price","sell_date","return"]]
         sims.append(sim)
     except Exception as e:
