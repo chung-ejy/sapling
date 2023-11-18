@@ -31,7 +31,7 @@ for ticker in tqdm(sp100["ticker"]):
         sim["market_return"] = (sim["sp500"].shift(-262) - sim["sp500"]) / sim["sp500"]
         sim["market_expected_return"] = (sim["sp500_prediction"] - sim["sp500"]) / sim["sp500"]
         sim["beta"] = sim["sp500_cov"] / sim["sp500_var"]
-        sim["signal"] = (sim["adjclose"].rolling(100).mean() - sim["adjclose"]) / sim["adjclose"] - sim["yield1"] + sim["beta"] * (sim["market_expected_return"]-sim["yield1"])
+        sim["signal"] = (sim["adjclose"].rolling(262).mean() - sim["adjclose"]) / sim["adjclose"] - sim["yield1"] + sim["beta"] * (sim["market_expected_return"]-sim["yield1"])
         sim["abs"] = sim["signal"].abs()
         sim["direction"] = sim["signal"] / sim["abs"]
         sim["sell_price"] = sim["adjclose"].shift(-262)

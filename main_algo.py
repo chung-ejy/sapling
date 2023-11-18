@@ -13,7 +13,7 @@ market.connect()
 sp100 = market.retrieve("sp100")
 market.disconnect()
 
-start = datetime.now() - timedelta(days=100) - timedelta(days=140)
+start = datetime.now() - timedelta(days=365) - timedelta(days=140)
 end = datetime.now() - timedelta(days=1)
 
 live = False
@@ -23,10 +23,12 @@ tickers = sp100["ticker"].values
 rr = 0.00
 std = 100
 sim = []
-for ticker in tqdm(tickers):
+shuffle(tickers)
+for ticker in tqdm(tickers[:10]):
     try:
         prices = p.column_date_processing(alp.prices(ticker,start,end))
         prices["prediction"] = prices["adjclose"].rolling(rolling_val).mean()
+        # prices["prediction"] = prices["adjclose"].shift(rolling_val)
         prices["std"] = prices["adjclose"].rolling(rolling_val).std()
         prices["signal"] = (prices["prediction"] - prices["adjclose"]) / prices["adjclose"]
         prices["abs"] = prices["signal"].abs()
@@ -34,6 +36,7 @@ for ticker in tqdm(tickers):
         prices["buy_price"] = prices["adjclose"].shift(-1)
         prices["buy_date"] = prices["date"].shift(-1)
         prices["sell_price"] = prices["adjclose"].shift(-5)
+        # prices["sell_price"] = prices["buy_price"] * (1 + 0.05 * prices["direction"] * -1)
         prices["sell_date"] = prices["date"].shift(-5)
         prices["return"] = (prices["sell_price"] - prices["buy_price"]) / prices["buy_price"] * prices["direction"] + 1
         sim.append(prices.iloc[100:].fillna(1))
