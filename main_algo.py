@@ -11,7 +11,7 @@ queries = []
 rr = 0
 risk = 1
 for rolling_val in [10,20,60,100]:
-    for projection_weeks in [1,2,4,13,26]:
+    for projection_weeks in [51,1,2,4,13,26]:
         query = {
             "rr":rr,
             "risk":risk,

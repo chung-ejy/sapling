@@ -25,9 +25,10 @@ class Algo(object):
     
     def algo(self):
         sim = []
+        self.market.connect()
         for ticker in self.tickers[::self.skip]:
             try:
-                prices = p.column_date_processing(alp.prices(ticker,self.start,self.end))
+                prices = p.column_date_processing(self.market.query("prices",{"ticker":ticker}))
                 prices["prediction"] = prices["adjclose"].rolling(self.rolling_val).mean()
                 prices["std"] = prices["adjclose"].rolling(self.rolling_val).std()
                 prices["risk"] = prices["std"] / prices["prediction"]
@@ -42,7 +43,7 @@ class Algo(object):
                 sim.append(prices.iloc[self.rolling_val:].fillna(1))
             except Exception as e:
                 continue
-
+        self.market.disconnect()
         simulation = pd.concat(sim)
         trades = simulation[simulation["weekday"]==4]
         trades = trades[(trades["week"] % self.projection_weeks) + 1 == 1]
