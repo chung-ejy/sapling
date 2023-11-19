@@ -1,18 +1,11 @@
 from datetime import datetime, timedelta
 from database.adatabase import ADatabase
+from processor.processor import Processor as p
 
 class AStrategy(object):
 
-    def __init__(self,name,cycle):
+    def __init__(self,name,parameter):
         self.name = name
-        self.cycle = cycle
-        self.today = datetime.now()
-        self.extraction_date = self.today - timedelta(days=self.cycle*2) - timedelta(days=140)
-        self.model_start = self.today - timedelta(days=self.cycle*2)
-        self.model_end = self.today - timedelta(days=self.cycle)
-        self.backtest_start = self.model_end
-        self.backtest_end = self.today
-
         self.db = ADatabase(self.name)
         self.model_data_table = "model_data"
         self.historical_model_table = "historical_model"
@@ -21,6 +14,8 @@ class AStrategy(object):
         self.portfolio_table = "portfolio"
         self.current_model_table = "current_model"
         self.recommendation_table = "recommendation"
+        self.processor = p
+        self.parameter = parameter
 
     def store_model_data(self,model_data):
         self.db.connect()
