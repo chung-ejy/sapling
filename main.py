@@ -6,7 +6,7 @@ market = ADatabase("market")
 market.connect()
 sp100 = market.retrieve("sp100")
 market.disconnect()
-strategies = ["rolling","technical"]
+strategies = ["technical","rolling","algo"]
 
 query = {
         
@@ -14,10 +14,10 @@ query = {
          ,"strategies":strategies
          ,"industry_diversified":True
          ,"cfa":True
-         ,"rr":0.05
-         ,"risk":0.1
-         ,"holding_period":5
-         ,"cycle":365
+         ,"rr":0.00
+         ,"risk":1
+         ,"holding_period":20
+         ,"cycle":1460
          
          }
 
