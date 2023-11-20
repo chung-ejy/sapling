@@ -12,5 +12,5 @@ class Rolling(AStrategy):
         prices["rolling_20"] = prices["adjclose"].rolling(20).mean()
         prices["rolling_50"] = prices["adjclose"].rolling(50).mean()
         prices["rolling_100"] = prices["adjclose"].rolling(100).mean()
-        prices["y"] = prices["adjclose"].shift(-60)
+        prices["y"] = prices["adjclose"].shift(-self.parameter.holding_period)
         return prices

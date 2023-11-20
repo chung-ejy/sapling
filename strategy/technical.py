@@ -11,7 +11,7 @@ class Technical(AStrategy):
         prices.sort_values("date",inplace=True)
         for i in range(10):
             prices[str(i)] = prices["adjclose"].shift(i)
-        prices["y"] = prices["adjclose"].shift(-5)
+        prices["y"] = prices["adjclose"].shift(-self.parameter.holding_period)
         return prices
     
     

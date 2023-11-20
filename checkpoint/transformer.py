@@ -10,8 +10,8 @@ class Transformer(object):
             try:
                 ticker_data = strategy.transform(ticker)
                 strategy.store_model_data(ticker_data)
-            except:
-                print(ticker)
+            except Exception as e:
+                print(ticker,print(str(e)))
         strategy.market.disconnect()
         
         

@@ -14,9 +14,9 @@ query = {
          ,"strategies":strategies
          ,"industry_diversified":True
          ,"cfa":True
-         ,"rr":0.00
-         ,"risk":1
-         ,"holding_period":20
+         ,"rr":0.15
+         ,"risk":0.25
+         ,"holding_period":60
          ,"cycle":1460
          
          }
