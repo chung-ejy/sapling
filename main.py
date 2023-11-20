@@ -1,23 +1,24 @@
-from strategy.technical import Technical
-from strategy.algo import Algo
-from strategy.technical import Technical
-from strategy.rolling import Rolling
 from product.aproduct import AProduct
 from parameter.aparameter import AParameter
-import pandas as pd
+from database.adatabase import ADatabase
 
-tickers = pd.read_csv("tickers.csv")["ticker"].values
+market = ADatabase("market")
+market.connect()
+sp100 = market.retrieve("sp100")
+market.disconnect()
 strategies = ["rolling","technical"]
+
 query = {
         
-        "tickers":tickers
+        "tickers":sp100["ticker"].values
          ,"strategies":strategies
          ,"industry_diversified":True
          ,"cfa":True
          ,"rr":0.05
          ,"risk":0.1
          ,"holding_period":5
-         ,"cycle":2195
+         ,"cycle":365
+         
          }
 
 aparam = AParameter()
