@@ -6,7 +6,12 @@ market = ADatabase("market")
 market.connect()
 sp100 = market.retrieve("sp100")
 market.disconnect()
-strategies = ["bollinger"]
+strategies = [
+                "metrics",
+        #       "technical",
+        #       "rolling",
+        #       "algo"
+              ]
 
 query = {
         
@@ -14,22 +19,23 @@ query = {
          ,"strategies":strategies
          ,"industry_diversified":True
          ,"cfa":True
-         ,"rr":0.05
-         ,"risk":0.5
+         ,"rr":0.00
+         ,"risk":1
          ,"holding_period":5
-         ,"cycle":1460
+         ,"cycle":1800
          
          }
 
 aparam = AParameter()
 aparam.build(query)
 
-product = AProduct()
+product = AProduct(False)
 product.build(aparam)
 product.build_strategies()
 product.init_name()
+product.transform_strats()
+product.model_strats()
 product.transform()
 product.model()
-product.merge()
 product.backtest()
 product.analyze()

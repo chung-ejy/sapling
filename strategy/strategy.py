@@ -4,4 +4,4 @@ class Strategy(Enum):
     ALGO = "algo"
     TECHNICAL = "technical"
     ROLLING = "rolling"
-    BOLLINGER = "bollinger"
+    METRICS = "metrics"
