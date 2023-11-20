@@ -2,6 +2,7 @@ from strategy.strategy import Strategy
 from strategy.algo import Algo
 from strategy.rolling import Rolling
 from strategy.technical import Technical
+from strategy.bollinger import Bollinger
 class StratFact(object):
 
     @classmethod
@@ -14,5 +15,7 @@ class StratFact(object):
                 return Rolling()
             case Strategy.ALGO.value:
                 return Algo()
+            case Strategy.BOLLINGER.value:
+                return Bollinger()
             case _:
                 return ""

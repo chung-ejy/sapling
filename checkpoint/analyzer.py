@@ -8,7 +8,7 @@ class Analyzer(object):
         bench = product.processor.column_date_processing(product.fed.retrieve("sp500"))
         product.fed.disconnect()
         trades = product.processor.column_date_processing(product.retrieve_trades())
-        plt.scatter(trades["abs"],trades["return"])
+        plt.scatter(trades["abs"],trades["return"],s=10)
         plt.show()
         portfolio = trades[["date","return"]].groupby("date").sum().reset_index()
         portfolio = product.processor.merge(portfolio,bench,on="date").dropna()
