@@ -12,11 +12,13 @@ market.disconnect()
 
 market.connect()
 market.drop("prices")
-for ticker in tqdm(sp100[:1]["ticker"].values):
+for ticker in tqdm(sp100["ticker"].values):
     try:
         ticker_data = TiingoExtractor.prices(ticker,start,end)[["date","adjClose"]]
         ticker_data["ticker"] = ticker
-        market.store("test_prices",ticker_data)
+        market.store("prices",ticker_data)
     except Exception as e:
         print(str(e))
         continue
+market.create_index("prices","ticker")
+market.disconnect()

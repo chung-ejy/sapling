@@ -50,7 +50,7 @@ if remodel == True:
     model = XGBRegressor(booster="dart",learning_rate=1)
     model.fit(model_data[factors],model_data["y"])
     pickled = pickle.dumps(model)
-    db.store("model",pd.DataFrame([{"model":model}]))
+    db.store("model",pd.DataFrame([{"model":pickled}]))
 else:
     try:
         model = pickle.loads(db.retrieve("model")["model"].iloc[0])
