@@ -115,7 +115,7 @@ trades = trades.sort_values("abs").groupby(["date","GICS Sector"]).first().reset
 
 # analysis
 trades = processor.column_date_processing(trades[["date","std","ticker","GICS Sector","adjclose","return"]])
-trades.to_csv("trades.csv")
+
 plt.scatter(trades["std"],trades["return"],s=10)
 plt.show()
 
@@ -124,11 +124,19 @@ portfolio = processor.merge(portfolio,benchmark,on="date").dropna()
 portfolio["bcr"] = (portfolio["sp500"] - portfolio["sp500"].iloc[0]) / portfolio["sp500"].iloc[0] + 1
 portfolio["return"] = portfolio["return"] + 1
 portfolio["cr"] = portfolio["return"].cumprod()
-portfolio.to_csv("portfolio.csv")
 
 plt.plot(portfolio["date"].values,portfolio["cr"].values)
 plt.plot(portfolio["date"].values,portfolio["bcr"].values)
 plt.show()
 
-trades.tail(positions).to_csv("recommendations.csv")
-print(trades.tail(positions))
+recommendations = trades.tail(positions)
+
+db.connect()
+db.store("portfolio",portfolio)
+db.store("trades",trades)
+db.store("recommendations",recommendations)
+db.disconnect()
+
+portfolio.to_csv("portfolio.csv")
+trades.to_csv("trades.csv")
+recommendations.to_csv("recommendations.csv")
