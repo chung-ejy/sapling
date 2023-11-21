@@ -8,5 +8,5 @@ class Algo(AStrategy):
 
     def transform(self,ticker):
         prices = super().transform(ticker)
-        prices["prediction"] = prices["adjclose"].rolling(self.parameter.holding_period*2).mean()
+        prices["prediction"] = prices["adjclose"].rolling(100).mean()
         return prices
