@@ -16,6 +16,7 @@ market.connect()
 sp100 = market.retrieve("sp100")
 market.disconnect()
 
+training_year = 2020
 holding_period = 65
 rr = 0
 risk = 1
@@ -41,8 +42,7 @@ market.disconnect()
 
 ## ai
 training_data = pd.concat(model_data)
-model_data = training_data[training_data["year"]<2021].dropna()
-
+model_data = training_data[(training_data["year"]==training_year)].dropna()
 filename = 'xgboost_model.pkl'
 if remodel == True:
     model = XGBRegressor(booster="dart",learning_rate=1)
@@ -130,4 +130,5 @@ plt.plot(portfolio["date"].values,portfolio["cr"].values)
 plt.plot(portfolio["date"].values,portfolio["bcr"].values)
 plt.show()
 
+trades.tail(positions).to_csv("recommendations.csv")
 print(trades.tail(positions))

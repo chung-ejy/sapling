@@ -28,7 +28,7 @@ model_data = model_data.drop(["date","realtime_start","realtime_end"],axis=1).gr
 model_data = model_data.apply(pd.to_numeric)
 model_data.sort_values(["year","quarter"],inplace=True)
 model_data["y"] = model_data["sp500"].shift(-4)
-model = XGBRegressor(booster="dart",learning_rate=0.5)
+model = XGBRegressor(booster="dart",learning_rate=1)
 
 training_data = model_data[model_data["year"]<2021].dropna().copy().reset_index()
 recommendation_data = model_data[model_data["year"]>=2021].copy().reset_index()

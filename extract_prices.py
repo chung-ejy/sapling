@@ -11,7 +11,7 @@ sp100 = market.retrieve("sp100")
 market.disconnect()
 
 market.connect()
-# market.drop("prices")
+market.drop("prices")
 for ticker in tqdm(sp100[:1]["ticker"].values):
     try:
         ticker_data = TiingoExtractor.prices(ticker,start,end)[["date","adjClose"]]
