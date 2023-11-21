@@ -43,23 +43,20 @@ market.disconnect()
 ## ai
 training_data = pd.concat(model_data)
 model_data = training_data[(training_data["year"]==training_year)].dropna()
-filename = 'xgboost_model.pkl'
+
+db.connect()
 if remodel == True:
+    db.drop("model")
     model = XGBRegressor(booster="dart",learning_rate=1)
     model.fit(model_data[factors],model_data["y"])
-    with open(filename, 'wb') as file:
-        # Use pickle.dump to save the model
-        pickle.dump(model, file)
+    pickled = pickle.dumps(model)
+    db.store("model",pd.DataFrame([{"model":model}]))
 else:
     try:
-        with open(filename, 'rb') as file:
-            model = pickle.load(file)
+        model = pickle.loads(db.retrieve("model")["model"].iloc[0])
     except:
-        model = XGBRegressor(booster="dart",learning_rate=1)
-        model.fit(model_data[factors],model_data["y"])
-        with open(filename, 'wb') as file:
-            # Use pickle.dump to save the model
-            pickle.dump(model, file)
+        print("no model")
+db.disconnect()
 
 simulation = training_data[training_data["year"]>=2021]
 simulation["prediction"] = model.predict(simulation[factors])
@@ -75,7 +72,6 @@ for ticker in tqdm(simulation["ticker"].unique(),desc="backtest_prep"):
     prices["sell_date"] = prices["date"].shift(-holding_period)
     bt_data.append(prices)
 sim = pd.concat(bt_data)
-
 
 ## cfa
 fed.connect()

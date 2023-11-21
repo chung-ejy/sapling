@@ -7,7 +7,10 @@ market.connect()
 sp100 = market.retrieve("sp100")
 market.disconnect()
 strategies = [
-              "algo"
+              "algo",
+              "technical",
+              "rolling",
+              "metrics"
               ]
 
 query = {

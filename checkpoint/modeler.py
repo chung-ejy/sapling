@@ -7,7 +7,7 @@ class Modeler(object):
     def checkpoint(self,strategy):
         if strategy.isai == True:
             simulation = strategy.retrieve_model_data()
-            model = XGBRegressor(booster="dart",learning_rate=0.5)
+            model = XGBRegressor(booster="dart",learning_rate=1)
             training_data = simulation[(simulation["date"]>strategy.model_start) & (simulation["date"]<strategy.model_end)]
             prediction_data = simulation[(simulation["date"]>strategy.backtest_start) & (simulation["date"]<strategy.backtest_end)]
             model.fit(training_data[strategy.factors],training_data["y"])
