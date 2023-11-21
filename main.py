@@ -8,17 +8,17 @@ sp100 = market.retrieve("sp100")
 market.disconnect()
 strategies = [
                 "metrics",
-        #       "technical",
-        #       "rolling",
-        #       "algo"
+              "technical",
+              "rolling",
+              "algo"
               ]
 
 query = {
         
         "tickers":sp100["ticker"].values
          ,"strategies":strategies
-         ,"industry_diversified":True
-         ,"cfa":True
+         ,"industry_diversified":False
+         ,"cfa":False
          ,"rr":0.00
          ,"risk":1
          ,"holding_period":5
@@ -29,7 +29,7 @@ query = {
 aparam = AParameter()
 aparam.build(query)
 
-product = AProduct(False)
+product = AProduct(True)
 product.build(aparam)
 product.build_strategies()
 product.init_name()

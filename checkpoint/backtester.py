@@ -26,9 +26,6 @@ class Backtester(object):
         for ticker in tqdm(simulation["ticker"].unique(),desc="backtest_prep"):
             prices = simulation[simulation["ticker"]==ticker]
             prices.sort_values("date",inplace=True)
-            # for strategy in product.strategies:
-            #     strategy_name = strategy.name
-            #     prices[f"{strategy_name}_signal"] = (prices[f"{strategy_name}_prediction"] - prices["adjclose"]) / prices["adjclose"]
             prices["signal"] = (prices["prediction"] - prices["adjclose"]) / prices["adjclose"]
             prices["std"] = prices["adjclose"].rolling(product.parameter.holding_period).std()
             prices["rolling"] = prices["adjclose"].rolling(product.parameter.holding_period).mean()
@@ -37,11 +34,6 @@ class Backtester(object):
             prices["sell_date"] = prices["date"].shift(-product.parameter.holding_period)
             bt_data.append(prices.dropna())
         sim = pd.concat(bt_data)
-
-        # sim["signal"] = 0
-        # for x in product.strategies:
-        #     sim["signal"] = sim["signal"] + sim[f"{x.name}_signal"]
-        # sim["signal"] = sim["signal"] / len(product.strategies)
 
         if product.parameter.cfa == True:
             sim["sp500_var"] = sim["sp500"].rolling(50).var()
@@ -64,7 +56,8 @@ class Backtester(object):
         trades = trades[trades["abs"]>=product.parameter.rr]
         trades = trades[trades["risk"]<=product.parameter.risk]
         week_mod = int(product.parameter.holding_period / 5)
-        trades = trades[trades["week"] % week_mod + 1 == 1]
+        if week_mod > 1:
+            trades = trades[trades["week"] % week_mod + 1 == 1]
         if product.parameter.industry_diversified:
             trades = trades.sort_values("abs").groupby(["date","GICS Sector"]).first().reset_index()
         else:
