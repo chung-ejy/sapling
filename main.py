@@ -7,10 +7,12 @@ market.connect()
 sp100 = market.retrieve("sp100")
 market.disconnect()
 strategies = [
+    
               "algo",
               "technical",
               "rolling",
               "metrics"
+              
               ]
 
 query = {
@@ -21,7 +23,7 @@ query = {
          ,"cfa":True
          ,"rr":0.00
          ,"risk":1
-         ,"holding_period":5
+         ,"holding_period":60
          ,"cycle":365
          
          }
@@ -29,7 +31,7 @@ query = {
 aparam = AParameter()
 aparam.build(query)
 
-product = AProduct(False)
+product = AProduct(True)
 product.build(aparam)
 product.build_strategies()
 product.init_name()

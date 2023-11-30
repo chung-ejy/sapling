@@ -9,7 +9,7 @@ warnings.simplefilter(action="ignore")
 import pickle
 
 ## database init
-db = ADatabase("algo")
+db = ADatabase("algo_intrinsic")
 market = ADatabase("market")
 fed = ADatabase("fed")
 market.connect()
@@ -17,12 +17,13 @@ sp100 = market.retrieve("sp100")
 market.disconnect()
 
 training_year = 2020
-holding_period = 65
+training_years = 7
+holding_period = 5
 rr = 0
 risk = 1
 tickers = sp100["ticker"].values
 remodel = False
-factors = ["rolling_10","rolling_20","rolling_60","rolling_100"]
+factors = [str(i) for i in range(14)]
 ## model_data
 market.connect()
 model_data = []
@@ -30,24 +31,23 @@ for ticker in tqdm(tickers,desc="model_prep"):
     try:
         ticker_prices = processor.column_date_processing(market.query("prices",{"ticker":ticker}))
         ticker_prices.sort_values("date",inplace=True)
-        ticker_prices["rolling_10"] = ticker_prices["adjclose"].rolling(10).mean()
-        ticker_prices["rolling_20"] = ticker_prices["adjclose"].rolling(20).mean()
-        ticker_prices["rolling_60"] = ticker_prices["adjclose"].rolling(60).mean()
-        ticker_prices["rolling_100"] = ticker_prices["adjclose"].rolling(100).mean()
-        ticker_prices["y"] = ticker_prices["adjclose"].shift(-holding_period)
-        model_data.append(ticker_prices)
+        ticker_prices = ticker_prices.groupby(["year","week","ticker"]).aggregate({"adjclose":"mean"}).reset_index()
+        for i in range(14):
+            ticker_prices[str(i)] = ticker_prices["adjclose"].shift(i)
+        ticker_prices["y"] = ticker_prices["adjclose"].shift(-1)
+        model_data.append(ticker_prices.iloc[14:])
     except:
         continue
 market.disconnect()
 
 ## ai
 training_data = pd.concat(model_data)
-model_data = training_data[(training_data["year"]==training_year)].dropna()
+model_data = training_data[(training_data["year"]<=training_year) & (training_data["year"]>=training_year-training_years)].dropna()
 
 db.connect()
 if remodel == True:
     db.drop("model")
-    model = XGBRegressor(booster="dart",learning_rate=1)
+    model = XGBRegressor(booster="gbtree",learning_rate=1)
     model.fit(model_data[factors],model_data["y"])
     pickled = pickle.dumps(model)
     db.store("model",pd.DataFrame([{"model":pickled}]))
@@ -58,21 +58,25 @@ else:
         print("no model")
 db.disconnect()
 
-simulation = training_data[training_data["year"]>=2021]
+simulation = training_data[training_data["year"]>=training_year+1]
 simulation["prediction"] = model.predict(simulation[factors])
+simulation = simulation[["year","week","ticker","prediction"]]
 bt_data = []
+market.connect()
 for ticker in tqdm(simulation["ticker"].unique(),desc="backtest_prep"):
-    prices = simulation[simulation["ticker"]==ticker]
+    prices = processor.column_date_processing(market.query("prices",{"ticker":ticker}))
+    prices = processor.merge(prices,simulation[simulation["ticker"]==ticker],on=["year","week","ticker"])
     prices.sort_values("date",inplace=True)
-    prices["signal"] = (prices["prediction"] - prices["adjclose"]) / prices["adjclose"]
+    prices["signal"] = (prices["prediction"] - prices["adjclose"]) / prices["adjclose"] * -1
     prices["std"] = prices["adjclose"].rolling(holding_period).std()
     prices["rolling"] = prices["adjclose"].rolling(holding_period).mean()
     prices["risk"] = prices["std"] / prices["rolling"]
     prices["sell_price"] = prices["adjclose"].shift(-holding_period)
     prices["sell_date"] = prices["date"].shift(-holding_period)
+    prices = prices[prices["year"]>=training_year+1]
     bt_data.append(prices)
 sim = pd.concat(bt_data)
-
+market.disconnect()
 ## cfa
 fed.connect()
 benchmark = processor.column_date_processing(fed.retrieve("sp500")).rename(columns={"value":"sp500"})
