@@ -3,16 +3,16 @@ from extractor.tiingo_extractor import TiingoExtractor
 from datetime import datetime, timedelta
 from tqdm import tqdm
 market = ADatabase("market")
-start = datetime.now() - timedelta(days=365.25*14)
+start = datetime.now() - timedelta(days=365.25*10)
 end = datetime.now()
 
 market.connect()
-sp500 = market.retrieve("sp500")
+sp100 = market.retrieve("sp100")
 market.disconnect()
 
 market.connect()
 market.drop("prices")
-for ticker in tqdm(sp500["ticker"].values):
+for ticker in tqdm(sp100["ticker"].values):
     try:
         ticker_data = TiingoExtractor.prices(ticker,start,end)[["date","adjClose"]]
         ticker_data["ticker"] = ticker

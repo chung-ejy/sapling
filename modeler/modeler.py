@@ -44,9 +44,12 @@ class Modeler(object):
     @classmethod
     def xgb_regression(self,data):
         try:
-            params = {"booster":["gbtree","gblinear","dart"],"learning_rate":[0.1,0.5,1]}
+            params = {
+                    "booster":["gbtree","gblinear","dart"]
+                      ,"learning_rate":[0.1,0.5,1]
+                      }
             X_train, X_test, y_train, y_test = self.shuffle_split(data)
-            gs = GridSearchCV(xgb.XGBRegressor(objective="reg:squarederror",verbosity = 0),param_grid=params,scoring="r2")
+            gs = GridSearchCV(XGBRegressor(objective="reg:squarederror",verbosity = 0),param_grid=params,scoring="r2")
             gs.fit(X_train,y_train)
             predictions = gs.predict(X_test)
             score = r2_score(predictions,y_test)
@@ -79,8 +82,8 @@ class Modeler(object):
         stuff = {
             "sgd" : {"model":SGDRegressor(fit_intercept=True),"params":{"loss":["squared_loss","huber"]
                                                             ,"learning_rate":["constant","optimal","adaptive"]
-                                                            ,"alpha" : [0.0001,0.001, 0.01, 0.1, 0.2, 0.5, 1]}},
-            "r" : {"model":RidgeCV(alphas=[0.0001,0.001, 0.01, 0.1, 0.2, 0.5, 1],fit_intercept=True),"params":{}},
+                                                            ,"alpha" : [0.01, 0.1, 0.2, 0.5, 1]}},
+            "r" : {"model":RidgeCV(alphas=[0.01, 0.1, 0.2, 0.5, 1],fit_intercept=True),"params":{}},
             "lr" : {"model":LinearRegression(fit_intercept=True),"params":{"fit_intercept":[True,False]}}
         }
         X_train, X_test, y_train, y_test = self.shuffle_split(data)
