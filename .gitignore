@@ -4,3 +4,4 @@
 *.pkl
 catboost_info/
 .ipynb_checkpoints/
+sec/
