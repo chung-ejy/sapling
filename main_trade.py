@@ -15,6 +15,4 @@ for row in recs.iterrows():
     price = round(row[1]["adjclose"],2)
     qty = int(cash/positions/price)
     print("long",ticker,price,qty)
-    alp.buy(ticker,qty)
-    
-
+    print(alp.buy(ticker,qty).reason)
