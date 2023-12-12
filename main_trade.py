@@ -1,7 +1,7 @@
 from database.adatabase import ADatabase
 from extractor.alp_extractor import ALPExtractor
 
-live = False
+live = True
 alp = ALPExtractor()
 db = ADatabase("algo")
 db.connect()
