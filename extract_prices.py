@@ -9,14 +9,19 @@ end = datetime.now()
 
 market.connect()
 sp500 = pd.read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",attrs={"id":"constituents"})[0].rename(columns={"Symbol":"ticker"})
+russell1000 = pd.read_html("https://en.wikipedia.org/wiki/Russell_1000_Index")[2].rename(columns={"Ticker":"ticker"})
 market.drop("sp500")
 market.store("sp500",sp500)
-sp500 = market.retrieve("sp500")
+market.drop("russell1000")
+market.store("russell1000",russell1000)
+russell1000 = market.retrieve("russell1000")
 market.disconnect()
-
+tickers = russell1000["ticker"][datetime.now().day % 2::2].values
+print(len(tickers))
 market.connect()
-market.drop("prices")
-for ticker in tqdm(sp500["ticker"].values):
+if datetime.now().day % 2 == 0:
+    market.drop("prices")
+for ticker in tqdm(tickers):
     try:
         ticker_data = TiingoExtractor.prices(ticker,start,end)[["date","adjClose"]]
         ticker_data["ticker"] = ticker
