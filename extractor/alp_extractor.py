@@ -62,7 +62,7 @@ class ALPExtractor(object):
         return requestBody
     
     @classmethod
-    def bracket(self,ticker,adjclose,qty):
+    def buy_stop_loss(self,ticker,adjclose,qty):
         headers = {
             "APCA-API-KEY-ID":paperkey,
             "APCA-API-SECRET-KEY":papersecret,

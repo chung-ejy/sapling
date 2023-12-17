@@ -16,4 +16,4 @@ for row in recs.iterrows():
     price = round(row[1]["adjclose"],2)
     qty = int(cash/positions/price)
     if live == True:
-        print(alp.bracket(ticker,price,qty))
+        print(alp.buy_stop_loss(ticker,price,qty))
