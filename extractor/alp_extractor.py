@@ -60,7 +60,32 @@ class ALPExtractor(object):
         url = "https://paper-api.alpaca.markets/v2/orders"
         requestBody = r.post(url,json=data,headers=headers)
         return requestBody
-        
+    
+    @classmethod
+    def bracket(self,ticker,adjclose,qty):
+        headers = {
+            "APCA-API-KEY-ID":paperkey,
+            "APCA-API-SECRET-KEY":papersecret,
+            "accept": "application/json",
+            "content-type": "application/json"
+        }
+        data = {
+            "side": "buy",
+            "symbol": ticker,
+            "type": "market",
+            "qty": qty,
+            "time_in_force": "gtc",
+            "order_class": "oto",
+            "stop_loss": {
+                "stop_price": round(adjclose * 0.95,2),
+                "limit_price": round(adjclose * 0.94,2)
+            }
+        }
+        # url = "https://paper-api.alpaca.markets/v2/orders"
+        # requestBody = r.post(url,json=data,headers=headers)
+        # return requestBody
+        return data
+    
     @classmethod
     def close(self):
         headers = {

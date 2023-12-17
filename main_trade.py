@@ -15,6 +15,5 @@ for row in recs.iterrows():
     ticker = row[1]["ticker"]
     price = round(row[1]["adjclose"],2)
     qty = int(cash/positions/price)
-    print("long",ticker,price,qty)
     if live == True:
-        alp.buy(ticker,qty)
+        print(alp.bracket(ticker,price,qty))
