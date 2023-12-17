@@ -22,4 +22,4 @@ for year in range(2009,2024):
             print("File downloaded and unzipped successfully.")
         else:
             print(f"Failed to download the file. Status code: {response.status_code}")
-            print(response.json())
+            print(response)

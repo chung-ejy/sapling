@@ -25,12 +25,7 @@ class CFA(object):
         sim["market_expected_return"] = (sim["sp500_prediction"] - sim["sp500"]) / sim["sp500"]
         sim["market_expected_return"] = [(1+float(x)/100) ** (holding_period/365) - 1 for x in sim["market_expected_return"]]
         sim["beta"] = (sim["sp500_cov"] / sim["sp500_var"]) * float(2/3) - float(1/3)
-        sim["signal"] = (sim["signal"]) - sim["yield1"] + sim["beta"] * (sim["market_expected_return"]-sim["yield1"])
-
-        sim["abs"] = sim["signal"].abs()
-        sim["direction"] = sim["signal"] / sim["abs"]
-        positions = len(sim["GICS Sector"].unique())
-        sim["return"] = (sim["sell_price"] - sim["adjclose"]) / sim ["adjclose"] * (1/positions) * sim["direction"]
+        sim["excess_return"] = (sim["expected_return"]) - sim["yield1"] + sim["beta"] * (sim["market_expected_return"]-sim["yield1"])
         sim.sort_values("date",inplace=True)
 
         return sim
