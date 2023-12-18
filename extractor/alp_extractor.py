@@ -74,17 +74,16 @@ class ALPExtractor(object):
             "symbol": ticker,
             "type": "market",
             "qty": qty,
-            "time_in_force": "gtc",
+            "time_in_force": "day",
             "order_class": "oto",
             "stop_loss": {
                 "stop_price": round(adjclose * 0.95,2),
                 "limit_price": round(adjclose * 0.94,2)
             }
         }
-        # url = "https://paper-api.alpaca.markets/v2/orders"
-        # requestBody = r.post(url,json=data,headers=headers)
-        # return requestBody
-        return data
+        url = "https://paper-api.alpaca.markets/v2/orders"
+        requestBody = r.post(url,json=data,headers=headers)
+        return requestBody
     
     @classmethod
     def close(self):

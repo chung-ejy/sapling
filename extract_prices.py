@@ -16,11 +16,9 @@ market.drop("russell1000")
 market.store("russell1000",russell1000)
 russell1000 = market.retrieve("russell1000")
 market.disconnect()
-tickers = russell1000["ticker"][datetime.now().day % 2::2].values
-print(len(tickers))
+tickers = sp500["ticker"].values
 market.connect()
-if datetime.now().day % 2 == 0:
-    market.drop("prices")
+market.drop("prices")
 for ticker in tqdm(tickers):
     try:
         ticker_data = TiingoExtractor.prices(ticker,start,end)[["date","adjClose"]]
