@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from tqdm import tqdm
 import pandas as pd
 market = ADatabase("market")
-start = datetime.now() - timedelta(days=365.25*10)
+start = datetime.now() - timedelta(days=365.25*5)
 end = datetime.now()
 
 market.connect()
