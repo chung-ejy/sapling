@@ -31,6 +31,16 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'backtest',
+    'backtest_functions',
+    'backtester',
+    'database',
+    'info',
+    'parameter',
+    'processor',
+    'strategy',
+    'transformer',
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
