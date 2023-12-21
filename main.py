@@ -8,4 +8,4 @@ query = {
 }
 
 results = bf.backtest(query)
-print(results["portfolio"].head())
+print(results["portfolio"][::10])
