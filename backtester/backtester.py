@@ -35,6 +35,6 @@ class Backtester(object):
         portfolio["treynor"] = portfolio["cumulative_return"] / portfolio["beta"]
         portfolio["excess_return"] = portfolio["cumulative_return"] - portfolio["bench_cum_return"]
         return {
-            "portfolio":portfolio,
-            "trades":iteration_trades
+            "portfolio":portfolio.to_dict("records"),
+            "trades":iteration_trades.to_dict("records")
         }
