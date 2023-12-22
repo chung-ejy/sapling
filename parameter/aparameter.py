@@ -9,5 +9,13 @@ class AParameter(object):
     
     def build(self,query):
         for key in query.keys():
-            self.__setattr__(key,query[key])
+            match key:
+                case "holding_period":
+                    self.__setattr__(key,int(query[key]))
+                case "positions":
+                    self.__setattr__(key,int(query[key]))
+                case "stop_loss":
+                    self.__setattr__(key,float(query[key]))
+                case "strategy":
+                    self.__setattr__(key,query[key])
             
