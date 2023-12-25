@@ -1,7 +1,7 @@
 from database.adatabase import ADatabase
 from extractor.alp_extractor import ALPExtractor
 
-live = True
+live = False
 alp = ALPExtractor()
 db = ADatabase("algo")
 db.connect()
@@ -15,5 +15,6 @@ for row in recs.iterrows():
     ticker = row[1]["ticker"]
     price = round(row[1]["adjclose"],2)
     qty = int(cash/positions/price)
+    print(ticker,price,qty)
     if live == True:
         alp.buy_stop_loss(ticker,price,qty)

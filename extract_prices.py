@@ -1,11 +1,12 @@
 from database.adatabase import ADatabase
 from extractor.tiingo_extractor import TiingoExtractor
+from extractor.alp_extractor import ALPExtractor
 from datetime import datetime, timedelta
 from tqdm import tqdm
 import pandas as pd
 market = ADatabase("market")
-start = datetime.now() - timedelta(days=365.25*5)
-end = datetime.now()
+start = datetime.now() - timedelta(days=365.25*2)
+end = datetime.now() - timedelta(hours=1)
 
 market.connect()
 sp500 = pd.read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",attrs={"id":"constituents"})[0].rename(columns={"Symbol":"ticker"})
@@ -16,12 +17,12 @@ market.drop("russell1000")
 market.store("russell1000",russell1000)
 russell1000 = market.retrieve("russell1000")
 market.disconnect()
-tickers = sp500["ticker"].values
+tickers = russell1000["ticker"].values
 market.connect()
 market.drop("prices")
 for ticker in tqdm(tickers):
     try:
-        ticker_data = TiingoExtractor.prices(ticker,start,end)[["date","adjClose"]]
+        ticker_data = ALPExtractor.prices(ticker,start,end)
         ticker_data["ticker"] = ticker
         market.store("prices",ticker_data)
     except Exception as e:
