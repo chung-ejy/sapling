@@ -14,7 +14,6 @@ market.connect()
 russell1000 = market.retrieve("russell1000")
 market.disconnect()
 
-
 holding_period = 5
 tickers = russell1000["ticker"].values
 positions = 10
