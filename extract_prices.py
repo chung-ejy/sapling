@@ -6,7 +6,7 @@ from tqdm import tqdm
 import pandas as pd
 market = ADatabase("market")
 start = datetime.now() - timedelta(days=365.25*2)
-end = datetime.now() - timedelta(hours=12)
+end = datetime.now() - timedelta(hours=24)
 
 market.connect()
 sp500 = pd.read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",attrs={"id":"constituents"})[0].rename(columns={"Symbol":"ticker"})
