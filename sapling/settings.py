@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'processor',
     'strategy',
     'transformer',
+    'returns',
     'corsheaders',
     'rest_framework',
     'django.contrib.admin',
