@@ -2,7 +2,9 @@ from backtest_functions.backtest_functions import BacktestFunctions as bf
 from django.http.response import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
-@csrf_exempt
+from rest_framework.decorators import api_view
+
+@api_view(['POST'])
 def backtestView(request):
     try:
         if request.method == "POST":
