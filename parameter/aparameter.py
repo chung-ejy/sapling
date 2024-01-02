@@ -3,10 +3,10 @@ class AParameter(object):
 
     def __init__(self):
         self.positions = 10
-        self.strategy = "HISTORICAL_VOLATILITY"
+        self.strategy = "COEFFICIENT_OF_VARIANCE"
         self.holding_period = 5
         self.stop_loss = 0.05
-    
+        self.ascending = False
     def build(self,query):
         for key in query.keys():
             match key:
@@ -17,5 +17,7 @@ class AParameter(object):
                 case "stop_loss":
                     self.__setattr__(key,float(query[key]))
                 case "strategy":
-                    self.__setattr__(key,query[key])
+                    self.__setattr__(key,str(query[key]))
+                case "ascending":
+                    self.__setattr__(key,bool(query[key]))
             

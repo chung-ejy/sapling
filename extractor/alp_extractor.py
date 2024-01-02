@@ -17,7 +17,7 @@ class ALPExtractor(object):
         }
         params = {
             "symbols":ticker,
-            "adjustment":"raw",
+            "adjustment":"split",
             "timeframe":"1Day",
             "feed":"sip",
             "sort":"asc",
