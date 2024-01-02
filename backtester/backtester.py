@@ -7,8 +7,8 @@ class Backtester(object):
     @classmethod
     def backtest(self,strategy,simulation):
         today = datetime.now()
-        weekday = today.weekday() - 1 if today.weekday() != 0 else 4
-        week = today.isocalendar()[1] if today.weekday() != 0 else today.isocalendar()[1] - 1
+        weekday = today.weekday() - 1 if today.weekday() != 0 and today.weekday() < 4 else 4
+        week = today.isocalendar()[1] if today.weekday() != 0 and today.weekday() < 4 else today.isocalendar()[1] - 1
         week_mod = int(week % (strategy.holding_period/5))
         trades = simulation[simulation["weekday"]==weekday].copy()
         trades = trades[trades["week"] % int(strategy.holding_period/5) == week_mod]

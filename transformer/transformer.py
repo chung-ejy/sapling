@@ -22,7 +22,7 @@ class Transformer(object):
                 ticker_prices.sort_values("date",inplace=True)
                 simulation = strategy.signal(ticker_prices)
                 simulation = Returns.returns(strategy,ticker_prices)
-                prices.append(simulation.dropna())
+                prices.append(simulation.iloc[100:])
             except Exception as e:
                 print(ticker,str(e))
                 continue
