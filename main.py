@@ -1,10 +1,11 @@
 from backtest_functions.backtest_functions import BacktestFunctions as bf
 
 query = {
-    "strategy":"HISTORICAL_VOLATILITY",
+    "strategy":"KURTOSIS",
     "holding_period":5,
-    "positions":5,
-    "stop_loss":0.5,
+    "positions":10,
+    "stop_loss":0.03,
+    "ascending":False,
 }
 
 results = bf.backtest(query)
