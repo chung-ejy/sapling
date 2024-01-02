@@ -11,8 +11,8 @@ def backtestView(request):
             query = json.loads(request.body)
             complete = bf.backtest(query)
         else:
-            complete = {}
+            complete = {"portfolio":[],"trades":[],"recommendations":[]}
     except Exception as e:
-        complete = {}
+        complete = {"portfolio":[],"trades":[],"recommendations":[]}
         print(str(e))
     return JsonResponse(complete,safe=False)
