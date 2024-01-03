@@ -6,3 +6,4 @@ class Strategy(Enum):
     SKEW = "SKEW"
     KURTOSIS = "KURTOSIS"    
     AVERAGE_RETURN = "AVERAGE_RETURN"
+    MOVING_AVERAGE = "MOVING_AVERAGE"
