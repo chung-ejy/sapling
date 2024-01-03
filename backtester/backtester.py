@@ -27,7 +27,7 @@ class Backtester(object):
         trades["date"] = [str(x).split(" ")[0] for x in trades["date"]]
         recommendations["date"] = [str(x).split(" ")[0] for x in recommendations["date"]]
 
-        results = portfolio.round(4).to_dict("records")[-1]
+        results = {}
         results["number_of_trades"] = trades.index.size
         results["std"] = portfolio["cumulative_return"].std()
         results["coefficient_of_variance"] = portfolio["cumulative_return"].std() / portfolio["cumulative_return"].mean()
