@@ -12,4 +12,4 @@ for name in Strategy._member_names_:
                 "ascending":False,
             }
             results = bf.backtest(query)
-            print(results.keys())
+            print(name,list(results.keys()))

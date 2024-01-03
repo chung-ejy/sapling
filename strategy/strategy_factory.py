@@ -5,6 +5,11 @@ from strategy.standard_deviation import StandardDeviation
 from strategy.skew import Skew
 from strategy.kurtosis import Kurtosis
 from strategy.moving_average import MovingAverage
+from strategy.bollinger import Bollinger
+from strategy.bollinger_width import BollingerWidth
+from strategy.rsi import RSI
+from strategy.macd import MACD
+from strategy.stochastic_oscillator import StochasticOscillator
 class StrategyFactory(object):
 
     @classmethod
@@ -22,5 +27,15 @@ class StrategyFactory(object):
                 return Kurtosis(parameter)
             case Strategy.MOVING_AVERAGE.value:
                 return MovingAverage(parameter)
+            case Strategy.BOLLINGER.value:
+                return Bollinger(parameter)
+            case Strategy.BOLLINGER_WIDTH.value:
+                return BollingerWidth(parameter)
+            case Strategy.RSI.value:
+                return RSI(parameter)
+            case Strategy.MACD.value:
+                return MACD(parameter)
+            case Strategy.STOCHASTIC_OSCILLATOR.value:
+                return StochasticOscillator(parameter)
             case _:
                 return None
