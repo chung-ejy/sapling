@@ -1,9 +1,7 @@
 from processor.processor import Processor as processor
 from database.adatabase import ADatabase
 from returns.returns import Returns
-from tqdm import tqdm
 import pandas as pd
-
 class Transformer(object):
 
     @classmethod
@@ -13,12 +11,11 @@ class Transformer(object):
         russell1000 = market.retrieve("russell1000")
         market.disconnect()
         tickers = russell1000["ticker"].values
-        market = ADatabase("market")
         market.connect()
         prices = []
         for ticker in tickers:
             try:
-                ticker_prices = processor.column_date_processing(market.query("prices",{"ticker":ticker}))
+                ticker_prices = processor.column_date_processing(market.query("prices",{"ticker":ticker}))[["date","week","weekday","ticker","adjclose"]]
                 ticker_prices.sort_values("date",inplace=True)
                 simulation = strategy.signal(ticker_prices)
                 simulation = Returns.returns(strategy,ticker_prices)

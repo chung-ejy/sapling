@@ -1,5 +1,4 @@
 from database.adatabase import ADatabase
-from extractor.tiingo_extractor import TiingoExtractor
 from extractor.alp_extractor import ALPExtractor
 from datetime import datetime, timedelta
 from tqdm import tqdm

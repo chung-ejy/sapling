@@ -14,7 +14,7 @@ class Backtester(object):
         trades = trades[trades["week"] % int(strategy.holding_period/5) == week_mod]
         trades.sort_values("date",inplace=True)
 
-        iteration_trades = trades.copy().sort_values("signal",ascending=False).groupby(["date"]).nth([i for i in range(strategy.positions)]).reset_index()
+        iteration_trades = trades.copy().sort_values("signal",ascending=strategy.ascending).groupby(["date"]).nth([i for i in range(strategy.positions)]).reset_index()
         iteration_trades.sort_values("date",inplace=True)
         recommendations = iteration_trades[iteration_trades["date"]==iteration_trades["date"].max()]
         

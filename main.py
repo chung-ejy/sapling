@@ -18,5 +18,4 @@ for name in tqdm(Strategy._member_names_):
             "strat":name,
             "cr":results["portfolio"][-1]["cumulative_return"]
         })
-
 print(pd.DataFrame(analysis).sort_values("cr",ascending=False))
