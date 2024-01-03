@@ -1,9 +1,9 @@
 from pymongo import MongoClient, DESCENDING
 import pandas as pd
 import os
-# from dotenv import load_dotenv
-# load_dotenv()
-# token = os.getenv("MONGO_KEY")
+from dotenv import load_dotenv
+load_dotenv()
+token = os.getenv("MONGOKEY")
 import certifi
 ca = certifi.where()
 
@@ -16,8 +16,8 @@ class ADatabase(object):
     def connect(self):
         self.client = MongoClient("localhost",27017)
     
-    # def cloud_connect(self):
-    #     self.client = MongoClient(token,tlsCAFile=ca)
+    def cloud_connect(self):
+        self.client = MongoClient(token,tlsCAFile=ca)
     
     def disconnect(self):
         self.client.close()

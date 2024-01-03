@@ -10,6 +10,7 @@ from strategy.bollinger_width import BollingerWidth
 from strategy.rsi import RSI
 from strategy.macd import MACD
 from strategy.stochastic_oscillator import StochasticOscillator
+from strategy.random import Random
 class StrategyFactory(object):
 
     @classmethod
@@ -37,5 +38,7 @@ class StrategyFactory(object):
                 return MACD(parameter)
             case Strategy.STOCHASTIC_OSCILLATOR.value:
                 return StochasticOscillator(parameter)
+            case Strategy.RANDOM.value:
+                return Random(parameter)
             case _:
                 return None

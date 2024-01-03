@@ -4,7 +4,9 @@ import pandas as pd
 from tqdm import tqdm
 
 analysis = []
-for name in tqdm(Strategy._member_names_):
+names = Strategy._member_names_
+names = ["COEFFICIENT_OF_VARIANCE"]
+for name in tqdm(names):
     for ascending in [True,False]:
         query = {
             "strategy":name,
