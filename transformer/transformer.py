@@ -10,13 +10,13 @@ class Transformer(object):
     def transform(self,strategy):
         market = ADatabase("market")
         market.connect()
-        sp500 = market.retrieve("sp500")
+        russell1000 = market.retrieve("russell1000")
         market.disconnect()
-        tickers = sp500["ticker"].values
+        tickers = russell1000["ticker"].values
         market = ADatabase("market")
         market.connect()
         prices = []
-        for ticker in tickers[::50]:
+        for ticker in tickers:
             try:
                 ticker_prices = processor.column_date_processing(market.query("prices",{"ticker":ticker}))
                 ticker_prices.sort_values("date",inplace=True)

@@ -25,3 +25,23 @@ def strategyView(request):
         complete = []
         print(str(e))
     return JsonResponse(complete,safe=False)
+
+@csrf_exempt
+def strategyDescriptionsView(request):
+    try:
+        if request.method == "GET":
+            strategies = [x for x in Strategy._value2member_map_.keys()]
+            complete = {}
+            for strategy in strategies:
+                with open(f'./strategy/{strategy}.py', 'r') as file:
+                    strategy_code = file.read()
+                complete[strategy] = strategy_code
+            with open(f'./parameter/aparameter.py', 'r') as file:
+                    strategy_code = file.read()
+            complete["parameter"] = strategy_code
+        else:
+            complete = {}
+    except Exception as e:
+        complete = []
+        print(str(e))
+    return JsonResponse(complete,safe=False)
