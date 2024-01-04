@@ -20,7 +20,7 @@ class Backtester(object):
         iteration_trades = trades.copy().sort_values("signal",ascending=strategy.ascending).groupby(["date"]).nth([i for i in range(strategy.positions)]).reset_index()
         iteration_trades.sort_values("date",inplace=True)
         
-        recommendations = iteration_trades[iteration_trades["date"]==iteration_trades["date"].max()].copy().drop("sell_price",axis=1)
+        recommendations = iteration_trades[iteration_trades["date"]==iteration_trades["date"].max()].copy().drop(["sell_price","buy_price","return"],axis=1)
         
         portfolio = iteration_trades[["date","return"]].groupby("date").sum().reset_index()
         portfolio.sort_values("date",inplace=True)
