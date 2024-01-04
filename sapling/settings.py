@@ -100,9 +100,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CSRF_COOKIE_SECURE = True  # Set to False for development without HTTPS
 CSRF_COOKIE_SAMESITE = 'Strict'  # Set to 'Lax' or 'Strict' based on your requirements
-
 CSRF_TRUSTED_ORIGINS = ['https://mistletoe.onrender.com','https://localhost:3000']
+CSRF_COOKIE_NAME = 'X-CSRFTOKEN'
 
+CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
 
     "http://localhost:3000",
@@ -122,6 +123,7 @@ CORS_ALLOW_HEADERS = [
     'origin',
     'user-agent',
     'x-csrftoken',
+    'X-CSRFTOKEN'
     'x-requested-with',
     'mode',
 

@@ -11,7 +11,6 @@ def backtestView(request):
     try:
         if request.method == "POST":
             query = json.loads(request.body)
-            # query = {key: value for key, value in request.GET.items()}
             complete = bf.backtest(query)
             query_df = pd.DataFrame([query])
             query_df["date"] = datetime.now()
