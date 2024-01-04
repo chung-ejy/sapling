@@ -1,6 +1,7 @@
 from datetime import datetime
 import warnings
 warnings.simplefilter(action="ignore")
+import pandas as pd
 class Backtester(object):
 
     @classmethod
@@ -33,6 +34,8 @@ class Backtester(object):
         results["coefficient_of_variance"] = portfolio["cumulative_return"].std() / portfolio["cumulative_return"].mean()
         results["sharpe"] = portfolio["cumulative_return"].iloc[-1] / portfolio["cumulative_return"].std()
         results["return"] = portfolio["cumulative_return"].iloc[-1]
+        results = pd.DataFrame([results]).round(4).to_dict("records")[0]
+        print(results)
         return {
             "portfolio":portfolio.round(4).to_dict("records"),
             "trades":trades.round(4).to_dict("records"),
