@@ -1,16 +1,17 @@
 from backtest_functions.backtest_functions import BacktestFunctions as bf
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http.response import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 from database.adatabase import ADatabase
 import pandas as pd
 from datetime import datetime
 import json
 
-@csrf_exempt
+@ensure_csrf_cookie
 def backtestView(request):
     try:
-        if request.method == "GET":
-            query = {key: value for key, value in request.GET.items()}
+        if request.method == "POST":
+            query = json.loads(request.body)
+            # query = {key: value for key, value in request.GET.items()}
             complete = bf.backtest(query)
             query_df = pd.DataFrame([query])
             query_df["date"] = datetime.now()

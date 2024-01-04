@@ -1,9 +1,7 @@
 from django.http.response import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 from parameter.aparameter import AParameter
 from strategy.strategy import Strategy
 
-@csrf_exempt
 def parameterView(request):
     try:
         if request.method == "GET":
@@ -15,7 +13,6 @@ def parameterView(request):
         print(str(e))
     return JsonResponse(complete,safe=False)
 
-@csrf_exempt
 def healthView(request):
     try:
         if request.method == "GET":
@@ -27,7 +24,6 @@ def healthView(request):
         print(str(e))
     return JsonResponse(complete,safe=False)
 
-@csrf_exempt
 def strategyView(request):
     try:
         if request.method == "GET":
@@ -39,7 +35,6 @@ def strategyView(request):
         print(str(e))
     return JsonResponse(complete,safe=False)
 
-@csrf_exempt
 def strategyDescriptionsView(request):
     try:
         if request.method == "GET":
