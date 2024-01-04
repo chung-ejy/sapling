@@ -25,8 +25,8 @@ const Footer = () => {
                         </p>
                         <p>
                             Powered by{' '}
-                            <a href="https://alpaca.markets/" target="_blank" rel="noopener noreferrer">
-                                Alpaca
+                            <a href="https://www.tiingo.com/" target="_blank" rel="noopener noreferrer">
+                                Tiingo
                             </a>
                         </p>
                     </div>
