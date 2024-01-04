@@ -9,7 +9,6 @@ class Backtester(object):
     def backtest(self,strategy,simulation):
         today = datetime.now()
         weekday = today.weekday() - 1 if today.weekday() != 0 and today.weekday() < 4 else 4
-        print(weekday)
         # week = today.isocalendar()[1] if today.weekday() != 0 and today.weekday() < 4 else today.isocalendar()[1] - 1
         # week_mod = int(week % (strategy.holding_period/5))
 

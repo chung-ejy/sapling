@@ -1,10 +1,9 @@
 import random
-
-class Random(object):
+from strategy.astrategy import AStrategy
+class Random(AStrategy):
 
     def __init__(self,parameter):
-        for key in parameter.__dict__.keys():
-            self.__setattr__(key,parameter.__dict__[key])
+        super().__init__(parameter)
 
     def signal(self,ticker_prices):
         ticker_prices["signal"] = [random.randint(0,1009) for x in range(ticker_prices.index.size)]

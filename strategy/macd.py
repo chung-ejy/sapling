@@ -1,9 +1,8 @@
-
-class MACD(object):
+from strategy.astrategy import AStrategy
+class MACD(AStrategy):
 
     def __init__(self,parameter):
-        for key in parameter.__dict__.keys():
-            self.__setattr__(key,parameter.__dict__[key])
+        super().__init__(parameter)
 
     def signal(self,ticker_prices):
         ticker_prices["upper"] = ticker_prices["adjclose"].rolling(self.holding_period*2).mean() 

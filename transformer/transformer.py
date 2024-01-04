@@ -11,9 +11,9 @@ class Transformer(object):
     def transform(self,strategy):
         market = ADatabase("market")
         market.connect()
-        russell1000 = market.retrieve("russell1000")
+        sp100 = market.retrieve("sp100")
         market.disconnect()
-        tickers = russell1000["ticker"].values
+        tickers = sp100["ticker"].values
         market.connect()
         prices = []
         for ticker in tickers:
@@ -21,9 +21,9 @@ class Transformer(object):
                 included_columns = ["date","buy_date","sell_date","week","weekday","ticker","adjclose","signal","buy_price","sell_price","return"]
                 ticker_prices = processor.column_date_processing(market.query("prices",{"ticker":ticker}))
                 ticker_prices.sort_values("date",inplace=True)
-                simulation = strategy.signal(ticker_prices)
-                simulation = Returns.returns(strategy,ticker_prices)
-                prices.append(simulation[included_columns].iloc[100:])
+                ticker_prices = strategy.signal(ticker_prices)
+                ticker_prices = Returns.returns(strategy,ticker_prices)
+                prices.append(ticker_prices[included_columns])
             except Exception as e:
                 print(str(e))
                 continue
@@ -41,9 +41,9 @@ class Transformer(object):
                 ticker_prices = processor.column_date_processing(ALPExtractor.prices(ticker,start,end))
                 ticker_prices["ticker"] = ticker
                 ticker_prices.sort_values("date",inplace=True)
-                simulation = strategy.signal(ticker_prices)
-                simulation = Returns.returns(strategy,ticker_prices)
-                prices.append(simulation[included_columns].iloc[100:])
+                ticker_prices = strategy.signal(ticker_prices)
+                ticker_prices = Returns.returns(strategy,ticker_prices)
+                prices.append(ticker_prices[included_columns].iloc[100:])
             except Exception as e:
                 print(str(e))
                 continue
