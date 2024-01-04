@@ -8,10 +8,9 @@ class AnAIStrategy(AStrategy):
     def __init__(self,parameter):
         super().__init__(parameter)
     
-    def signal(self,ticker_prices):
+    def signal(self,overhead,ticker_prices):
         model = XGBRegressor()
-        factor_df = self.overhead()
-        ticker_prices = processor.merge(ticker_prices,factor_df.copy(),on="date")
+        ticker_prices = processor.merge(ticker_prices,overhead,on="date")
         ticker_prices["historical_return"] = ticker_prices["adjclose"].pct_change(5)
         ticker_prices["y"] = ticker_prices["adjclose"].pct_change(-5) 
         training_data = ticker_prices.iloc[:100].copy()

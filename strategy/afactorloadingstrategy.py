@@ -6,9 +6,8 @@ class AFactorLoadingStrategy(AStrategy):
     def __init__(self,parameter):
         super().__init__(parameter)
     
-    def signal(self,ticker_prices):
-        factor_df = self.overhead()
-        ticker_prices = processor.merge(ticker_prices,factor_df.copy(),on="date")
+    def signal(self,overhead,ticker_prices):
+        ticker_prices = processor.merge(ticker_prices,overhead.copy(),on="date")
         ticker_prices["historical_return"] = ticker_prices["adjclose"].pct_change(5) 
         training_data = ticker_prices.iloc[:100].copy()
         for factor in self.factors:

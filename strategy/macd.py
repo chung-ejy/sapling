@@ -4,7 +4,7 @@ class MACD(AStrategy):
     def __init__(self,parameter):
         super().__init__(parameter)
 
-    def signal(self,ticker_prices):
+    def signal(self,overhead,ticker_prices):
         ticker_prices["upper"] = ticker_prices["adjclose"].rolling(self.holding_period*2).mean() 
         ticker_prices["lower"] = ticker_prices["adjclose"].rolling(self.holding_period*4).mean()
         ticker_prices["signal"] = (ticker_prices["upper"] - ticker_prices["lower"]) / ticker_prices["adjclose"] 

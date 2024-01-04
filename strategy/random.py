@@ -5,6 +5,6 @@ class Random(AStrategy):
     def __init__(self,parameter):
         super().__init__(parameter)
 
-    def signal(self,ticker_prices):
+    def signal(self,overhead,ticker_prices):
         ticker_prices["signal"] = [random.randint(0,1009) for x in range(ticker_prices.index.size)]
         return ticker_prices

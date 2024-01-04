@@ -5,7 +5,7 @@ from tqdm import tqdm
 
 analysis = []
 names = Strategy._member_names_
-names = ["RF_ASSET_FACTOR_LOADING"]
+names = ["TECH_FACTOR_LOADING","RSI","TECH_AI"]
 for name in tqdm(names):
     for ascending in [False]:
         query = {

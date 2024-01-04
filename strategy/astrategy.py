@@ -8,6 +8,6 @@ class AStrategy(object):
     def overhead(self):
         return None
     
-    def signal(self,ticker_prices):
+    def signal(self,overhead,ticker_prices):
         ticker_prices["signal"] = ticker_prices["adjclose"]
         return ticker_prices
