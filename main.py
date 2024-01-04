@@ -5,7 +5,7 @@ from tqdm import tqdm
 
 analysis = []
 names = Strategy._member_names_
-names = ["RSI"]
+names = ["TECH_FACTOR_LOADING","RSI","TECH_AI"]
 for name in tqdm(names):
     for ascending in [False]:
         query = {
@@ -16,9 +16,6 @@ for name in tqdm(names):
             "ascending":ascending,
         }
         results = bf.backtest(query)
-        print(results["recommendations"])
-        print(results["portfolio"][-1])
-        print(results["trades"][-1])
         analysis.append({
             "strat":name,
             "cr":results["portfolio"][-1]["cumulative_return"]
