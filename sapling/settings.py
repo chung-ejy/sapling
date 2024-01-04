@@ -17,7 +17,8 @@ SECRET_KEY = os.getenv("DJANGOKEY")
 DEBUG = True
 
 ALLOWED_HOSTS = ['localhost',
-                 'https://mistletoe-api.onrender.com'
+                 'https://mistletoe-api.onrender.com',
+                 'mistletoe-api.onrender.com'
                  
                  ]
 
