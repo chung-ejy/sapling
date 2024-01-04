@@ -16,7 +16,10 @@ SECRET_KEY = os.getenv("DJANGOKEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = ['localhost',
+                 'https://mistletoe-api.onrender.com'
+                 
+                 ]
 
 
 # Application definition
