@@ -7,11 +7,11 @@ class Transformer(object):
     @classmethod
     def transform(self,strategy):
         market = ADatabase("market")
-        market.connect()
+        market.cloud_connect()
         russell1000 = market.retrieve("russell1000")
         market.disconnect()
         tickers = russell1000["ticker"].values
-        market.connect()
+        market.cloud_connect()
         prices = []
         for ticker in tickers:
             try:

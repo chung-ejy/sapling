@@ -25,6 +25,6 @@ class BacktestFunctions(object):
         for key in parameters.keys():
             recs[key] = parameters[key]
         sapling = ADatabase("sapling")
-        sapling.connect()
+        sapling.cloud_connect()
         sapling.store("downloaded_recommendations",recs)
         sapling.disconnect()
