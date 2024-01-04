@@ -25,7 +25,7 @@ class Backtester(object):
         portfolio["return"] = portfolio["return"] + 1
         portfolio["cumulative_return"] = portfolio["return"].cumprod()
 
-        trades["date"] = [str(x).split(" ")[0] for x in trades["date"]]
+        iteration_trades["date"] = [str(x).split(" ")[0] for x in iteration_trades["date"]]
         recommendations["date"] = [str(x).split(" ")[0] for x in recommendations["date"]]
 
         results = {}
