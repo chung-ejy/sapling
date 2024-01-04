@@ -25,11 +25,11 @@ class Backtester(object):
         portfolio["return"] = portfolio["return"] + 1
         portfolio["cumulative_return"] = portfolio["return"].cumprod()
 
-        trades["date"] = [str(x).split(" ")[0] for x in trades["date"]]
+        iteration_trades["date"] = [str(x).split(" ")[0] for x in iteration_trades["date"]]
         recommendations["date"] = [str(x).split(" ")[0] for x in recommendations["date"]]
 
         results = {}
-        results["number_of_trades"] = trades.index.size
+        results["number_of_trades"] = iteration_trades.index.size
         results["std"] = portfolio["cumulative_return"].std()
         results["coefficient_of_variance"] = portfolio["cumulative_return"].std() / portfolio["cumulative_return"].mean()
         results["sharpe"] = portfolio["cumulative_return"].iloc[-1] / portfolio["cumulative_return"].std()
@@ -37,7 +37,7 @@ class Backtester(object):
         results = pd.DataFrame([results]).round(4).to_dict("records")[0]
         return {
             "portfolio":portfolio.round(4).to_dict("records"),
-            "trades":trades.round(4).to_dict("records"),
+            "trades":iteration_trades.round(4).to_dict("records"),
             "recommendations":recommendations.round(4).to_dict("records"),
             "kpi":results
         }
