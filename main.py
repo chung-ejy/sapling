@@ -5,17 +5,19 @@ from tqdm import tqdm
 
 analysis = []
 names = Strategy._member_names_
-names = ["COEFFICIENT_OF_VARIANCE"]
+names = ["RSI"]
 for name in tqdm(names):
-    for ascending in [True,False]:
+    for ascending in [False]:
         query = {
             "strategy":name,
             "holding_period":5,
-            "positions":10,
+            "positions":1,
             "stop_loss":0.03,
             "ascending":ascending,
         }
         results = bf.backtest(query)
+        print(results["recommendations"])
+        print(results["portfolio"][-1])
         analysis.append({
             "strat":name,
             "cr":results["portfolio"][-1]["cumulative_return"]
