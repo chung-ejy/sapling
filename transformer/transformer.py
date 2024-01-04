@@ -17,12 +17,14 @@ class Transformer(object):
         prices = []
         for ticker in tickers:
             try:
-                ticker_prices = processor.column_date_processing(market.query("prices",{"ticker":ticker}))[["date","week","weekday","ticker","adjclose"]]
+                included_columns = ["date","buy_date","sell_date","week","weekday","ticker","adjclose","signal","buy_price","sell_price","return"]
+                ticker_prices = processor.column_date_processing(market.query("prices",{"ticker":ticker}))
                 ticker_prices.sort_values("date",inplace=True)
                 simulation = strategy.signal(ticker_prices)
                 simulation = Returns.returns(strategy,ticker_prices)
-                prices.append(simulation.iloc[100:])
+                prices.append(simulation[included_columns].iloc[100:])
             except Exception as e:
+                print(str(e))
                 continue
         market.disconnect()
         return pd.concat(prices)
