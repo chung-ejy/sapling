@@ -12,6 +12,7 @@ def backtestView(request):
         if request.method == "POST":
             query = json.loads(request.body)
             complete = bf.backtest(query)
+            print(complete.keys())
             query_df = pd.DataFrame([query])
             query_df["date"] = datetime.now()
             sapling = ADatabase("sapling")
