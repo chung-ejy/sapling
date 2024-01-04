@@ -74,7 +74,7 @@ class ALPExtractor(object):
             "symbol": ticker,
             "type": "market",
             "qty": qty,
-            "time_in_force": "day",
+            "time_in_force": "gtc",
             "order_class": "oto",
             "stop_loss": {
                 "stop_price": round(adjclose * 0.95,2),

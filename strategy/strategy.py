@@ -12,3 +12,4 @@ class Strategy(Enum):
     RSI = "RSI"
     MACD = "MACD"
     STOCHASTIC_OSCILLATOR = "STOCHASTIC_OSCILLATOR"
+    RANDOM = "RANDOM"
