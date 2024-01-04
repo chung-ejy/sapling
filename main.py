@@ -18,6 +18,7 @@ for name in tqdm(names):
         results = bf.backtest(query)
         print(results["recommendations"])
         print(results["portfolio"][-1])
+        print(results["trades"][-1])
         analysis.append({
             "strat":name,
             "cr":results["portfolio"][-1]["cumulative_return"]
