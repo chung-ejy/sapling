@@ -12,7 +12,7 @@ class Backtester(object):
         # week = today.isocalendar()[1] if today.weekday() != 0 and today.weekday() < 4 else today.isocalendar()[1] - 1
         # week_mod = int(week % (strategy.holding_period/5))
 
-        trades = simulation[simulation["weekday"]==weekday].copy()
+        trades = simulation[simulation["weekday"]==weekday].copy().fillna(0)
         # trades = trades[trades["week"] % int(strategy.holding_period/5) == week_mod]
         trades.sort_values("date",inplace=True)
 
@@ -27,8 +27,9 @@ class Backtester(object):
         portfolio["return"] = portfolio["return"] + 1
         portfolio["cumulative_return"] = portfolio["return"].cumprod()
 
-        iteration_trades["date"] = [str(x).split(" ")[0] for x in iteration_trades["date"]]
-        recommendations["date"] = [str(x).split(" ")[0] for x in recommendations["date"]]
+        for column in ["date","sell_date","buy_date"]:
+            iteration_trades[column] = [str(x).split(" ")[0] for x in iteration_trades[column]]
+            recommendations[column] = [str(x).split(" ")[0] for x in recommendations[column]]
 
         results = {}
         results["number_of_trades"] = iteration_trades.index.size
