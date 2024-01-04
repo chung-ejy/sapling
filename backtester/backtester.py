@@ -17,7 +17,8 @@ class Backtester(object):
 
         iteration_trades = trades.copy().sort_values("signal",ascending=strategy.ascending).groupby(["date"]).nth([i for i in range(strategy.positions)]).reset_index()
         iteration_trades.sort_values("date",inplace=True)
-        recommendations = iteration_trades[iteration_trades["date"]==iteration_trades["date"].max()]
+        
+        recommendations = iteration_trades[iteration_trades["date"]==iteration_trades["date"].max()].copy()
         
         portfolio = iteration_trades[["date","return"]].groupby("date").sum().reset_index()
         portfolio.sort_values("date",inplace=True)
@@ -35,6 +36,7 @@ class Backtester(object):
         results["sharpe"] = portfolio["cumulative_return"].iloc[-1] / portfolio["cumulative_return"].std()
         results["return"] = portfolio["cumulative_return"].iloc[-1]
         results = pd.DataFrame([results]).round(4).to_dict("records")[0]
+
         return {
             "portfolio":portfolio.round(4).to_dict("records"),
             "trades":iteration_trades.round(4).to_dict("records"),
