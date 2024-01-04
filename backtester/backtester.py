@@ -35,7 +35,6 @@ class Backtester(object):
         results["sharpe"] = portfolio["cumulative_return"].iloc[-1] / portfolio["cumulative_return"].std()
         results["return"] = portfolio["cumulative_return"].iloc[-1]
         results = pd.DataFrame([results]).round(4).to_dict("records")[0]
-        
         return {
             "portfolio":portfolio.round(4).to_dict("records"),
             "trades":trades.round(4).to_dict("records"),
