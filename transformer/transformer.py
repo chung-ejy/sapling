@@ -24,7 +24,6 @@ class Transformer(object):
                 simulation = Returns.returns(strategy,ticker_prices)
                 prices.append(simulation[included_columns].iloc[100:])
             except Exception as e:
-                print(str(e))
                 continue
         market.disconnect()
         return pd.concat(prices)
