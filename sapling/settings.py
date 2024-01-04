@@ -5,7 +5,7 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("DJANGOKEY")
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
 
@@ -33,8 +33,8 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
     'corsheaders',
+    'django.contrib.staticfiles',
 ]
 
 MIDDLEWARE = [
