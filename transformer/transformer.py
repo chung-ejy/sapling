@@ -16,7 +16,7 @@ class Transformer(object):
         market.cloud_connect()
         prices = []
         overhead = strategy.overhead()
-        for ticker in tickers[::10]:
+        for ticker in tickers:
             try:
                 included_columns = ["date","buy_date","sell_date","week","weekday","ticker","adjclose","signal","buy_price","sell_price","return"]
                 ticker_prices = processor.column_date_processing(market.query("prices",{"ticker":ticker}))
