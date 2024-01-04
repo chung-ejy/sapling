@@ -19,12 +19,12 @@ results = Backtester.backtest(strat,sim)
 recs = pd.DataFrame(results["recommendations"])
 db = ADatabase("sapling")
 
-db.connect()
+db.cloud_connect()
 db.retrieve("historical_recommendations",recs)
 db.disconnect()
 
 print(recs)
-if today.weekday() == 3:
+if today.weekday() == 0:
     positions = recs.index.size
     account = alp.account()
     cash = float(account["cash"])
