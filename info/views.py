@@ -30,10 +30,10 @@ def strategyView(request):
 def strategyDescriptionsView(request):
     try:
         if request.method == "GET":
-            strategies = [x.lower() for x in Strategy._value2member_map_.keys()]
+            strategies = [x for x in Strategy._value2member_map_.keys()]
             complete = {}
             for strategy in strategies:
-                with open(f'./strategy/{strategy}.py', 'r') as file:
+                with open(f'./strategy/{strategy.lower()}.py', 'r') as file:
                     strategy_code = file.read()
                 complete[strategy] = strategy_code
             with open(f'./parameter/aparameter.py', 'r') as file:

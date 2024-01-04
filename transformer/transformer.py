@@ -2,15 +2,17 @@ from processor.processor import Processor as processor
 from database.adatabase import ADatabase
 from returns.returns import Returns
 import pandas as pd
+from tqdm import tqdm
+
 class Transformer(object):
 
     @classmethod
     def transform(self,strategy):
         market = ADatabase("market")
         market.cloud_connect()
-        russell1000 = market.retrieve("russell1000")
+        sp500 = market.retrieve("sp500")
         market.disconnect()
-        tickers = russell1000["ticker"].values
+        tickers = sp500["ticker"].values
         market.cloud_connect()
         prices = []
         for ticker in tickers:
