@@ -21,7 +21,7 @@ market.store("russell1000",russell1000)
 russell1000 = market.retrieve("russell1000")
 market.disconnect()
 
-tickers = sp100["ticker"].values
+tickers = russell1000["ticker"].values
 
 market.cloud_connect()
 market.drop("prices")
