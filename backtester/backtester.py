@@ -41,8 +41,8 @@ class Backtester(object):
         results = pd.DataFrame([results]).round(4).to_dict("records")[0]
 
         return {
-            "portfolio":portfolio.round(4).to_dict("records"),
-            "trades":iteration_trades[iteration_trades["date"]<iteration_trades["date"].max()].round(4).to_dict("records"),
-            "recommendations":recommendations.round(4).to_dict("records"),
+            "portfolio":portfolio.dropna().round(4).to_dict("records"),
+            "trades":iteration_trades[iteration_trades["date"]<iteration_trades["date"].max()].dropna().round(4).to_dict("records"),
+            "recommendations":recommendations.dropna().round(4).to_dict("records"),
             "kpi":results
         }
