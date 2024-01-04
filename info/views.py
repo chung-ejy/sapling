@@ -15,6 +15,18 @@ def parameterView(request):
     return JsonResponse(complete,safe=False)
 
 @csrf_exempt
+def healthView(request):
+    try:
+        if request.method == "GET":
+            complete = {"status":"live"}
+        else:
+            complete = {}
+    except Exception as e:
+        complete = {}
+        print(str(e))
+    return JsonResponse(complete,safe=False)
+
+@csrf_exempt
 def strategyView(request):
     try:
         if request.method == "GET":
