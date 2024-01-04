@@ -13,9 +13,10 @@ class Transformer(object):
         tickers = russell1000["ticker"].values
         market.connect()
         prices = []
-        for ticker in tickers:
+        for ticker in tickers[::100]:
             try:
-                ticker_prices = processor.column_date_processing(market.query("prices",{"ticker":ticker}))[["date","week","weekday","ticker","adjclose"]]
+                included_columns = ["date","week","weekday","ticker","adjclose"]
+                ticker_prices = processor.column_date_processing(market.query("prices",{"ticker":ticker}))[included_columns]
                 ticker_prices.sort_values("date",inplace=True)
                 simulation = strategy.signal(ticker_prices)
                 simulation = Returns.returns(strategy,ticker_prices)
