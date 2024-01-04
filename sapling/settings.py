@@ -129,7 +129,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "https://portfolio-w43s.onrender.com"
+    "https://mistletoe.onrender.com"
 ]
 
 CORS_ALLOW_HEADERS = [
