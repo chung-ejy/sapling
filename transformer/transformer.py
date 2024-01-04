@@ -10,9 +10,9 @@ class Transformer(object):
     def transform(self,strategy):
         market = ADatabase("market")
         market.cloud_connect()
-        sp500 = market.retrieve("sp500")
+        sp100 = market.retrieve("sp100")
         market.disconnect()
-        tickers = sp500["ticker"].values
+        tickers = sp100["ticker"].values
         market.cloud_connect()
         prices = []
         for ticker in tickers:
