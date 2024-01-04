@@ -2,6 +2,7 @@ from django.http.response import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from parameter.aparameter import AParameter
 from strategy.strategy import Strategy
+
 @csrf_exempt
 def parameterView(request):
     try:
