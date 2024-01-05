@@ -5,7 +5,7 @@ from tqdm import tqdm
 
 analysis = []
 names = Strategy._member_names_
-names = ["TECH_FACTOR_LOADING","RSI","TECH_AI"]
+names = ["TECHNICAL"]
 for name in tqdm(names):
     for ascending in [False]:
         query = {
@@ -14,6 +14,7 @@ for name in tqdm(names):
             "positions":1,
             "stop_loss":0.03,
             "ascending":ascending,
+            "tickers":["JPM","GS","BAC","HBAN","BRK.B"]
         }
         results = bf.backtest(query)
         analysis.append({
