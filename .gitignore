@@ -5,4 +5,9 @@
 catboost_info/
 .ipynb_checkpoints/
 sec/
+<<<<<<< HEAD
 node_modules/
+=======
+node_modules/
+frontend/
+>>>>>>> main

@@ -14,17 +14,28 @@ start = datetime.now() - timedelta(days=365.25*2)
 end = datetime.now() - timedelta(hours=24)
 param = AParameter()
 strat = StrategyFactory.build(param)
+print(strat.__dict__)
 sim = Transformer.cloud_transform(strat,start,end)
 results = Backtester.backtest(strat,sim)
 recs = pd.DataFrame(results["recommendations"])
 db = ADatabase("sapling")
 
+<<<<<<< HEAD
 db.cloud_connect()
 db.retrieve("historical_recommendations",recs)
 db.disconnect()
 
 print(recs)
 if today.weekday() == 0:
+=======
+db.connect()
+db.store("historical_recommendations",recs)
+db.disconnect()
+
+print(recs)
+print(results["kpi"])
+if today.weekday() == 3:
+>>>>>>> main
     positions = recs.index.size
     account = alp.account()
     cash = float(account["cash"])

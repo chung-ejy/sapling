@@ -11,6 +11,11 @@ from strategy.rsi import RSI
 from strategy.macd import MACD
 from strategy.stochastic_oscillator import StochasticOscillator
 from strategy.random import Random
+from strategy.tech_factor_loading import TechFactorLoading
+from strategy.tech_ai import TechAI
+from strategy.technical import Technical
+from strategy.rf_asset_factor_loading import RFAssetFactorLoading
+
 class StrategyFactory(object):
 
     @classmethod
@@ -40,5 +45,13 @@ class StrategyFactory(object):
                 return StochasticOscillator(parameter)
             case Strategy.RANDOM.value:
                 return Random(parameter)
+            case Strategy.TECH_FACTOR_LOADING.value:
+                return TechFactorLoading(parameter)
+            case Strategy.TECH_AI.value:
+                return TechAI(parameter)
+            case Strategy.TECHNICAL.value:
+                return Technical(parameter)
+            # case Strategy.RF_ASSET_FACTOR_LOADING.value:
+            #     return RFAssetFactorLoading(parameter)
             case _:
                 return None

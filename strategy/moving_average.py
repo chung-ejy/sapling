@@ -1,10 +1,9 @@
-
-class MovingAverage(object):
+from strategy.astrategy import AStrategy
+class MovingAverage(AStrategy):
 
     def __init__(self,parameter):
-        for key in parameter.__dict__.keys():
-            self.__setattr__(key,parameter.__dict__[key])
+        super().__init__(parameter)
 
-    def signal(self,ticker_prices):
+    def signal(self,overhead,ticker_prices):
         ticker_prices["signal"] = (ticker_prices["adjclose"] - ticker_prices["adjclose"].rolling(self.holding_period).mean()) / ticker_prices["adjclose"].rolling(self.holding_period).mean() 
         return ticker_prices
