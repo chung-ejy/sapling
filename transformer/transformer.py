@@ -25,3 +25,4 @@ class Transformer(object):
                 continue
         market.disconnect()
         return pd.concat(prices)
+    
