@@ -11,7 +11,7 @@ const ParameterForm = () => {
     holding_period: 5,
     positions: 1,
     stop_loss: 0.05,
-    tickers: [],
+    tickers: []
   });
 
   useEffect(() => {
@@ -28,7 +28,15 @@ const ParameterForm = () => {
     });
   };
 
-  const onSelect = (e) => {
+  // const onSelect = (e) => {
+  //   e.preventDefault();
+  //   setState({
+  //     ...state,
+  //     [e.target.name]: [...state[e.target.name], e.target.value],
+  //   });
+  // };
+
+  const onAdd = (e) => {
     e.preventDefault();
     setState({
       ...state,
@@ -51,7 +59,7 @@ const ParameterForm = () => {
 
   return (
     <div className="container mt-4">
-      <h3 className="text-center mb-4">Backtest Form</h3>
+      <h3 className="text-center mb-4">Parameter Form</h3>
       <div className="row">
         <div className="col-md-6">
           <div className="card shadow">
@@ -78,16 +86,21 @@ const ParameterForm = () => {
                     Tickers
                   </label>
                   <select
-                    onChange={onSelect}
+                    onChange={onAdd}
                     name="tickers"
                     className="form-select"
-                    value={state.tickers}
-                    multiple
+                    value={state.ticker}
                   >
                     {tickers.map((ticker, index) => (
                       <option key={index}>{ticker}</option>
                     ))}
                   </select>
+                  {/* <button
+                  className="btn btn-danger btn-sm"
+                  onClick={(e) => onAdd(e)}
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button> */}
                 </div>
 
                 <div className="mb-3">
