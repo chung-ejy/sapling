@@ -14,16 +14,18 @@ start = datetime.now() - timedelta(days=365.25*2)
 end = datetime.now() - timedelta(hours=24)
 param = AParameter()
 strat = StrategyFactory.build(param)
+print(strat.__dict__)
 sim = Transformer.cloud_transform(strat,start,end)
 results = Backtester.backtest(strat,sim)
 recs = pd.DataFrame(results["recommendations"])
 db = ADatabase("sapling")
 
 db.connect()
-db.retrieve("historical_recommendations",recs)
+db.store("historical_recommendations",recs)
 db.disconnect()
 
 print(recs)
+print(results["kpi"])
 if today.weekday() == 3:
     positions = recs.index.size
     account = alp.account()

@@ -2,11 +2,12 @@
 class AParameter(object):
 
     def __init__(self):
-        self.positions = 10
-        self.strategy = "COEFFICIENT_OF_VARIANCE"
+        self.positions = 5
+        self.strategy = "RSI"
         self.holding_period = 5
         self.stop_loss = 0.05
-        self.ascending = False
+        self.ascending = True
+        
     def build(self,query):
         for key in query.keys():
             match key:
