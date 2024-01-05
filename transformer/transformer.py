@@ -10,10 +10,9 @@ class Transformer(object):
     def transform(self,strategy):
         market = ADatabase("market")
         market.cloud_connect()
-        tickers = strategy.tickers
         prices = []
         overhead = strategy.overhead()
-        for ticker in tickers:
+        for ticker in strategy.tickers:
             try:
                 included_columns = ["date","buy_date","sell_date","week","weekday","ticker","adjclose","signal","buy_price","sell_price","return"]
                 ticker_prices = processor.column_date_processing(market.query("prices",{"ticker":ticker}))
