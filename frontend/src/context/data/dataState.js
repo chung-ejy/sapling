@@ -1,4 +1,4 @@
-import { GET_TOKEN, GET_STRATEGY, BACKTEST, SET_LOADING, STOP_LOADING, SET_ERROR, CLEAR_ERROR, GET_DESCRIPTION } from "./types";
+import { GET_TICKERS,  GET_STRATEGY, BACKTEST, SET_LOADING, STOP_LOADING, SET_ERROR, CLEAR_ERROR, GET_DESCRIPTION } from "./types";
 import React, { useReducer } from "react";
 import DataContext from "./dataContext"
 import dataReducer from "./dataReducer"
@@ -8,6 +8,7 @@ const DataState = props => {
     
     const initialState = {
         title: "mistletoe",
+        tickers:[],
         strategies:[],
         descriptions:[],
         results:{"portfolio":[],"trades":[],"recommendations":[],"kpi":{}},
@@ -16,8 +17,6 @@ const DataState = props => {
         genres:[]
     }
 
-    // const base_url = "https://mistletoe-api.onrender.com"
-    // const base_url = "http://localhost:8000"
     const base_url = ""
     const [state,dispatch] = useReducer(dataReducer,initialState)
 
@@ -62,19 +61,6 @@ const DataState = props => {
         });
     }
 
-    const getToken = () => {
-        setLoading()
-        axios.get(`${base_url}/security_functions/token`, {}, {}).then(res=>{
-            dispatch({
-                type:GET_TOKEN,
-                payload:res.data
-            })
-        }).catch(err => {
-            stopLoading()
-            setError(err.message,"danger")
-        });
-    }
-
     const getTokenV2 = async () => {
         setLoading()
         const res = await axios.get(`${base_url}/security_functions/token`, {}, {})
@@ -87,6 +73,19 @@ const DataState = props => {
         axios.get(`${base_url}/info/strategy/descriptions`, {}, ).then(res=>{
             dispatch({
                 type:GET_DESCRIPTION,
+                payload:res.data
+            })
+        }).catch(err => {
+            stopLoading()
+            setError(err.message,"danger")
+        });
+    }
+
+    const getTickers = () => {
+        setLoading()
+        axios.get(`${base_url}/info/tickers`, {}, ).then(res=>{
+            dispatch({
+                type:GET_TICKERS,
                 payload:res.data
             })
         }).catch(err => {
@@ -121,6 +120,7 @@ const DataState = props => {
 
     return (
         <DataContext.Provider value={{
+            tickers:state.tickers,
             strategies:state.strategies,
             descriptions:state.descriptions,
             results:state.results,
@@ -128,6 +128,7 @@ const DataState = props => {
             error:state.error,
             title:state.title,
             text:state.text,
+            getTickers,
             getStrategy,
             getDescription,
             backtest,
@@ -137,4 +138,5 @@ const DataState = props => {
         </DataContext.Provider>
     )
 }
+
 export default DataState;

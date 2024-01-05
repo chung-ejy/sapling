@@ -1,6 +1,7 @@
 from django.http.response import JsonResponse
 from parameter.aparameter import AParameter
 from strategy.strategy import Strategy
+from database.adatabase import ADatabase
 
 def parameterView(request):
     try:
@@ -49,6 +50,20 @@ def strategyDescriptionsView(request):
             complete["parameter"] = strategy_code
         else:
             complete = {}
+    except Exception as e:
+        complete = []
+        print(str(e))
+    return JsonResponse(complete,safe=False)
+
+def tickersView(request):
+    try:
+        if request.method == "GET":
+            db = ADatabase("market")
+            db.cloud_connect()
+            complete = list(db.retrieve("sp100")["ticker"].values)
+            db.disconnect()
+        else:
+            complete = []
     except Exception as e:
         complete = []
         print(str(e))

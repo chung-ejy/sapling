@@ -1,4 +1,4 @@
-import { GET_TOKEN, GET_STRATEGY, GET_DESCRIPTION, BACKTEST, SET_LOADING, SET_ERROR, CLEAR_ERROR } from "./types";
+import { GET_TICKERS,  GET_STRATEGY, GET_DESCRIPTION, BACKTEST, SET_LOADING, SET_ERROR, CLEAR_ERROR } from "./types";
 const Reducer = (state,action) => {
     switch(action.type) {
         case SET_ERROR:
@@ -22,6 +22,12 @@ const Reducer = (state,action) => {
                 strategies:action.payload,
                 loading:false
             }
+        case GET_TICKERS:
+            return {
+                ...state,
+                tickers:action.payload,
+                loading:false
+            }
         case GET_DESCRIPTION:
             return {
                 ...state,
@@ -32,12 +38,6 @@ const Reducer = (state,action) => {
             return {
                 ...state,
                 results:action.payload,
-                loading:false
-            }
-        case GET_TOKEN:
-            return {
-                ...state,
-                token:action.payload,
                 loading:false
             }
         default:
