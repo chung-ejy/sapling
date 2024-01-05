@@ -7,8 +7,7 @@ const StrategyDescriptionCard = ({description}) => {
   return (
     <div className="card">
       <div className="card-body">
-        {/* <h5 className="card-title">Coefficient of Variance</h5> */}
-        {/* <p className="card-text">The coefficient of variance ranks stocks by their standard deviation to price. See code snippet below:</p> */}
+        {/* <p>{description.description}</p> */}
         <SyntaxHighlighter language="python" style={vscDarkPlus}>
           {description}
         </SyntaxHighlighter>
