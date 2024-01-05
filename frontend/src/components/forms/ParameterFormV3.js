@@ -9,7 +9,7 @@ const ParameterForm = () => {
     strategy: 'COEFFICIENT_OF_VARIANCE',
     ascending: 'False',
     holding_period: 5,
-    positions: 10,
+    positions: 1,
     stop_loss: 0.05,
   });
 
@@ -73,9 +73,9 @@ const ParameterForm = () => {
                   onChange={onChange}
                   name="positions"
                   className="form-range"
-                  min="5"
-                  max="25"
-                  step="5"
+                  min="1"
+                  max="5"
+                  step="1"
                   value={state.positions}
                   id="customRangePositions"
                 />

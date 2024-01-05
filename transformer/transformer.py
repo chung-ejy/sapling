@@ -14,6 +14,7 @@ class Transformer(object):
         market.disconnect()
         tickers = sp100["ticker"].values
         market.cloud_connect()
+        tickers = ["AMZN","GOOGLE","MSFT","META","TSLA","ADBE","JPM","KO","NFLX","NVDA"]
         prices = []
         overhead = strategy.overhead()
         for ticker in tickers:
