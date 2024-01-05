@@ -62,7 +62,7 @@ const RecommendationsTable = () => {
             </tbody>
             </table>
             <input type="range" className="form-control form-group form-range"onChange={onRange} min={0} max={Number(results.recommendations.length - 1)} step={1} />
-            <button onClick={downloadCSV}>Download</button>
+            <button className="btn btn-primary w-100"onClick={downloadCSV}>Download</button>
         </div>
         </div>
     );

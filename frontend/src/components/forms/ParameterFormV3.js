@@ -11,7 +11,7 @@ const ParameterForm = () => {
     holding_period: 5,
     positions: 1,
     stop_loss: 0.05,
-    tickers:[]
+    tickers: [],
   });
 
   useEffect(() => {
@@ -32,122 +32,141 @@ const ParameterForm = () => {
     e.preventDefault();
     setState({
       ...state,
-      [e.target.name]: [...state[e.target.name],e.target.value],
+      [e.target.name]: [...state[e.target.name], e.target.value],
     });
   };
 
-  const onDelete = (e,ticker) => {
-    e.preventDefault()
+  const onDelete = (e, ticker) => {
+    e.preventDefault();
     setState({
       ...state,
-      ["tickers"]: [...state["tickers"].filter(item => item !== ticker).slice(0,7)],
+      tickers: state.tickers.filter((item) => item !== ticker),
     });
   };
 
   const onSubmit = (e) => {
     e.preventDefault();
-    backtestAwait(state)
+    backtestAwait(state);
   };
 
   return (
-    <div className="container">
-      <h3>Form</h3>
+    <div className="container mt-4">
+      <h3 className="text-center mb-4">Backtest Form</h3>
       <div className="row">
-      <div className="card card-body col-md-6">
-        <form className="form" onSubmit={onSubmit}>
-              <div className="form-group row">
-                <label htmlFor="strategy">Strategy</label>
-                <select
-                  onChange={onChange}
-                  name="strategy"
-                  className="form-select form-select-sm"
-                  value={state.strategy}
-                  aria-label="Strategy selection"
-                >
-                  {strategies.map((strategy, index) => (
-                    <option key={index}>{strategy}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="form-group row">
-                <label htmlFor="tickers">Tickers</label>
-                <select
-                  onChange={onSelect}
-                  name="tickers"
-                  className="form-select form-select-sm"
-                  value={state.tickers}
-                  aria-label="tickers selection"
+        <div className="col-md-6">
+          <div className="card shadow">
+            <div className="card-body">
+              <form onSubmit={onSubmit}>
+                <div className="mb-3">
+                  <label htmlFor="strategy" className="form-label">
+                    Strategy
+                  </label>
+                  <select
+                    onChange={onChange}
+                    name="strategy"
+                    className="form-select"
+                    value={state.strategy}
                   >
-                  {tickers.map((ticker, index) => (
-                    <option key={index}>{ticker}</option>
-                  ))}
-                </select>
-              </div>
+                    {strategies.map((strategy, index) => (
+                      <option key={index}>{strategy}</option>
+                    ))}
+                  </select>
+                </div>
 
-              <div className="form-group row">
-                <label htmlFor="ascending">Ascending</label>
-                <select
-                  onChange={onChange}
-                  name="ascending"
-                  className="form-select form-select-sm"
-                  value={state.ascending}
-                  aria-label="Ascending selection"
-                >
-                  <option key={1}>true</option>
-                  <option key={2}>false</option>
-                </select>
+                <div className="mb-3">
+                  <label htmlFor="tickers" className="form-label">
+                    Tickers
+                  </label>
+                  <select
+                    onChange={onSelect}
+                    name="tickers"
+                    className="form-select"
+                    value={state.tickers}
+                    multiple
+                  >
+                    {tickers.map((ticker, index) => (
+                      <option key={index}>{ticker}</option>
+                    ))}
+                  </select>
+                </div>
 
-              </div>
+                <div className="mb-3">
+                  <label htmlFor="ascending" className="form-label">
+                    Ascending
+                  </label>
+                  <select
+                    onChange={onChange}
+                    name="ascending"
+                    className="form-select"
+                    value={state.ascending}
+                  >
+                    <option>true</option>
+                    <option>false</option>
+                  </select>
+                </div>
 
-              <div className="form-group row">
-                <label htmlFor="positions">Positions: {state.positions}</label>
-                <input
-                  type="range"
-                  onChange={onChange}
-                  name="positions"
-                  className="form-range"
-                  min="1"
-                  max="5"
-                  step="1"
-                  value={state.positions}
-                  id="customRangePositions"
-                />
-              </div>
+                <div className="mb-3">
+                  <label htmlFor="positions" className="form-label">
+                    Positions: {state.positions}
+                  </label>
+                  <input
+                    type="range"
+                    onChange={onChange}
+                    name="positions"
+                    className="form-range"
+                    min="1"
+                    max="5"
+                    step="1"
+                    value={state.positions}
+                    id="customRangePositions"
+                  />
+                </div>
 
-              <div className="form-group row">
-                <label htmlFor="stop_loss">Stop Loss: {state.stop_loss}</label>
-                <input
-                  type="range"
-                  onChange={onChange}
-                  name="stop_loss"
-                  className="form-range"
-                  min="0.05"
-                  max="0.5"
-                  step="0.05"
-                  value={state.stop_loss}
-                  id="customRangeStopLoss"
-                />
-              </div>
-          <button type="submit" className="form-control btn btn-primary btn-small align-center">
-            Submit
-          </button>
-        </form>
+                <div className="mb-3">
+                  <label htmlFor="stop_loss" className="form-label">
+                    Stop Loss: {state.stop_loss}
+                  </label>
+                  <input
+                    type="range"
+                    onChange={onChange}
+                    name="stop_loss"
+                    className="form-range"
+                    min="0.05"
+                    max="0.5"
+                    step="0.05"
+                    value={state.stop_loss}
+                    id="customRangeStopLoss"
+                  />
+                </div>
+
+                <button type="submit" className="btn btn-primary w-100">
+                  Submit
+                </button>
+              </form>
+            </div>
+          </div>
         </div>
-        <ul className="list-group col-md-4">
-          {state.tickers.map((ticker) => (
-            <li key={ticker} className="list-group-item d-flex justify-content-between align-items-center">
-              {ticker}
-              <button
-                className="btn btn-danger btn-sm"
-                onClick={(e) => onDelete(e, ticker)}>
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </li>
-          ))}
-        </ul>
+
+        <div className="col-md-4">
+          <ul className="list-group">
+            {state.tickers.map((ticker) => (
+              <li
+                key={ticker}
+                className="list-group-item d-flex justify-content-between align-items-center"
+              >
+                {ticker}
+                <button
+                  className="btn btn-danger btn-sm"
+                  onClick={(e) => onDelete(e, ticker)}
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
+    </div>
   );
 };
 
