@@ -17,8 +17,8 @@ for name in tqdm(names):
             "tickers":["JPM","GS","BAC","HBAN","BRK.B"]
         }
         results = bf.backtest(query)
-        analysis.append({
-            "strat":name,
-            "cr":results["portfolio"][-1]["cumulative_return"]
-        })
+        print(results["kpi"])
+        print(results["trades"][-10:])
+        print(results["portfolio"][-10:])
+        print(results["recommendations"][-10:])
 print(pd.DataFrame(analysis).sort_values("cr",ascending=False))
