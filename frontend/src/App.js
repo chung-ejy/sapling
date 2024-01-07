@@ -7,18 +7,19 @@ import Landing from './components/pages/Landing';
 import Dashboard from './components/pages/Dashboard';
 import Learn from './components/pages/Learn';
 import Donate from './components/pages/Donate';
-import Authentication from './components/pages/Authentication';
-import DataContext from './context/data/dataContext';
+import Signup from './components/pages/Signup';
+import Login from './components/pages/Login'
 const App = () => {
-    const dataContext = useContext(DataContext)
-    const { isAuth, authToken } = dataContext
+    const token = localStorage.getItem("authToken")
+    console.log(token)
     return (
         <DataState>
             <Router>
                 <Header />
                 <Routes>
-                    {isAuth ? <Route path="/" element={<Landing />} /> : <Route path="/dashboard" element={<Dashboard />} />}
-                    {isAuth ? <Route path="/authentication" element={<Authentication />} /> : ""}
+                    <Route path="/" element={<Landing />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/login" element={<Login />} />
                     <Route path="/learn" element={<Learn />} />
                 </Routes>
                 <Footer />
