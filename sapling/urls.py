@@ -6,5 +6,6 @@ urlpatterns = [
     path('backtest/', include('backtest.urls')),
     path('info/', include('info.urls')),
     path('security_functions/',include('security_functions.urls')),
+    path('auth/', include('authentication.urls')),
     path("",include("frontend.urls")),
 ]
