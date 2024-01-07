@@ -21,4 +21,3 @@ for name in tqdm(names):
         print(results["trades"][-10:])
         print(results["portfolio"][-10:])
         print(results["recommendations"][-10:])
-print(pd.DataFrame(analysis).sort_values("cr",ascending=False))

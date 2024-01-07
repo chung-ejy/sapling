@@ -22,7 +22,7 @@ class Backtester(object):
         portfolio = portfolio.iloc[:-1]
         portfolio["year"] = [x.year for x in portfolio["date"]]
         portfolio["return"] = portfolio["return"] + 1
-        portfolio["cumulative_return"] = portfolio["return"].cumprod()
+        portfolio["cumulative_return"] = (portfolio["return"].cumprod() - 1) * 100
         return portfolio
     
     @classmethod
@@ -34,7 +34,7 @@ class Backtester(object):
     def kpi(self,iteration_trades,portfolio):
         results = {}
         results["number_of_trades"] = iteration_trades.index.size
-        results["std"] = portfolio["cumulative_return"].std()
+        results["standard_deviation"] = portfolio["cumulative_return"].std()
         results["coefficient_of_variance"] = portfolio["cumulative_return"].std() / portfolio["cumulative_return"].mean()
         results["sharpe"] = portfolio["cumulative_return"].iloc[-1] / portfolio["cumulative_return"].std()
         results["return"] = portfolio["cumulative_return"].iloc[-1]
