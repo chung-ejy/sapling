@@ -49,15 +49,13 @@ const Reducer = (state,action) => {
             return {
                 ...state,
                 isAuth:true,
-                authToken:res.data.auth_token,
-                user:res.data.user,
+                user:action.payload.user,
                 loading:false
             }
         case LOGOUT:
                 return {
                     ...state,
-                    isAuth:FALSE,
-                    authToken:"",
+                    isAuth:false,
                     user:{},
                     loading:false
                 }

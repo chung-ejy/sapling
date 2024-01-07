@@ -1,34 +1,36 @@
-# authentication/views.py
-from django.contrib.auth import login, logout
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import SignupSerializer, LoginSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
+import json
+from database.adatabase import ADatabase
+import pandas as pd 
 
 @require_POST
 def signup_view(request):
-    serializer = SignupSerializer(data=request.data)
-    if serializer.is_valid():
-        user = serializer.save()
-        return JsonResponse({'message': 'User created successfully'}, status=201)
-    return JsonResponse({'errors': serializer.errors}, status=400)
+    ## make sure no repeat users
+    user=json.loads(request.body)
+    mt = ADatabase("mistletoe")
+    mt.cloud_connect()
+    mt.store("users",pd.DataFrame([user]))
+    mt.disconnect()
+    return JsonResponse({'message': 'User created successfully'}, status=201)
 
-@require_POST
-def login_view(request):
-    serializer = LoginSerializer(data=request.data)
-    if serializer.is_valid():
-        user = serializer.validated_data['user']
-        login(request, user)
-        refresh = RefreshToken.for_user(user)
-        access_token = str(refresh.access_token)
-        print(access_token)
-        return JsonResponse({'message': 'Login successful', 'token': access_token}, status=200)
-    return JsonResponse({'errors': serializer.errors}, status=400)
 
+## bad boy security problems
 @api_view(['POST'])
-def logout_view(request):
-    logout(request)
-    return Response({'message': 'Logout successful'}, status=status.HTTP_200_OK)
+def login_view(request):
+    try:
+        data = json.loads(request.body)
+        mt = ADatabase("mistletoe")
+        mt.cloud_connect()
+        user = mt.query("users",data).to_dict("records")[0]
+        mt.disconnect() 
+        if user is not None:
+            return JsonResponse({'message': 'Login successful',"user":user,"token":7}, status=200)
+        else:
+            return JsonResponse({'message': 'Invalid credentials'}, status=401)
+    except json.JSONDecodeError:
+        return JsonResponse({'message': 'Invalid JSON data'}, status=400)

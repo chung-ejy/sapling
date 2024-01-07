@@ -11,7 +11,6 @@ import Signup from './components/pages/Signup';
 import Login from './components/pages/Login'
 const App = () => {
     const token = localStorage.getItem("authToken")
-    console.log(token)
     return (
         <DataState>
             <Router>

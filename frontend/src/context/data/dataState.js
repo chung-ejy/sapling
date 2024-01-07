@@ -10,7 +10,7 @@ const DataState = props => {
         title: "mistletoe",
         isAuth:false,
         authToken:"",
-        user:{},
+        user:null,
         tickers:[],
         strategies:[],
         descriptions:[],
@@ -115,14 +115,14 @@ const DataState = props => {
         });
     };
 
-    const signUp = (data) => {
+    const signup = (data) => {
         setLoading();
-        axios.post(`${base_url}/auth/signup`,data, {
+        getToken().then(token => axios.post(`${base_url}/auth/signup`,data, {
             headers: {
               'Content-Type': 'application/json',
               'X-CSRFToken': token
             },
-          }).then(res => {
+          })).then(res => {
             dispatch({
                 type: SIGNUP,
                 payload: res.data
@@ -134,6 +134,7 @@ const DataState = props => {
     };
 
     const login = (data) => {
+        console.log(data)
         setLoading();
         getToken().then(token => axios.post(`${base_url}/auth/login`,data, {
             headers: {
@@ -142,6 +143,7 @@ const DataState = props => {
             },
           })).then(res => {
             console.log(res.data)
+            localStorage.setItem("token",res.data.token)
             dispatch({
                 type: LOGIN,
                 payload: res.data
@@ -152,23 +154,14 @@ const DataState = props => {
         });
     };
 
-    const logout = (data) => {
+    const logout = () => {
+        console.log("logout")
         setLoading();
-        axios.post(`${base_url}/auth/logout`,data, {
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRFToken': token
-            },
-          }).then(res => {
-            dispatch({
-                type: LOGOUT,
-                payload: res.data
+        dispatch({
+                type: LOGOUT
             });
-        }).catch(err => {
-            stopLoading();
-            setError(err.message, "danger");
-        });
-    };
+        localStorage.removeItem("token")
+    }
 
     return (
         <DataContext.Provider value={{
@@ -187,7 +180,7 @@ const DataState = props => {
             user:state.user,
             login,
             logout,
-            signUp,
+            signup,
             getTickers,
             getStrategy,
             getDescription,

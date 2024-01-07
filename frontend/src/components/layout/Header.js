@@ -1,7 +1,11 @@
-import React from 'react';
+import React , { useContext, Fragment }from 'react';
 import { Link } from 'react-router-dom';
 import Icon from '../../assets/favicon-16x16.png'
+import DataContext from '../../context/data/dataContext'
 const Header = () => {
+
+    const dataContext = useContext(DataContext)
+    const { isAuth, logout } = dataContext
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
             <div className="container-fluid">
@@ -32,11 +36,17 @@ const Header = () => {
                                 Learn
                             </Link>
                         </li>
-                        <li className="nav-item">
-                            <Link to="/dashboard" className="nav-link">
+                        {isAuth === true ? 
+                            <Fragment><li className="nav-item"><Link to="/dashboard" className="nav-link">
                                 Dashboard
+                            </Link></li>
+                            <li className='nav-item' onClick={() => logout()}><div className="nav-link">Logout</div></li>
+                        </Fragment>:
+                        <li className="nav-item">
+                            <Link to="/login" className="nav-link">
+                                Login
                             </Link>
-                        </li>
+                        </li>}
                     </ul>
                 </div>
             </div>

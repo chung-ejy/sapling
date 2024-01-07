@@ -1,25 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
+import DataContext from '../../context/data/dataContext'
 
 const SignupForm = () => {
   const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
+  // const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const submitSignupForm = async () => {
-    try {
-      const response = await axios.post('http://yourbackend/api/auth/signup/', {
-        username,
-        email,
-        password,
-      });
+  const dataContext = useContext(DataContext)
+  const { signup } = dataContext
 
-      // Handle the response and token storage
-      console.log(response.data);
-
-    } catch (error) {
-      console.error('Signup failed:', error);
-    }
+  const submitSignupForm = () => {
+      signup({
+        "username":username,
+        "password":password
+      })
   };
 
   return (
@@ -39,7 +34,7 @@ const SignupForm = () => {
               />
             </div>
 
-            <div className="mb-3">
+            {/* <div className="mb-3">
               <label htmlFor="email" className="form-label">Email:</label>
               <input
                 type="email"
@@ -48,7 +43,7 @@ const SignupForm = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-            </div>
+            </div> */}
 
             <div className="mb-3">
               <label htmlFor="password" className="form-label">Password:</label>

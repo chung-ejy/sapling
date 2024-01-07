@@ -6,10 +6,10 @@ const LoginForm = () => {
   const [password, setPassword] = useState('');
   const dataContext = useContext(DataContext)
   const {login} = dataContext
-  const submitLoginForm = async () => {
+  const submitLoginForm = () => {
       login({
-        username,
-        password,
+        "username":username,
+        "password":password,
       })
   }
 
