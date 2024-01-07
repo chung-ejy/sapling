@@ -42,7 +42,7 @@ const TradesTable = () => {
                     <tr>
                         <th>date</th>
                         <th>ticker</th>
-                        <th>signal</th>
+                        {/* <th>{String.lowercase(parameter.strategy)}</th> */}
                         <th>return</th>
                     </tr>
                 </thead>
@@ -52,7 +52,7 @@ const TradesTable = () => {
                             <tr key={index}>
                                 <td>{trade.date}</td>
                                 <td>{trade.ticker}</td>
-                                <td>{trade.signal}</td>
+                                {/* <td>{trade[String.lowercase(parameter.strategy)]}</td> */}
                                 <td>{trade.return}</td>
                             </tr>
                         ))

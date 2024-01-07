@@ -4,7 +4,7 @@ import DataContext from '../../context/data/dataContext';
 const RecommendationsTable = () => {
     const [state, setState] = useState(0);
     const dataContext = useContext(DataContext);
-    const { results, loading } = dataContext;
+    const { results, loading ,parameter } = dataContext;
 
     const onRange = (e) => {
         setState(Number(e.target.value));
@@ -41,8 +41,9 @@ const RecommendationsTable = () => {
                 <thead>
                     <tr>
                         <th>date</th>
+                        <th>sell_date</th>
                         <th>ticker</th>
-                        <th>signal</th>
+                        {/* <th>signal</th> */}
                     </tr>
                 </thead>
                 <tbody>
@@ -50,8 +51,9 @@ const RecommendationsTable = () => {
                         results.recommendations.slice(state, state + 5).map((trade, index) => (
                             <tr key={index}>
                                 <td>{trade.date}</td>
+                                <td>{trade.sell_date}</td>
                                 <td>{trade.ticker}</td>
-                                <td>{trade.signal}</td>
+                                {/* <td>{trade[String.lowercase(parameter.strategy)]}</td> */}
                             </tr>
                         ))
                     ) : (

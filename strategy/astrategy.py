@@ -9,5 +9,5 @@ class AStrategy(object):
         return None
     
     def signal(self,overhead,ticker_prices):
-        ticker_prices["signal"] = ticker_prices["adjclose"]
+        ticker_prices[self.strategy.lower()] = ticker_prices["adjclose"]
         return ticker_prices

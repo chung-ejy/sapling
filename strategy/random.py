@@ -6,5 +6,5 @@ class Random(AStrategy):
         super().__init__(parameter)
 
     def signal(self,overhead,ticker_prices):
-        ticker_prices["signal"] = [random.randint(0,1009) for x in range(ticker_prices.index.size)]
+        ticker_prices[self.strategy.lower()] = [random.randint(0,1009) for x in range(ticker_prices.index.size)]
         return ticker_prices

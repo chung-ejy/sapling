@@ -6,5 +6,5 @@ class Bollinger(AStrategy):
 
     def signal(self,overhead,ticker_prices):
         ticker_prices["upper"] = ticker_prices["adjclose"].rolling(self.holding_period).mean() + 2 * ticker_prices["adjclose"].rolling(self.holding_period).std()
-        ticker_prices["signal"] = (ticker_prices["upper"] - ticker_prices["adjclose"]) / ticker_prices["adjclose"] 
+        ticker_prices[self.strategy.lower()] = (ticker_prices["upper"] - ticker_prices["adjclose"]) / ticker_prices["adjclose"] 
         return ticker_prices
