@@ -10,7 +10,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 @require_POST
 def signup_view(request):
-    serializer = SignupSerializer(data=request.POST)
+    serializer = SignupSerializer(data=request.data)
     if serializer.is_valid():
         user = serializer.save()
         return JsonResponse({'message': 'User created successfully'}, status=201)
@@ -18,12 +18,13 @@ def signup_view(request):
 
 @require_POST
 def login_view(request):
-    serializer = LoginSerializer(data=request.POST)
+    serializer = LoginSerializer(data=request.data)
     if serializer.is_valid():
         user = serializer.validated_data['user']
         login(request, user)
         refresh = RefreshToken.for_user(user)
         access_token = str(refresh.access_token)
+        print(access_token)
         return JsonResponse({'message': 'Login successful', 'token': access_token}, status=200)
     return JsonResponse({'errors': serializer.errors}, status=400)
 

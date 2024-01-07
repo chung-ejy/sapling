@@ -64,7 +64,7 @@ const DataState = props => {
         });
     }
 
-    const getTokenV2 = async () => {
+    const getToken = async () => {
         setLoading()
         const res = await axios.get(`${base_url}/security_functions/token`, {}, {})
         stopLoading()
@@ -97,20 +97,14 @@ const DataState = props => {
         });
     }
 
-    const backtestAwait = (data) => {
-        getTokenV2().then(token =>{
-            backtest(data,token)
-        })
-    }
-
-    const backtest = (data,token) => {
+    const backtest = (data) => {
         setLoading();
-        axios.post(`${base_url}/backtest/`,data, {
+        getToken().then(token => axios.post(`${base_url}/backtest/`,data, {
             headers: {
               'Content-Type': 'application/json',
               'X-CSRFToken': token
             },
-          }).then(res => {
+          })).then(res => {
             dispatch({
                 type: BACKTEST,
                 payload: res.data
@@ -141,12 +135,13 @@ const DataState = props => {
 
     const login = (data) => {
         setLoading();
-        axios.post(`${base_url}/auth/login`,data, {
+        getToken().then(token => axios.post(`${base_url}/auth/login`,data, {
             headers: {
               'Content-Type': 'application/json',
               'X-CSRFToken': token
             },
-          }).then(res => {
+          })).then(res => {
+            console.log(res.data)
             dispatch({
                 type: LOGIN,
                 payload: res.data
@@ -197,7 +192,6 @@ const DataState = props => {
             getStrategy,
             getDescription,
             backtest,
-            backtestAwait
         }}>
             {props.children}
         </DataContext.Provider>

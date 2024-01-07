@@ -1,5 +1,5 @@
 import React from 'react';
-import ParameterFormV3 from '../forms/ParameterFormV3';
+import ParameterForm from '../forms/ParameterForm';
 import TradesTable from '../tables/TradesTable';
 import PortfolioReturns from '../charts/PortfolioReturns';
 import RecommendationsTable from '../tables/RecommendationsTable';
@@ -25,7 +25,7 @@ const Dashboard = () => {
         </div>
       </div>
       <div className="col-md-4">
-        <ParameterFormV3 />
+        <ParameterForm />
         <KPITable />
       </div>
     </div>
