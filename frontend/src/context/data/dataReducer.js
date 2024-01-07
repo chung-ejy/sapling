@@ -1,4 +1,4 @@
-import { GET_TICKERS,  GET_STRATEGY, GET_DESCRIPTION, BACKTEST, SET_LOADING, SET_ERROR, CLEAR_ERROR } from "./types";
+import { LOGIN, LOGOUT, SIGNUP, GET_TICKERS,  GET_STRATEGY, GET_DESCRIPTION, BACKTEST, SET_LOADING, SET_ERROR, CLEAR_ERROR } from "./types";
 const Reducer = (state,action) => {
     switch(action.type) {
         case SET_ERROR:
@@ -40,6 +40,27 @@ const Reducer = (state,action) => {
                 results:action.payload,
                 loading:false
             }
+        case SIGNUP:
+            return {
+                ...state,
+                loading:false
+            }
+        case LOGIN:
+            return {
+                ...state,
+                isAuth:true,
+                authToken:res.data.auth_token,
+                user:res.data.user,
+                loading:false
+            }
+        case LOGOUT:
+                return {
+                    ...state,
+                    isAuth:FALSE,
+                    authToken:"",
+                    user:{},
+                    loading:false
+                }
         default:
             return {
                 ...state,

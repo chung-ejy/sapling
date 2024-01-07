@@ -30,7 +30,9 @@ INSTALLED_APPS = [
     'transformer',
     'returns',
     'rest_framework',
+    'rest_framework_simplejwt',
     'frontend',
+    'authentication',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,6 +41,12 @@ INSTALLED_APPS = [
     'corsheaders',
     'django.contrib.staticfiles',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',

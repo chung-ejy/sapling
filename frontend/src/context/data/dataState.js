@@ -1,4 +1,4 @@
-import { GET_TICKERS,  GET_STRATEGY, BACKTEST, SET_LOADING, STOP_LOADING, SET_ERROR, CLEAR_ERROR, GET_DESCRIPTION } from "./types";
+import { LOGIN, LOGOUT, SIGNUP, GET_TICKERS,  GET_STRATEGY, BACKTEST, SET_LOADING, STOP_LOADING, SET_ERROR, CLEAR_ERROR, GET_DESCRIPTION } from "./types";
 import React, { useReducer } from "react";
 import DataContext from "./dataContext"
 import dataReducer from "./dataReducer"
@@ -8,6 +8,9 @@ const DataState = props => {
     
     const initialState = {
         title: "mistletoe",
+        isAuth:false,
+        authToken:"",
+        user:{},
         tickers:[],
         strategies:[],
         descriptions:[],
@@ -118,6 +121,60 @@ const DataState = props => {
         });
     };
 
+    const signUp = (data) => {
+        setLoading();
+        axios.post(`${base_url}/auth/signup`,data, {
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': token
+            },
+          }).then(res => {
+            dispatch({
+                type: SIGNUP,
+                payload: res.data
+            });
+        }).catch(err => {
+            stopLoading();
+            setError(err.message, "danger");
+        });
+    };
+
+    const login = (data) => {
+        setLoading();
+        axios.post(`${base_url}/auth/login`,data, {
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': token
+            },
+          }).then(res => {
+            dispatch({
+                type: LOGIN,
+                payload: res.data
+            });
+        }).catch(err => {
+            stopLoading();
+            setError(err.message, "danger");
+        });
+    };
+
+    const logout = (data) => {
+        setLoading();
+        axios.post(`${base_url}/auth/logout`,data, {
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': token
+            },
+          }).then(res => {
+            dispatch({
+                type: LOGOUT,
+                payload: res.data
+            });
+        }).catch(err => {
+            stopLoading();
+            setError(err.message, "danger");
+        });
+    };
+
     return (
         <DataContext.Provider value={{
             tickers:state.tickers,
@@ -128,6 +185,14 @@ const DataState = props => {
             error:state.error,
             title:state.title,
             text:state.text,
+            login:state.login,
+            logout:state.logout,
+            isAuth:state.isAuth,
+            authToken:state.authToken,
+            user:state.user,
+            login,
+            logout,
+            signUp,
             getTickers,
             getStrategy,
             getDescription,

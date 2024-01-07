@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment , useContext } from 'react';
 import DataState from './context/data/dataState';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
@@ -7,17 +7,19 @@ import Landing from './components/pages/Landing';
 import Dashboard from './components/pages/Dashboard';
 import Learn from './components/pages/Learn';
 import Donate from './components/pages/Donate';
-
+import Authentication from './components/pages/Authentication';
+import DataContext from './context/data/dataContext';
 const App = () => {
+    const dataContext = useContext(DataContext)
+    const { isAuth, authToken } = dataContext
     return (
         <DataState>
             <Router>
                 <Header />
                 <Routes>
-                    <Route path="/" element={<Landing />} />
+                    {isAuth ? <Route path="/" element={<Landing />} /> : <Route path="/dashboard" element={<Dashboard />} />}
+                    {isAuth ? <Route path="/authentication" element={<Authentication />} /> : ""}
                     <Route path="/learn" element={<Learn />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    {/* <Route path="/donate" element={<Donate />} /> */}
                 </Routes>
                 <Footer />
             </Router>
