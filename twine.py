@@ -14,26 +14,22 @@ today = datetime.now()
 start = datetime.now() - timedelta(days=365.25*2)
 end = datetime.now() - timedelta(hours=24)
 param = AParameter()
-param.tickers = russell1000["ticker"][::100].values
+param.tickers = russell1000["ticker"].values
 strat = StrategyFactory.build(param)
 sim = Transformer.cloud_transform(strat,start,end)
 trades = Backtester.backtest(strat,sim)
 recs = Backtester.recommendations(trades)
-db = ADatabase("sapling")
 
-db.connect()
-db.store("historical_recommendations",recs)
-db.disconnect()
-
-if today.weekday() == 3:
+if today.weekday() == 0:
     positions = recs.index.size
     account = alp.account()
     cash = float(account["cash"])
     for row in recs.iterrows():
         ticker = row[1]["ticker"]
+        date = row[1]["date"]
         price = round(row[1]["adjclose"],2)
         qty = int(cash/positions/price)
-        print(ticker,price,qty)
+        print(date,ticker,price,qty)
         if live == True:
             alp.buy_stop_loss(ticker,price,qty)
 if today.weekday() == 4:
