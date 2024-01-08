@@ -1,6 +1,5 @@
 from database.adatabase import ADatabase
 from extractor.alp_extractor import ALPExtractor
-from extractor.tiingo_extractor import TiingoExtractor
 from datetime import datetime, timedelta
 from tqdm import tqdm
 import pandas as pd
@@ -21,7 +20,7 @@ market.store("russell1000",russell1000)
 market.disconnect()
 
 
-tickers = sp100["ticker"].values
+tickers = russell1000["ticker"].values
 market.connect()
 market.drop("prices")
 for ticker in tqdm(tickers):
