@@ -3,14 +3,13 @@ from database.adatabase import ADatabase
 from returns.returns import Returns
 import pandas as pd
 from tqdm import tqdm
-from extractor.alp_extractor import ALPExtractor
 
 class Transformer(object):
 
     @classmethod
     def transform(self,strategy):
         market = ADatabase("market")
-        market.connect()
+        market.cloud_connect()
         prices = []
         overhead = strategy.overhead()
         for ticker in strategy.tickers:

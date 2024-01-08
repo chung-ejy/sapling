@@ -12,7 +12,7 @@ class TechAI(AnAIStrategy):
     
     def overhead(self):
         market = ADatabase("market")
-        market.connect()
+        market.cloud_connect()
         factor_dfs = []
         for ticker in self.factors:
             try:

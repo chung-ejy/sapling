@@ -10,10 +10,10 @@ class RFAssetFactorLoading(AFactorLoadingStrategy):
     
     def overhead(self):
         market = ADatabase("market")
-        market.connect()
+        market.cloud_connect()
         russell1000 = market.retrieve("russell1000")
         market.disconnect()
-        market.connect()
+        market.cloud_connect()
         analysis = []
         for ticker in russell1000["ticker"].values:
             try:
