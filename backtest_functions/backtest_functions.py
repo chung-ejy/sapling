@@ -18,3 +18,7 @@ class BacktestFunctions(object):
         kpi = Backtester.kpi(trades,portfolio)
         results = ServerProcessor.server_format(strategy,trades,portfolio,recommendations,kpi)
         return results
+    
+    @classmethod
+    def market(self):
+        return Backtester.market().to_dict("records")

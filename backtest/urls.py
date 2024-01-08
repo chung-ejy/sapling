@@ -3,4 +3,5 @@ from django.urls import path
 
 urlpatterns = [
     path("",views.backtestView,name="backtest"),
+    path("market/",views.marketView,name="market"),
 ]

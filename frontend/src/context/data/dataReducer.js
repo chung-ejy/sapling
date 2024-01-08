@@ -1,4 +1,5 @@
-import { LOGIN, LOGOUT, SIGNUP, GET_TICKERS,  GET_STRATEGY, GET_DESCRIPTION, BACKTEST, SET_LOADING, SET_ERROR, CLEAR_ERROR } from "./types";
+import { LOGIN, LOGOUT, SIGNUP, GET_TICKERS, GET_MARKET,  GET_STRATEGY, GET_DESCRIPTION, BACKTEST, SET_LOADING, SET_ERROR, CLEAR_ERROR } from "./types";
+
 const Reducer = (state,action) => {
     switch(action.type) {
         case SET_ERROR:
@@ -34,6 +35,12 @@ const Reducer = (state,action) => {
                 descriptions:action.payload,
                 loading:false
             }
+        case GET_MARKET:
+                return {
+                    ...state,
+                    market:action.payload,
+                    loading:false
+                }
         case BACKTEST:
             return {
                 ...state,

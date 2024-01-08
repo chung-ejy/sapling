@@ -24,3 +24,15 @@ def backtestView(request):
         complete = {"portfolio":[],"trades":[],"recommendations":[]}
         print(str(e))
     return JsonResponse(complete,safe=False)
+
+@ensure_csrf_cookie
+def marketView(request):
+    try:
+        if request.method == "GET":
+            complete = bf.market()
+        else:
+            complete = []
+    except Exception as e:
+        complete = []
+        print(str(e))
+    return JsonResponse(complete,safe=False)

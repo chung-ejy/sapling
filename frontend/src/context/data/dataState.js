@@ -1,4 +1,4 @@
-import { LOGIN, LOGOUT, SIGNUP, GET_TICKERS,  GET_STRATEGY, BACKTEST, SET_LOADING, STOP_LOADING, SET_ERROR, CLEAR_ERROR, GET_DESCRIPTION } from "./types";
+import { LOGIN, LOGOUT, SIGNUP, GET_MARKET , GET_TICKERS,  GET_STRATEGY, BACKTEST, SET_LOADING, STOP_LOADING, SET_ERROR, CLEAR_ERROR, GET_DESCRIPTION } from "./types";
 import React, { useReducer } from "react";
 import DataContext from "./dataContext"
 import dataReducer from "./dataReducer"
@@ -9,8 +9,10 @@ const DataState = props => {
     const initialState = {
         title: "mistletoe",
         isAuth:false,
+        market:[],
         authToken:"",
         user:null,
+        products:[],
         tickers:[],
         strategies:[],
         descriptions:[],
@@ -97,6 +99,19 @@ const DataState = props => {
         });
     }
 
+    const getMarket = () => {
+        setLoading()
+        axios.get(`${base_url}/backtest/market/`, {}, ).then(res=>{
+            dispatch({
+                type:GET_MARKET,
+                payload:res.data
+            })
+        }).catch(err => {
+            stopLoading()
+            setError(err.message,"danger")
+        });
+    }
+
     const backtest = (data) => {
         setLoading();
         getToken().then(token => axios.post(`${base_url}/backtest/`,data, {
@@ -166,6 +181,7 @@ const DataState = props => {
     return (
         <DataContext.Provider value={{
             tickers:state.tickers,
+            market:state.market,
             strategies:state.strategies,
             descriptions:state.descriptions,
             results:state.results,
@@ -184,6 +200,7 @@ const DataState = props => {
             getTickers,
             getStrategy,
             getDescription,
+            getMarket,
             backtest,
         }}>
             {props.children}

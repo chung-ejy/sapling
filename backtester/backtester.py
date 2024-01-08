@@ -1,4 +1,5 @@
 from datetime import datetime
+from database.adatabase import ADatabase
 import warnings
 warnings.simplefilter(action="ignore")
 import pandas as pd
@@ -39,4 +40,12 @@ class Backtester(object):
         results["sharpe"] = portfolio["cumulative_return"].iloc[-1] / portfolio["cumulative_return"].std()
         results["return"] = portfolio["cumulative_return"].iloc[-1]
         results = pd.DataFrame([results]).round(4).to_dict("records")[0]
+        return results
+
+    @classmethod
+    def market(self):
+        db = ADatabase("sapling")
+        db.cloud_connect()
+        results = db.retrieve("kpi").drop("standard_deviation",axis=1).dropna()
+        db.disconnect()
         return results

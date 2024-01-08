@@ -6,9 +6,8 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Landing from './components/pages/Landing';
 import Dashboard from './components/pages/Dashboard';
 import Learn from './components/pages/Learn';
-import Donate from './components/pages/Donate';
-import Signup from './components/pages/Signup';
 import Login from './components/pages/Login'
+
 const App = () => {
     const token = localStorage.getItem("authToken")
     return (
