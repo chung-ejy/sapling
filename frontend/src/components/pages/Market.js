@@ -14,13 +14,11 @@ const Market = () => {
       <h3>Market</h3>
       <div className="row">
         {loading || market.length < 1? "" : market.map((product, index) => (
-          <div className="col-md-4" key={index}>
-            <div className="card mb-4">
-              <div className="card-body">
-                <p className="card-title">{product.strategy}</p>
-                <p className="card-text">{product.return}</p>
-                <p className="card-text">{product.sharpe}</p>
-              </div>
+          <div className="card mb-4">
+            <div className="card-body">
+              <p className="card-title">{product.strategy}</p>
+              <p className="card-text">{product.return}</p>
+              <p className="card-text">{product.sharpe}</p>
             </div>
           </div>
         ))}

@@ -4,11 +4,11 @@ import DataContext from '../../context/data/dataContext';
 const RecommendationsTable = () => {
     const [state, setState] = useState(0);
     const dataContext = useContext(DataContext);
-    const { results, loading ,parameter } = dataContext;
+    const { results, loading , parameter } = dataContext;
 
-    const onRange = (e) => {
-        setState(Number(e.target.value));
-    };
+    // const onRange = (e) => {
+    //     setState(Number(e.target.value));
+    // };
 
     const downloadCSV = () => {
         const csvData = convertToCSV(results.recommendations);
@@ -37,7 +37,7 @@ const RecommendationsTable = () => {
         <div className="container">
         <h3>Recommendations</h3>
         <div className="card card-body">
-            <table>
+            <table className="table table-striped">
                 <thead>
                     <tr>
                         <th>date</th>
@@ -63,7 +63,7 @@ const RecommendationsTable = () => {
                     )}
             </tbody>
             </table>
-            <input type="range" className="form-control form-group form-range"onChange={onRange} min={0} max={Number(results.recommendations.length - 1)} step={1} />
+            {/* <input type="range" className="form-control form-group form-range"onChange={onRange} min={0} max={Number(results.recommendations.length - 1)} step={1} /> */}
             <button className="btn btn-primary w-100"onClick={downloadCSV}>Download</button>
         </div>
         </div>

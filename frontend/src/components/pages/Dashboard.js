@@ -10,26 +10,26 @@ const Dashboard = () => {
   
   return (
     <div className="row text-center">
-      <div className="col-md-6">
+      <div className="col">
         <div className="row">
-          <div className="col-md-10">
+          <div className="col">
             <PortfolioReturns />
           </div>
         </div>
         <div className="row">
-          <div className="col-md-4">
+          <div className="col">
             <TradesTable />
           </div>
-          <div className="col-md-4">
+          <div className="col">
             <RecommendationsTable />
           </div>
         </div>
       </div>
-      <div className="col-md-2">
+      <div className="col">
         <ParameterForm />
         <KPITable />
       </div>
-      <div className="col-md-2">
+      <div className="col">
         <Market />
       </div>
     </div>

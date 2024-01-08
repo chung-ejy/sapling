@@ -6,9 +6,9 @@ const TradesTable = () => {
     const dataContext = useContext(DataContext);
     const { results, loading } = dataContext;
 
-    const onRange = (e) => {
-        setState(Number(e.target.value));
-    };
+    // const onRange = (e) => {
+    //     setState(Number(e.target.value));
+    // };
 
     const downloadCSV = () => {
         const csvData = convertToCSV(results.trades);
@@ -37,7 +37,8 @@ const TradesTable = () => {
         <div className="container">
         <h3>Trades</h3>
         <div className="card card-body">
-            <table>
+        <div className="table-container" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+            <table className="table table-striped">
                 <thead>
                     <tr>
                         <th>date</th>
@@ -48,7 +49,8 @@ const TradesTable = () => {
                 </thead>
                 <tbody>
                     {results.trades.length > 0 && !loading ? (
-                        results.trades.slice(state, state + 5).map((trade, index) => (
+                        // .trades.slice(state, state + 5)
+                        results.trades.map((trade, index) => (
                             <tr key={index}>
                                 <td>{trade.date}</td>
                                 <td>{trade.ticker}</td>
@@ -63,7 +65,8 @@ const TradesTable = () => {
                     )}
             </tbody>
             </table>
-            <input type="range" className="form-control form-group form-range"onChange={onRange} min={0} max={Number(results.trades.length - 1)} step={1} />
+            </div>
+            {/* <input type="range" className="form-control form-group form-range"onChange={onRange} min={0} max={Number(results.trades.length - 1)} step={1} /> */}
             <button className="btn btn-primary w-100" onClick={downloadCSV}>Download</button>
         </div>
         </div>
