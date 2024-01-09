@@ -7,7 +7,7 @@ from backtester.backtester import Backtester
 from parameter.aparameter import AParameter
 import pandas as pd
 
-live = True
+live = False
 russell1000 = pd.read_html("https://en.wikipedia.org/wiki/Russell_1000_Index")[2].rename(columns={"Ticker":"ticker"})
 alp = ALPExtractor()
 today = datetime.now()
