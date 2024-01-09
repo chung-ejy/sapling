@@ -4,7 +4,7 @@ from returns.returns import Returns
 import pandas as pd
 from tqdm import tqdm
 from extractor.alp_extractor import ALPExtractor
-
+from extractor.pandas_extractor import PandasExtractor
 class Transformer(object):
 
     @classmethod
@@ -38,6 +38,28 @@ class Transformer(object):
                 ticker_prices = strategy.signal(overhead,ticker_prices)
                 ticker_prices = Returns.returns(strategy,ticker_prices)
                 prices.append(ticker_prices)
+            except Exception as e:
+                print(str(e))
+                continue
+        return pd.concat(prices)
+
+    @classmethod
+    def kospi_transform(self,strategy,start,end):
+        prices = []
+        overhead = strategy.overhead()
+        for ticker in tqdm(strategy.tickers):
+            try:
+                ticker_prices = PandasExtractor.prices(ticker,start,end)
+                ticker_prices["adjclose"] = ticker_prices["Close"]
+                ticker_prices["date"] = ticker_prices["Date"]
+                ticker_prices["ticker"] = ticker
+                ticker_prices.sort_values("date",inplace=True)
+                ticker_prices = ticker_prices.reset_index(drop=True)
+                ticker_prices = processor.column_date_processing(ticker_prices[["date","ticker","adjclose"]])
+                ticker_prices["adjclose"] = [float(x) for x in ticker_prices["adjclose"]]
+                ticker_prices = strategy.signal(overhead,ticker_prices)
+                ticker_prices = Returns.returns(strategy,ticker_prices)
+                prices.append(ticker_prices.reset_index())
             except Exception as e:
                 print(str(e))
                 continue

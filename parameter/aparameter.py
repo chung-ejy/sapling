@@ -3,7 +3,7 @@ class AParameter(object):
 
     def __init__(self):
         
-        self.strategy = "RSI"
+        self.strategy = "COEFFICIENT_OF_VARIANCE"
         self.positions = 5
         self.holding_period = 5
         self.stop_loss = 0.05
