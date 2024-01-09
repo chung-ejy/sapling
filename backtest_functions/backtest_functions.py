@@ -3,6 +3,9 @@ from strategy.strategy_factory import StrategyFactory
 from transformer.transformer import Transformer
 from backtester.backtester import Backtester
 from processor.server_processor import ServerProcessor
+from database.adatabase import ADatabase
+import pandas as pd
+from datetime import datetime
 
 class BacktestFunctions(object):
 
@@ -18,7 +21,3 @@ class BacktestFunctions(object):
         kpi = Backtester.kpi(trades,portfolio)
         results = ServerProcessor.server_format(strategy,trades,portfolio,recommendations,kpi)
         return results
-    
-    @classmethod
-    def market(self):
-        return Backtester.market().to_dict("records")
