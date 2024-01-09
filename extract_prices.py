@@ -7,7 +7,7 @@ market = ADatabase("market")
 start = datetime.now() - timedelta(days=365.25*2)
 end = datetime.now() - timedelta(days=1)
 
-market.connect()
+market.cloud_connect()
 sp500 = pd.read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",attrs={"id":"constituents"})[0].rename(columns={"Symbol":"ticker"})
 sp100 = pd.read_html("https://en.wikipedia.org/wiki/S%26P_100",attrs={"id":"constituents"})[0].rename(columns={"Symbol":"ticker"})
 russell1000 = pd.read_html("https://en.wikipedia.org/wiki/Russell_1000_Index")[2].rename(columns={"Ticker":"ticker"})
@@ -20,7 +20,7 @@ market.store("russell1000",russell1000)
 market.disconnect()
 
 tickers = russell1000["ticker"].values
-market.connect()
+market.cloud_connect()
 market.drop("prices")
 for ticker in tqdm(tickers):
     try:
