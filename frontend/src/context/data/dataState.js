@@ -171,6 +171,7 @@ const DataState = props => {
 
     const logout = () => {
         console.log("logout")
+        localStorage.removeItem("token")
         setLoading();
         dispatch({
                 type: LOGOUT

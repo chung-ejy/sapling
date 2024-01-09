@@ -37,8 +37,8 @@ const Header = () => {
                             </Link>
                         </li>
                         {isAuth === true ? 
-                            <Fragment><li className="nav-item"><Link to="/dashboard" className="nav-link">
-                                Dashboard
+                            <Fragment><li className="nav-item"><Link to="/research" className="nav-link">
+                                Research
                             </Link></li>
                             <li className='nav-item' onClick={() => logout()}><div className="nav-link">Logout</div></li>
                         </Fragment>:
