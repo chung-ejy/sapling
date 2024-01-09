@@ -14,7 +14,7 @@ class Backtester(object):
         trades.sort_values("date",inplace=True)
         iteration_trades = trades.copy().sort_values(strategy.strategy.lower(),ascending=strategy.ascending).groupby(["date"]).nth([i for i in range(strategy.positions)]).reset_index()
         iteration_trades.sort_values("date",inplace=True)
-        return trades
+        return iteration_trades
     
     @classmethod
     def portfolio(self,iteration_trades):
