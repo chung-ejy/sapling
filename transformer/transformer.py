@@ -4,7 +4,11 @@ from returns.returns import Returns
 import pandas as pd
 from tqdm import tqdm
 from extractor.alp_extractor import ALPExtractor
+<<<<<<< HEAD
 from extractor.pandas_extractor import PandasExtractor
+=======
+
+>>>>>>> 24978f5cd672cfa053b59580225eb82420f685fb
 class Transformer(object):
 
     @classmethod
@@ -42,6 +46,7 @@ class Transformer(object):
                 print(str(e))
                 continue
         return pd.concat(prices)
+<<<<<<< HEAD
 
     @classmethod
     def kospi_transform(self,strategy,start,end):
@@ -64,3 +69,5 @@ class Transformer(object):
                 print(str(e))
                 continue
         return pd.concat(prices)
+=======
+>>>>>>> 24978f5cd672cfa053b59580225eb82420f685fb
