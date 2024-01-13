@@ -3,15 +3,11 @@ class AParameter(object):
 
     def __init__(self):
         
-<<<<<<< HEAD
-        self.strategy = "COEFFICIENT_OF_VARIANCE"
-=======
         self.strategy = "RSI"
->>>>>>> 24978f5cd672cfa053b59580225eb82420f685fb
         self.positions = 5
         self.holding_period = 5
         self.stop_loss = 0.05
-        self.ascending = False
+        self.ascending = True
         self.tickers = ["AMZN"]
         
     def build(self,query):
