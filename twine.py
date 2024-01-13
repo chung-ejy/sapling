@@ -25,7 +25,7 @@ db.connect()
 db.store("historical_recommendations",recs)
 db.disconnect()
 
-if today.weekday() == 3:
+if today.weekday() == 0:
     positions = recs.index.size
     account = alp.account()
     cash = float(account["cash"])
