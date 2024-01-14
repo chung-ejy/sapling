@@ -7,6 +7,7 @@ market = ADatabase("market")
 start = datetime.now() - timedelta(days=365.25*2)
 end = datetime.now() - timedelta(days=1)
 
+print("price_extractions")
 market.cloud_connect()
 sp500 = pd.read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",attrs={"id":"constituents"})[0].rename(columns={"Symbol":"ticker"})
 sp100 = pd.read_html("https://en.wikipedia.org/wiki/S%26P_100",attrs={"id":"constituents"})[0].rename(columns={"Symbol":"ticker"})
