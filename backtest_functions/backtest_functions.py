@@ -11,7 +11,7 @@ class BacktestFunctions(object):
         parameter = AParameter()
         parameter.build(query)
         strategy = StrategyFactory.build(parameter)
-        simulation = Transformer.transform(strategy)
+        simulation = Transformer.cloud_transform(strategy)
         trades = Backtester.backtest(strategy,simulation)
         portfolio = Backtester.portfolio(trades)
         recommendations = Backtester.recommendations(trades)
