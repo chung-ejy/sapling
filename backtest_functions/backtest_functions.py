@@ -10,7 +10,7 @@ class BacktestFunctions(object):
     def backtest(self,query):
         try:
             start = datetime.now() - timedelta(days=365.25*2)
-            end = datetime.now() - timedelta(hours=24)
+            end = datetime.now() - timedelta(hours=48)
             parameter = AParameter()
             parameter.build(query)
             strategy = StrategyFactory.build(parameter)
