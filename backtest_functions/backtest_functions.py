@@ -8,15 +8,24 @@ class BacktestFunctions(object):
 
     @classmethod
     def backtest(self,query):
-        start = datetime.now() - timedelta(days=365.25*2)
-        end = datetime.now() - timedelta(hours=24)
-        parameter = AParameter()
-        parameter.build(query)
-        strategy = StrategyFactory.build(parameter)
-        simulation = Transformer.cloud_transform(strategy,start,end)
-        trades = Backtester.backtest(strategy,simulation)
-        portfolio = Backtester.portfolio(trades)
-        recommendations = Backtester.recommendations(trades)
-        kpi = Backtester.kpi(trades,portfolio)
-        results = ServerProcessor.server_format(strategy,trades,portfolio,recommendations,kpi)
+        try:
+            start = datetime.now() - timedelta(days=365.25*2)
+            end = datetime.now() - timedelta(hours=24)
+            parameter = AParameter()
+            parameter.build(query)
+            strategy = StrategyFactory.build(parameter)
+            simulation = Transformer.cloud_transform(strategy,start,end)
+            trades = Backtester.backtest(strategy,simulation)
+            portfolio = Backtester.portfolio(trades)
+            recommendations = Backtester.recommendations(trades)
+            kpi = Backtester.kpi(trades,portfolio)
+            results = ServerProcessor.server_format(strategy,trades,portfolio,recommendations,kpi)
+        except Exception as e:
+            print(str(e))
+            results = {
+            "portfolio":[],
+            "trades":[],
+            "recommendations":[],
+            "kpi":{}
+        }
         return results
