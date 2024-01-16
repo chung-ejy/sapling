@@ -26,6 +26,25 @@ class Transformer(object):
         return pd.concat(prices)
     
     @classmethod
+    def transform_minute(self,strategy):
+        market = ADatabase("market")
+        market.connect()
+        prices = []
+        overhead = strategy.overhead()
+        for ticker in strategy.tickers:
+            try:
+                ticker_prices = processor.column_date_processing(market.query("prices_minute",{"ticker":ticker}))
+                ticker_prices.sort_values("date",inplace=True)
+                ticker_prices = strategy.signal(overhead,ticker_prices)
+                ticker_prices = Returns.returns(strategy,ticker_prices)
+                prices.append(ticker_prices)
+            except Exception as e:
+                print(str(e))
+                continue
+        market.disconnect()
+        return pd.concat(prices)
+    
+    @classmethod
     def cloud_transform(self,strategy,start,end):
         prices = []
         overhead = strategy.overhead()

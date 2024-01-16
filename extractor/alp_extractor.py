@@ -31,6 +31,28 @@ class ALPExtractor(object):
         return data
     
     @classmethod
+    def prices_minute(self,ticker,start,end):
+        headers = {
+            'APCA-API-KEY-ID': paperkey,
+            'APCA-API-SECRET-KEY': papersecret,
+            'accept': 'application/json'
+        }
+        params = {
+            "symbols":ticker,
+            "adjustment":"split",
+            "timeframe":"1Min",
+            "feed":"sip",
+            "sort":"asc",
+            "start":start.strftime("%Y-%m-%d"),
+            "end":end.strftime("%Y-%m-%d")
+        }
+        url = "https://data.alpaca.markets/v2/stocks/bars"
+        requestBody = r.get(url,params=params,headers=headers)
+        data =  pd.DataFrame(requestBody.json()["bars"][ticker]).rename(columns={"c":"adjclose","t":"date"})[["date","adjclose"]]
+        data["ticker"] = ticker
+        return data
+    
+    @classmethod
     def account(self):
         headers = {
             'APCA-API-KEY-ID': paperkey,

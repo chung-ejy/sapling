@@ -7,7 +7,7 @@ class TechFactorLoading(AFactorLoadingStrategy):
 
     def __init__(self,parameter):
         super().__init__(parameter)
-        self.factors = ["AMZN","GOOGL","AAPL"]
+        self.factors = ["AMZN","GOOGL","AAPL","NVDA","INTC","MSFT","META"]
     
     def overhead(self):
         market = ADatabase("market")

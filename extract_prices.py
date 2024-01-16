@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from tqdm import tqdm
 import pandas as pd
 market = ADatabase("market")
-start = datetime.now() - timedelta(days=365.25*2)
+start = datetime.now() - timedelta(days=7)
 end = datetime.now() - timedelta(days=1)
 
 print("price_extractions")
@@ -20,16 +20,16 @@ market.drop("russell1000")
 market.store("russell1000",russell1000)
 market.disconnect()
 
-# tickers = russell1000["ticker"].values
-# market.cloud_connect()
-# market.drop("prices")
-# for ticker in tqdm(tickers):
-#     try:
-#         ticker_data = ALPExtractor.prices(ticker,start,end)
-#         ticker_data["ticker"] = ticker
-#         market.store("prices",ticker_data)
-#     except Exception as e:
-#         print(str(e))
-#         continue
-# market.create_index("prices","ticker")
-# market.disconnect()
+tickers = russell1000["ticker"].values
+market.connect()
+market.drop("prices_minute")
+for ticker in tqdm(tickers):
+    try:
+        ticker_data = ALPExtractor.prices_minute(ticker,start,end)
+        ticker_data["ticker"] = ticker
+        market.store("prices_minute",ticker_data)
+    except Exception as e:
+        print(str(e))
+        continue
+market.create_index("prices_minute","ticker")
+market.disconnect()
