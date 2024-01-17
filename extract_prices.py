@@ -7,7 +7,6 @@ market = ADatabase("market")
 start = datetime.now() - timedelta(days=7)
 end = datetime.now() - timedelta(days=1)
 
-print("price_extractions")
 market.cloud_connect()
 sp500 = pd.read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",attrs={"id":"constituents"})[0].rename(columns={"Symbol":"ticker"})
 sp100 = pd.read_html("https://en.wikipedia.org/wiki/S%26P_100",attrs={"id":"constituents"})[0].rename(columns={"Symbol":"ticker"})
@@ -22,14 +21,14 @@ market.disconnect()
 
 tickers = russell1000["ticker"].values
 market.connect()
-market.drop("prices_minute")
+market.drop("prices")
 for ticker in tqdm(tickers):
     try:
-        ticker_data = ALPExtractor.prices_minute(ticker,start,end)
+        ticker_data = ALPExtractor.prices(ticker,start,end)
         ticker_data["ticker"] = ticker
-        market.store("prices_minute",ticker_data)
+        market.store("prices",ticker_data)
     except Exception as e:
         print(str(e))
         continue
-market.create_index("prices_minute","ticker")
+market.create_index("prices","ticker")
 market.disconnect()

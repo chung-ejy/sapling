@@ -14,29 +14,7 @@ class BacktestFunctions(object):
             parameter = AParameter()
             parameter.build(query)
             strategy = StrategyFactory.build(parameter)
-            simulation = Transformer.cloud_transform(strategy,start,end)
-            trades = Backtester.backtest(strategy,simulation)
-            portfolio = Backtester.portfolio(trades)
-            recommendations = Backtester.recommendations(trades)
-            kpi = Backtester.kpi(trades,portfolio)
-            results = ServerProcessor.server_format(strategy,trades,portfolio,recommendations,kpi)
-        except Exception as e:
-            print(str(e))
-            results = {
-            "portfolio":[],
-            "trades":[],
-            "recommendations":[],
-            "kpi":{}
-        }
-        return results
-    
-    @classmethod
-    def backtest_minute(self,query):
-        try:
-            parameter = AParameter()
-            parameter.build(query)
-            strategy = StrategyFactory.build(parameter)
-            simulation = Transformer.transform_minute(strategy)
+            simulation = Transformer.transform(strategy,start,end)
             trades = Backtester.backtest(strategy,simulation)
             portfolio = Backtester.portfolio(trades)
             recommendations = Backtester.recommendations(trades)

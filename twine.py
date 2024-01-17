@@ -16,7 +16,7 @@ end = datetime.now() - timedelta(hours=24)
 param = AParameter()
 param.tickers = russell1000["ticker"].values
 strat = StrategyFactory.build(param)
-sim = Transformer.cloud_transform(strat,start,end)
+sim = Transformer.transform(strat,start,end)
 trades = Backtester.backtest(strat,sim)
 recs = Backtester.recommendations(trades)
 db = ADatabase("sapling")

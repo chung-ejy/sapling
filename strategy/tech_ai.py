@@ -3,20 +3,24 @@ from database.adatabase import ADatabase
 from processor.processor import Processor as processor
 from xgboost import XGBRegressor
 import pandas as pd
+from datetime import datetime, timedelta
+from extractor.alp_extractor import ALPExtractor
 
 class TechAI(AnAIStrategy):
 
     def __init__(self,parameter):
         super().__init__(parameter)
-        self.factors = ["AMZN","GOOGL","AAPL"]
+        self.factors = ["AMZN","GOOGL","AAPL","NVDA","INTC","MSFT","META"]
     
     def overhead(self):
         market = ADatabase("market")
         market.cloud_connect()
         factor_dfs = []
+        start = datetime.now() - timedelta(days=365.25*2)
+        end = datetime.now() - timedelta(hours=48)
         for ticker in self.factors:
             try:
-                ticker_prices = processor.column_date_processing(market.query("prices",{"ticker":ticker}))[["date","ticker","adjclose"]]
+                ticker_prices = processor.column_date_processing(ALPExtractor.prices(ticker,start,end))[["date","ticker","adjclose"]]
                 ticker_prices["historical_return"] = ticker_prices["adjclose"].pct_change(5)
                 factor_dfs.append(ticker_prices)
             except Exception as e:

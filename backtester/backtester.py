@@ -10,6 +10,7 @@ class Backtester(object):
         today = datetime.now()
         weekday = today.weekday() - 1 if today.weekday() != 0 and today.weekday() < 4 else 4
         trades = simulation[simulation["weekday"]==weekday].copy()
+        trades = trades[trades["week"] % int(strategy.holding_period/5) == 0]
         trades.sort_values("date",inplace=True)
         iteration_trades = trades.copy().sort_values(strategy.strategy.lower(),ascending=strategy.ascending).groupby(["date"]).nth([i for i in range(strategy.positions)]).reset_index()
         iteration_trades.sort_values("date",inplace=True)
