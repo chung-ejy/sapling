@@ -15,6 +15,7 @@ from strategy.tech_factor_loading import TechFactorLoading
 from strategy.tech_ai import TechAI
 from strategy.technical import Technical
 from strategy.rf_asset_factor_loading import RFAssetFactorLoading
+from strategy.rsi_to_coev import RSIToCoev
 
 class StrategyFactory(object):
 
@@ -51,7 +52,7 @@ class StrategyFactory(object):
                 return TechAI(parameter)
             case Strategy.TECHNICAL.value:
                 return Technical(parameter)
-            # case Strategy.RF_ASSET_FACTOR_LOADING.value:
-            #     return RFAssetFactorLoading(parameter)
+            case Strategy.RSI_TO_COEV.value:
+                return RSIToCoev(parameter)
             case _:
                 return None
