@@ -5,5 +5,5 @@ class CoefficientOfVariance(AStrategy):
         super().__init__(parameter)
 
     def signal(self,overhead,ticker_prices):
-        ticker_prices[self.strategy.lower()] = ticker_prices["adjclose"].rolling(self.holding_period*10).std() / ticker_prices["adjclose"].rolling(self.holding_period*10).mean()
+        ticker_prices[self.strategy.lower()] = ticker_prices["adjclose"].rolling(100).std() / ticker_prices["adjclose"].rolling(100).mean()
         return ticker_prices

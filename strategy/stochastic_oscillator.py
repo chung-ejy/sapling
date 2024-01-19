@@ -5,7 +5,7 @@ class StochasticOscillator(AStrategy):
         super().__init__(parameter)
 
     def signal(self,overhead,ticker_prices):
-        ticker_prices["lower"] = ticker_prices["adjclose"].rolling(self.holding_period).min() 
-        ticker_prices["upper"] = ticker_prices["adjclose"].rolling(self.holding_period).max()
+        ticker_prices["lower"] = ticker_prices["adjclose"].rolling(100).min() 
+        ticker_prices["upper"] = ticker_prices["adjclose"].rolling(100).max()
         ticker_prices[self.strategy.lower()] = (ticker_prices["upper"] - ticker_prices["lower"]) / ticker_prices["adjclose"] 
         return ticker_prices

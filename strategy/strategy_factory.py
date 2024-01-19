@@ -24,35 +24,35 @@ class StrategyFactory(object):
         match parameter.strategy:
             case Strategy.COEFFICIENT_OF_VARIANCE.value:
                 return CoefficientOfVariance(parameter)
-            case Strategy.AVERAGE_RETURN.value:
-                return AverageReturn(parameter)
-            case Strategy.STANDARD_DEVIATION.value:
-                return StandardDeviation(parameter)
-            case Strategy.SKEW.value:
-                return Skew(parameter)
-            case Strategy.KURTOSIS.value:
-                return Kurtosis(parameter)
-            case Strategy.MOVING_AVERAGE.value:
-                return MovingAverage(parameter)
             case Strategy.BOLLINGER.value:
                 return Bollinger(parameter)
-            case Strategy.BOLLINGER_WIDTH.value:
-                return BollingerWidth(parameter)
             case Strategy.RSI.value:
                 return RSI(parameter)
             case Strategy.MACD.value:
                 return MACD(parameter)
             case Strategy.STOCHASTIC_OSCILLATOR.value:
                 return StochasticOscillator(parameter)
-            case Strategy.RANDOM.value:
-                return Random(parameter)
-            case Strategy.TECH_FACTOR_LOADING.value:
-                return TechFactorLoading(parameter)
-            case Strategy.TECH_AI.value:
-                return TechAI(parameter)
-            case Strategy.TECHNICAL.value:
-                return Technical(parameter)
-            case Strategy.RSI_TO_COEV.value:
-                return RSIToCoev(parameter)
+            # case Strategy.STANDARD_DEVIATION.value:
+            #     return StandardDeviation(parameter)
+            # case Strategy.SKEW.value:
+            #     return Skew(parameter)
+            # case Strategy.KURTOSIS.value:
+            #     return Kurtosis(parameter)
+            # case Strategy.BOLLINGER_WIDTH.value:
+            #     return BollingerWidth(parameter)
+            # case Strategy.RSI_TO_COEV.value:
+            #     return RSIToCoev(parameter)
+            # case Strategy.MOVING_AVERAGE.value:
+            #     return MovingAverage(parameter)
+            # case Strategy.AVERAGE_RETURN.value:
+            #     return AverageReturn(parameter)
+            # case Strategy.RANDOM.value:
+            #     return Random(parameter)
+            # case Strategy.TECH_FACTOR_LOADING.value:
+            #     return TechFactorLoading(parameter)
+            # case Strategy.TECH_AI.value:
+            #     return TechAI(parameter)
+            # case Strategy.TECHNICAL.value:
+            #     return Technical(parameter)
             case _:
                 return None
