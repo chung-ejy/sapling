@@ -1,5 +1,5 @@
 from database.adatabase import ADatabase
-from extractor.tiingo_extractor import TiingoExtractor
+from extractor.alp_extractor import ALPExtractor
 from datetime import datetime, timedelta
 from tqdm import tqdm
 import pandas as pd
@@ -25,7 +25,7 @@ market.connect()
 market.drop("prices")
 for ticker in tqdm(tickers):
     try:
-        ticker_data = TiingoExtractor.prices(ticker,start,end)
+        ticker_data = ALPExtractor.prices(ticker,start,end)
         ticker_data["ticker"] = ticker
         market.store("prices",ticker_data)
     except Exception as e:

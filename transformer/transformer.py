@@ -31,7 +31,6 @@ class Transformer(object):
         market.connect()
         for ticker in strategy.tickers:
             try:
-
                 ticker_prices = processor.column_date_processing(market.query("prices",{"ticker":ticker}))
                 ticker_prices["ticker"] = ticker
                 ticker_prices.sort_values("date",inplace=True)
