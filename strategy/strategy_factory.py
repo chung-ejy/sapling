@@ -13,9 +13,10 @@ from strategy.stochastic_oscillator import StochasticOscillator
 from strategy.random import Random
 from strategy.tech_factor_loading import TechFactorLoading
 from strategy.tech_ai import TechAI
-from strategy.technical import Technical
-from strategy.rf_asset_factor_loading import RFAssetFactorLoading
+from strategy.technical_ai import TechnicalAI
 from strategy.rsi_to_coev import RSIToCoev
+from strategy.unity_ai import UnityAI
+from strategy.unity_factor_loading import UnityFactorLoading
 
 class StrategyFactory(object):
 
@@ -32,27 +33,31 @@ class StrategyFactory(object):
                 return MACD(parameter)
             case Strategy.STOCHASTIC_OSCILLATOR.value:
                 return StochasticOscillator(parameter)
-            # case Strategy.STANDARD_DEVIATION.value:
-            #     return StandardDeviation(parameter)
-            # case Strategy.SKEW.value:
-            #     return Skew(parameter)
-            # case Strategy.KURTOSIS.value:
-            #     return Kurtosis(parameter)
-            # case Strategy.BOLLINGER_WIDTH.value:
-            #     return BollingerWidth(parameter)
-            # case Strategy.RSI_TO_COEV.value:
-            #     return RSIToCoev(parameter)
-            # case Strategy.MOVING_AVERAGE.value:
-            #     return MovingAverage(parameter)
-            # case Strategy.AVERAGE_RETURN.value:
-            #     return AverageReturn(parameter)
-            # case Strategy.RANDOM.value:
-            #     return Random(parameter)
-            # case Strategy.TECH_FACTOR_LOADING.value:
-            #     return TechFactorLoading(parameter)
-            # case Strategy.TECH_AI.value:
-            #     return TechAI(parameter)
-            # case Strategy.TECHNICAL.value:
-            #     return Technical(parameter)
+            case Strategy.UNITY_AI.value:
+                return UnityAI(parameter)
+            case Strategy.UNITY_FACTOR_LOADING.value:
+                return UnityFactorLoading(parameter)
+            case Strategy.STANDARD_DEVIATION.value:
+                return StandardDeviation(parameter)
+            case Strategy.SKEW.value:
+                return Skew(parameter)
+            case Strategy.KURTOSIS.value:
+                return Kurtosis(parameter)
+            case Strategy.BOLLINGER_WIDTH.value:
+                return BollingerWidth(parameter)
+            case Strategy.RSI_TO_COEV.value:
+                return RSIToCoev(parameter)
+            case Strategy.MOVING_AVERAGE.value:
+                return MovingAverage(parameter)
+            case Strategy.AVERAGE_RETURN.value:
+                return AverageReturn(parameter)
+            case Strategy.RANDOM.value:
+                return Random(parameter)
+            case Strategy.TECH_FACTOR_LOADING.value:
+                return TechFactorLoading(parameter)
+            case Strategy.TECH_AI.value:
+                return TechAI(parameter)
+            case Strategy.TECHNICAL_AI.value:
+                return TechnicalAI(parameter)
             case _:
                 return None

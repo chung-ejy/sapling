@@ -2,7 +2,7 @@ from datetime import datetime
 from database.adatabase import ADatabase
 from extractor.alp_extractor import ALPExtractor as alp
 
-live = False
+live = True
 today = datetime.now()
 db = ADatabase("sapling")
 db.connect()

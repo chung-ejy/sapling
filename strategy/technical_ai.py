@@ -4,7 +4,7 @@ from processor.processor import Processor as processor
 from xgboost import XGBRegressor
 import pandas as pd
 
-class Technical(AnAIStrategy):
+class TechnicalAI(AnAIStrategy):
 
     def __init__(self,parameter):
         super().__init__(parameter)

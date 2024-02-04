@@ -15,11 +15,9 @@ class TechFactorLoading(AFactorLoadingStrategy):
         market = ADatabase("market")
         market.cloud_connect()
         factor_dfs = []
-        start = datetime.now() - timedelta(days=365.25*2)
-        end = datetime.now() - timedelta(hours=48)
         for ticker in self.factors:
             try:
-                ticker_prices = processor.column_date_processing((ALPExtractor.prices(ticker,start,end)))[["date","ticker","adjclose"]]
+                ticker_prices = processor.column_date_processing(market.query("prices",{"ticker":ticker}))[["date","ticker","adjclose"]]
                 ticker_prices["historical_return"] = ticker_prices["adjclose"].pct_change(5) 
                 factor_dfs.append(ticker_prices)
             except Exception as e:

@@ -5,10 +5,10 @@ from tqdm import tqdm
 import pandas as pd
 
 market = ADatabase("market")
-start = datetime.now() - timedelta(days=365.25*20)
-end = datetime.now() - timedelta(days=1)
+start = datetime.now() - timedelta(days=365.25*2)
+end = datetime.now() - timedelta(days=2)
 
-market.cloud_connect()
+market.connect()
 sp500 = pd.read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",attrs={"id":"constituents"})[0].rename(columns={"Symbol":"ticker"})
 sp100 = pd.read_html("https://en.wikipedia.org/wiki/S%26P_100",attrs={"id":"constituents"})[0].rename(columns={"Symbol":"ticker"})
 russell1000 = pd.read_html("https://en.wikipedia.org/wiki/Russell_1000_Index")[2].rename(columns={"Ticker":"ticker"})
