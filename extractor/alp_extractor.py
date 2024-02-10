@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 load_dotenv()
 paperkey = os.getenv("APCAPAPERKEY")
 papersecret = os.getenv("APCAPAPERSECRET")
+apcakey = os.getenv("APCAKEY")
+apcasecret = os.getenv("APCASECRET")
 import pandas as pd
 
 class ALPExtractor(object):
@@ -75,20 +77,20 @@ class ALPExtractor(object):
     @classmethod
     def account(self):
         headers = {
-            'APCA-API-KEY-ID': paperkey,
-            'APCA-API-SECRET-KEY': papersecret,
+            'APCA-API-KEY-ID': apcakey,
+            'APCA-API-SECRET-KEY': apcasecret,
             'accept': 'application/json'
         }
         params = {}
-        url = "https://paper-api.alpaca.markets/v2/account"
+        url = "https://api.alpaca.markets/v2/account"
         requestBody = r.get(url,params=params,headers=headers)
         return requestBody.json()
 
     @classmethod
-    def buy(self,ticker,qty):
+    def buy(self,ticker,notional):
         headers = {
-            "APCA-API-KEY-ID":paperkey,
-            "APCA-API-SECRET-KEY":papersecret,
+            'APCA-API-KEY-ID': apcakey,
+            'APCA-API-SECRET-KEY': apcasecret,
             "accept": "application/json",
             "content-type": "application/json"
         }
@@ -97,17 +99,17 @@ class ALPExtractor(object):
             "type": "market",
             "time_in_force": "day",
             "symbol": ticker,
-            "qty": qty
+            "notional": notional
             }
-        url = "https://paper-api.alpaca.markets/v2/orders"
+        url = "https://api.alpaca.markets/v2/orders"
         requestBody = r.post(url,json=data,headers=headers)
         return requestBody
     
     @classmethod
-    def buy_stop_loss(self,ticker,adjclose,qty):
+    def buy_stop_loss(self,ticker,adjclose,notional):
         headers = {
-            "APCA-API-KEY-ID":paperkey,
-            "APCA-API-SECRET-KEY":papersecret,
+            'APCA-API-KEY-ID': apcakey,
+            'APCA-API-SECRET-KEY': apcasecret,
             "accept": "application/json",
             "content-type": "application/json"
         }
@@ -115,25 +117,25 @@ class ALPExtractor(object):
             "side": "buy",
             "symbol": ticker,
             "type": "market",
-            "qty": qty,
-            "time_in_force": "gtc",
+            "notional": notional,
+            "time_in_force": "day",
             "order_class": "oto",
             "stop_loss": {
                 "stop_price": round(adjclose * 0.95,2),
                 "limit_price": round(adjclose * 0.94,2)
             }
         }
-        url = "https://paper-api.alpaca.markets/v2/orders"
+        url = "https://api.alpaca.markets/v2/orders"
         requestBody = r.post(url,json=data,headers=headers)
         return requestBody
     
     @classmethod
     def close(self):
         headers = {
-            "APCA-API-KEY-ID":paperkey,
-            "APCA-API-SECRET-KEY":papersecret,
+            'APCA-API-KEY-ID': apcakey,
+            'APCA-API-SECRET-KEY': apcasecret,
             "accept":"application/json"
         }
         params = {}
-        url = "https://paper-api.alpaca.markets/v2/positions?cancel_orders=true"
+        url = "https://api.alpaca.markets/v2/positions?cancel_orders=true"
         requestBody = r.delete(url,params=params,headers=headers)

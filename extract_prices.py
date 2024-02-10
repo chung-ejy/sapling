@@ -6,7 +6,7 @@ import pandas as pd
 
 market = ADatabase("market")
 start = datetime.now() - timedelta(days=365.25*2)
-end = datetime.now() - timedelta(days=2)
+end = datetime.now() - timedelta(days=1)
 
 market.connect()
 sp500 = pd.read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",attrs={"id":"constituents"})[0].rename(columns={"Symbol":"ticker"})

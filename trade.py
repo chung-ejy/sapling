@@ -15,7 +15,7 @@ cash = float(account["cash"])
 for row in recs.iterrows():
     ticker = row[1]["ticker"]
     price = round(row[1]["adjclose"],2)
-    qty = int(cash/positions/price)
-    print(ticker,price,qty)
+    notional = round(float(cash/positions),2)
+    print(ticker,price,notional)
     if live == True:
-        alp.buy_stop_loss(ticker,price,qty)
+        print(alp.buy(ticker,notional).json())
