@@ -16,20 +16,22 @@ keys = db.retrieve("secrets")
 parameter = db.retrieve("kpi").sort_values("return",ascending=False).iloc[0].to_dict()
 db.disconnect()
 
-sp500 = pd.read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",attrs={"id":"constituents"})[0].rename(columns={"Symbol":"ticker"})
+
 alp = ALPExtractor()
 today = datetime.now()
 start = datetime.now() - timedelta(days=365.25*2)
 end = datetime.now() - timedelta(hours=24)
 param = AParameter()
 param.build(parameter)
-param.tickers = list(sp500["ticker"].values)
-strat = StrategyFactory.build(param)
-sim = Transformer.transform(strat,start,end)
-trades = Backtester.backtest(strat,sim)
-recs = Backtester.recommendations(trades)
 
 if today.weekday() == 0:
+    sp500 = pd.read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",attrs={"id":"constituents"})[0].rename(columns={"Symbol":"ticker"})
+    param.tickers = list(sp500["ticker"].values)
+    strat = StrategyFactory.build(param)
+    sim = Transformer.transform(strat,start,end)
+    trades = Backtester.backtest(strat,sim)
+    recs = Backtester.recommendations(trades)
+
     for bot in bots.iterrows():
         try:
             user = bot[1]["username"]
