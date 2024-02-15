@@ -21,36 +21,35 @@ alp = ALPExtractor()
 today = datetime.now()
 start = datetime.now() - timedelta(days=365.25*2)
 end = datetime.now() - timedelta(hours=24)
-# param = AParameter()
-# param.build(parameter)
-# param.tickers = list(sp500["ticker"].values)[:10]
-# strat = StrategyFactory.build(param)
-# sim = Transformer.transform(strat,start,end)
-# trades = Backtester.backtest(strat,sim)
-# recs = Backtester.recommendations(trades)
+param = AParameter()
+param.build(parameter)
+param.tickers = list(sp500["ticker"].values)[:10]
+strat = StrategyFactory.build(param)
+sim = Transformer.transform(strat,start,end)
+trades = Backtester.backtest(strat,sim)
+recs = Backtester.recommendations(trades)
 
-for bot in bots.iterrows():
-    try:
-        user = bot[1]["username"]
-        live = bot[1]["live"]
-        user_keys = keys[keys["username"]==user].to_dict("records")[0]
-        key = user_keys["secret"]
-        secret = user_keys["key"]
-        alp_client = ALPClientExtractor(key,secret)
-        print(alp_client.account())
-    #     positions = recs.index.size
-    #     account = alp.account()
-    #     cash = float(account["cash"])
-    #     for row in recs.iterrows():
-    #         ticker = row[1]["ticker"]
-    #         price = round(row[1]["adjclose"],2)
-    #         qty = int(cash/positions/price)
-    #         print(ticker,price,qty)
-    #         if live == True:
-    #             alp.buy_stop_loss(ticker,price,qty)
-    except Exception as e:
-        print(str(e))
-        continue
+if today.weekday() == 0:
+    for bot in bots.iterrows():
+        try:
+            user = bot[1]["username"]
+            live = bot[1]["live"]
+            user_keys = keys[keys["username"]==user].to_dict("records")[0]
+            secret = user_keys["secret"]
+            key = user_keys["key"]
+            alp_client = ALPClientExtractor(key,secret)
+            positions = recs.index.size
+            account = alp.account()
+            cash = float(account["cash"])
+            for row in recs.iterrows():
+                ticker = row[1]["ticker"]
+                price = round(row[1]["adjclose"],2)
+                qty = int(cash/positions/price)
+                if live == True:
+                    alp.buy_stop_loss(ticker,price,qty)
+        except Exception as e:
+            print(str(e))
+            continue
 
 if today.weekday() == 4:
     for bot in bots.iterrows():
@@ -64,4 +63,3 @@ if today.weekday() == 4:
             alp_client.close()
         except:
             continue
-
