@@ -46,7 +46,7 @@ if today.weekday() == 0:
                 price = round(row[1]["adjclose"],2)
                 qty = int(cash/positions/price)
                 if live == True:
-                    alp.buy_stop_loss(ticker,price,qty)
+                    alp_client.buy_stop_loss(ticker,price,qty)
         except Exception as e:
             print(str(e))
             continue
