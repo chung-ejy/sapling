@@ -46,9 +46,9 @@ if today.weekday() == 0:
             for row in recs.iterrows():
                 ticker = row[1]["ticker"]
                 price = round(row[1]["adjclose"],2)
-                qty = int(cash/positions/price)
+                notional = int(cash/positions)
                 if live == True:
-                    alp_client.buy_stop_loss(ticker,price,qty)
+                    alp_client.buy(ticker,notional)
         except Exception as e:
             print(str(e))
             continue
