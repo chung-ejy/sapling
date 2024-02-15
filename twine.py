@@ -23,7 +23,7 @@ start = datetime.now() - timedelta(days=365.25*2)
 end = datetime.now() - timedelta(hours=24)
 param = AParameter()
 param.build(parameter)
-param.tickers = list(sp500["ticker"].values)[:10]
+param.tickers = list(sp500["ticker"].values)
 strat = StrategyFactory.build(param)
 sim = Transformer.transform(strat,start,end)
 trades = Backtester.backtest(strat,sim)
@@ -46,7 +46,7 @@ if today.weekday() == 0:
                 price = round(row[1]["adjclose"],2)
                 qty = int(cash/positions/price)
                 if live == True:
-                    alp.buy_stop_loss(ticker,price,qty)
+                    alp_client.buy_stop_loss(ticker,price,qty)
         except Exception as e:
             print(str(e))
             continue
