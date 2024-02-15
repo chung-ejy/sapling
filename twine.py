@@ -2,39 +2,66 @@ from datetime import datetime, timedelta
 from transformer.transformer import Transformer
 from database.adatabase import ADatabase
 from extractor.alp_extractor import ALPExtractor
+from extractor.alp_client_extractor import ALPClientExtractor
 from strategy.strategy_factory import StrategyFactory
 from backtester.backtester import Backtester
 from parameter.aparameter import AParameter
 import pandas as pd
 
-live = True
-russell1000 = pd.read_html("https://en.wikipedia.org/wiki/Russell_1000_Index")[2].rename(columns={"Ticker":"ticker"})
+db = ADatabase("sapling")
+
+db.cloud_connect()
+bots = db.retrieve("bots")
+keys = db.retrieve("secrets")
+parameter = db.retrieve("kpi").sort_values("return",ascending=False).iloc[0].to_dict()
+db.disconnect()
+
+sp500 = pd.read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",attrs={"id":"constituents"})[0].rename(columns={"Symbol":"ticker"})
 alp = ALPExtractor()
 today = datetime.now()
 start = datetime.now() - timedelta(days=365.25*2)
 end = datetime.now() - timedelta(hours=24)
-param = AParameter()
-param.tickers = russell1000["ticker"].values
-strat = StrategyFactory.build(param)
-sim = Transformer.transform(strat,start,end)
-trades = Backtester.backtest(strat,sim)
-recs = Backtester.recommendations(trades)
-db = ADatabase("sapling")
+# param = AParameter()
+# param.build(parameter)
+# param.tickers = list(sp500["ticker"].values)[:10]
+# strat = StrategyFactory.build(param)
+# sim = Transformer.transform(strat,start,end)
+# trades = Backtester.backtest(strat,sim)
+# recs = Backtester.recommendations(trades)
 
-db.connect()
-db.store("historical_recommendations",recs)
-db.disconnect()
+for bot in bots.iterrows():
+    try:
+        user = bot[1]["username"]
+        live = bot[1]["live"]
+        user_keys = keys[keys["username"]==user].to_dict("records")[0]
+        key = user_keys["secret"]
+        secret = user_keys["key"]
+        alp_client = ALPClientExtractor(key,secret)
+        print(alp_client.account())
+    #     positions = recs.index.size
+    #     account = alp.account()
+    #     cash = float(account["cash"])
+    #     for row in recs.iterrows():
+    #         ticker = row[1]["ticker"]
+    #         price = round(row[1]["adjclose"],2)
+    #         qty = int(cash/positions/price)
+    #         print(ticker,price,qty)
+    #         if live == True:
+    #             alp.buy_stop_loss(ticker,price,qty)
+    except Exception as e:
+        print(str(e))
+        continue
 
-if today.weekday() == 0:
-    positions = recs.index.size
-    account = alp.account()
-    cash = float(account["cash"])
-    for row in recs.iterrows():
-        ticker = row[1]["ticker"]
-        price = round(row[1]["adjclose"],2)
-        qty = int(cash/positions/price)
-        print(ticker,price,qty)
-        if live == True:
-            alp.buy_stop_loss(ticker,price,qty)
 if today.weekday() == 4:
-    alp.close()
+    for bot in bots.iterrows():
+        try:
+            user = bot[1]["username"]
+            live = bot[1]["live"]
+            user_keys = keys[keys["username"]==user].to_dict("records")[0]
+            secret = user_keys["secret"]
+            key = user_keys["key"]
+            alp_client = ALPClientExtractor(key,secret)
+            alp_client.close()
+        except:
+            continue
+
