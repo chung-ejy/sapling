@@ -9,7 +9,8 @@ class AParameter(object):
         self.stop_loss = 0.05
         self.ascending = True
         self.tickers = ["AMZN"]
-        
+        self.prices = "prices"
+
     def build(self,query):
         for key in query.keys():
             match key:
@@ -25,5 +26,7 @@ class AParameter(object):
                     self.__setattr__(key,bool(query[key]))
                 case "tickers":
                     self.__setattr__(key,list(query[key]))
+                case "prices":
+                    self.__setattr__(key,str(query[key]))
 
             

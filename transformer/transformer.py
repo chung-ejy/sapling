@@ -31,7 +31,7 @@ class Transformer(object):
         market.connect()
         for ticker in strategy.tickers:
             try:
-                ticker_prices = processor.column_date_processing(market.query("prices",{"ticker":ticker}))
+                ticker_prices = processor.column_date_processing(market.query(strategy.prices,{"ticker":ticker}))
                 ticker_prices["ticker"] = ticker
                 ticker_prices.sort_values("date",inplace=True)
                 ticker_prices = strategy.signal(overhead,ticker_prices)
@@ -41,21 +41,4 @@ class Transformer(object):
                 print(str(e))
                 continue
         market.disconnect()
-        return pd.concat(prices)
-    
-    @classmethod
-    def crypto_transform(self,strategy,start,end):
-        prices = []
-        overhead = strategy.overhead()
-        for ticker in strategy.tickers:
-            try:
-                ticker_prices = processor.column_date_processing(ALPExtractor.crypto_prices(ticker,start,end))
-                ticker_prices["ticker"] = ticker
-                ticker_prices.sort_values("date",inplace=True)
-                ticker_prices = strategy.signal(overhead,ticker_prices)
-                ticker_prices = Returns.returns(strategy,ticker_prices)
-                prices.append(ticker_prices)
-            except Exception as e:
-                print(str(e))
-                continue
         return pd.concat(prices)

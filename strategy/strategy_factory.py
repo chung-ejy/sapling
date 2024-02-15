@@ -59,5 +59,7 @@ class StrategyFactory(object):
                 return TechAI(parameter)
             case Strategy.TECHNICAL_AI.value:
                 return TechnicalAI(parameter)
+            case Strategy.UNITY_FACTOR_LOADING.value:
+                return UnityFactorLoading(parameter)
             case _:
                 return None

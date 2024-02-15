@@ -13,7 +13,7 @@ class TechFactorLoading(AFactorLoadingStrategy):
     
     def overhead(self):
         market = ADatabase("market")
-        market.cloud_connect()
+        market.connect()
         factor_dfs = []
         for ticker in self.factors:
             try:
