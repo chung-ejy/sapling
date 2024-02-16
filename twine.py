@@ -10,8 +10,6 @@ import pandas as pd
 
 db = ADatabase("sapling")
 
-
-
 alp = ALPExtractor()
 today = datetime.now()
 start = datetime.now() - timedelta(days=365.25*2)
@@ -61,7 +59,8 @@ if today.weekday() == 4:
             user_keys = keys[keys["username"]==user].to_dict("records")[0]
             secret = user_keys["secret"]
             key = user_keys["key"]
-            alp_client = ALPClientExtractor(key,secret)
-            alp_client.close()
+            if live == True:
+                alp_client = ALPClientExtractor(key,secret)
+                alp_client.close()
         except:
             continue
