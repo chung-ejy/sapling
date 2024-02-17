@@ -29,7 +29,6 @@ if today.weekday() == 0:
     sim = Transformer.transform(strat,start,end)
     trades = Backtester.backtest(strat,sim)
     recs = Backtester.recommendations(trades)
-
     for bot in bots.iterrows():
         try:
             user = bot[1]["username"]
@@ -39,7 +38,7 @@ if today.weekday() == 0:
             key = user_keys["key"]
             alp_client = ALPClientExtractor(key,secret)
             positions = recs.index.size
-            account = alp.account()
+            account = alp_client.account()
             cash = float(account["cash"])
             for row in recs.iterrows():
                 ticker = row[1]["ticker"]
