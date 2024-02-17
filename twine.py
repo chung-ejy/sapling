@@ -36,15 +36,15 @@ if today.weekday() == 0:
             user_keys = keys[keys["username"]==user].to_dict("records")[0]
             secret = user_keys["secret"]
             key = user_keys["key"]
-            alp_client = ALPClientExtractor(key,secret)
-            positions = recs.index.size
-            account = alp_client.account()
-            cash = float(account["cash"])
-            for row in recs.iterrows():
-                ticker = row[1]["ticker"]
-                price = round(row[1]["adjclose"],2)
-                notional = int(cash/positions)
-                if live == True:
+            if live == True:
+                alp_client = ALPClientExtractor(key,secret)
+                positions = recs.index.size
+                account = alp_client.account()
+                cash = float(account["cash"])
+                for row in recs.iterrows():
+                    ticker = row[1]["ticker"]
+                    price = round(row[1]["adjclose"],2)
+                    notional = int(cash/positions)
                     alp_client.buy(ticker,notional)
         except Exception as e:
             print(str(e))

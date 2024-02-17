@@ -15,7 +15,6 @@ keys = db.retrieve("secrets")
 parameter = db.retrieve("kpi").sort_values("return",ascending=False).iloc[0].to_dict()
 db.disconnect()
 
-print(bots)
 for bot in bots.iterrows():
     try:
         user = bot[1]["username"]
