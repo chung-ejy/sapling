@@ -13,13 +13,13 @@ keys = db.retrieve("secrets")
 db.disconnect()
 ticker = "BTC/USD"
 
-window = 30  # You can adjust this value based on your strategy
+window = 30
 ticker_data = ALPPaperExtractor().crypto_prices(ticker,datetime.now()-timedelta(days=1),datetime.now())
 ticker_data['rolling_mean'] = ticker_data['adjclose'].rolling(window=window).mean()
-ticker_data["signal"] = ticker_data["rolling_mean"] > ticker_data["adjclose"]
+ticker_data["signal"] = ticker_data["rolling_mean"] < ticker_data["adjclose"]
 current = ticker_data.iloc[-1]
 signal = current["signal"]
-print(current)
+
 for bot in bots.iterrows():
     try:
         user = bot[1]["username"]
