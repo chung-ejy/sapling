@@ -3,6 +3,7 @@ from database.adatabase import ADatabase
 from returns.returns import Returns
 import pandas as pd
 from extractor.alp_paper_extractor import ALPPaperExtractor
+from time import sleep
 class Transformer(object):
     
     @classmethod
@@ -17,6 +18,7 @@ class Transformer(object):
                 ticker_prices = strategy.signal(overhead,ticker_prices)
                 ticker_prices = Returns.returns(strategy,ticker_prices)
                 prices.append(ticker_prices)
+                sleep(1)
             except Exception as e:
                 print(ticker,str(e))
                 continue
