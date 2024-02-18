@@ -14,7 +14,6 @@ db.disconnect()
 ticker = "BTC/USD"
 
 window = 30  # You can adjust this value based on your strategy
-offset = 1
 ticker_data = ALPPaperExtractor().crypto_prices(ticker,datetime.now()-timedelta(days=1),datetime.now())
 ticker_data['rolling_mean'] = ticker_data['adjclose'].rolling(window=window).mean()
 ticker_data["signal"] = ticker_data["rolling_mean"] > ticker_data["adjclose"]
