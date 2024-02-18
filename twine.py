@@ -10,7 +10,7 @@ import pandas as pd
 db = ADatabase("sapling")
 today = datetime.now()
 start = datetime.now() - timedelta(days=365.25)
-end = datetime.now() - timedelta(hours=48)
+end = datetime.now() - timedelta(hours=24)
 db.cloud_connect()
 bots = db.retrieve("bots")
 keys = db.retrieve("secrets")
