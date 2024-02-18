@@ -19,7 +19,7 @@ class Transformer(object):
                 ticker_prices = Returns.returns(strategy,ticker_prices)
                 prices.append(ticker_prices)
             except Exception as e:
-                print(str(e))
+                print(ticker,str(e))
                 continue
         return pd.concat(prices)
 
