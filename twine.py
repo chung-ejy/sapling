@@ -10,7 +10,7 @@ import pandas as pd
 db = ADatabase("sapling")
 today = datetime.now()
 start = datetime.now() - timedelta(days=365.25)
-end = datetime.now() - timedelta(hours=24)
+end = datetime.now() - timedelta(hours=48)
 db.cloud_connect()
 bots = db.retrieve("bots")
 keys = db.retrieve("secrets")
@@ -25,7 +25,7 @@ strat = StrategyFactory.build(param)
 sim = Transformer.transform(strat,start,end)
 trades = Backtester.backtest(strat,sim)
 recs = Backtester.recommendations(trades)
-print(recs)
+print(recs[["date","ticker","buy_date","sell_date"]])
 
 for bot in bots.iterrows():
     try:
