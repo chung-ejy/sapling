@@ -3,7 +3,6 @@ from database.adatabase import ADatabase
 from returns.returns import Returns
 import pandas as pd
 from extractor.alp_paper_extractor import ALPPaperExtractor
-from tqdm import tqdm
 class Transformer(object):
     
     @classmethod
