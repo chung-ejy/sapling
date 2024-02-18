@@ -18,7 +18,7 @@ class Transformer(object):
                 ticker_prices = strategy.signal(overhead,ticker_prices)
                 ticker_prices = Returns.returns(strategy,ticker_prices)
                 prices.append(ticker_prices)
-                sleep(1)
+                sleep(0.1)
             except Exception as e:
                 print(ticker,str(e))
                 continue
