@@ -33,13 +33,17 @@ for bot in bots.iterrows():
         secret = user_keys["secret"]
         key = user_keys["key"]
         alp_client = ALPClientExtractor(key,secret)
-        cash = float(alp_client.account()["cash"])
         if live == True:
             if signal == 1:
-                if cash > 0:
-                    print(alp_client.buy(ticker,cash))
+                alp_client.close()
+                cash = float(alp_client.account()["cash"])
+                sleep(30)
+                print(alp_client.buy(ticker,cash))
             elif signal == -1:
                 alp_client.close()
+                sleep(30)
+                cash = float(alp_client.account()["cash"])
+                print(alp_client.sell(ticker,cash))
             else:
                 print(current["date"],"hold")
     except Exception as e:
