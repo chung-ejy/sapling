@@ -36,6 +36,24 @@ class ALPClientExtractor(object):
         requestBody = r.post(url,json=data,headers=headers)
         return requestBody.json()
     
+    def sell(self,ticker,notional):
+        headers = {
+            'APCA-API-KEY-ID': self.key,
+            'APCA-API-SECRET-KEY': self.secret,
+            "accept": "application/json",
+            "content-type": "application/json"
+        }
+        data = {
+            "side": "sell",
+            "type": "market",
+            "time_in_force": "day",
+            "symbol": ticker,
+            "notional": notional
+            }
+        url = "https://api.alpaca.markets/v2/orders"
+        requestBody = r.post(url,json=data,headers=headers)
+        return requestBody.json()
+    
     def buy_stop_loss(self,ticker,adjclose,notional):
         headers = {
             'APCA-API-KEY-ID': self.key,
