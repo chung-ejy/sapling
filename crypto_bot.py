@@ -13,18 +13,13 @@ keys = db.retrieve("secrets")
 db.disconnect()
 ticker = "BTC/USD"
 
-window = 10
-time_between = 15
+window = 30  # You can adjust this value based on your strategy
 ticker_data = ALPPaperExtractor().crypto_prices(ticker,datetime.now()-timedelta(days=1),datetime.now())
 ticker_data['rolling_mean'] = ticker_data['adjclose'].rolling(window=window).mean()
-ticker_data['upper_band'] = ticker_data['rolling_mean'] + 2 * ticker_data['adjclose'].rolling(window=window).std()
-ticker_data['lower_band'] = ticker_data['rolling_mean'] - 2 * ticker_data['adjclose'].rolling(window=window).std()
-ticker_data['signal'] = 0
-ticker_data['signal'][ticker_data['adjclose'] > ticker_data['upper_band']] = 1
-ticker_data['signal'][ticker_data['adjclose'] < ticker_data['lower_band']] = -1 
+ticker_data["signal"] = ticker_data["rolling_mean"] > ticker_data["adjclose"]
 current = ticker_data.iloc[-1]
 signal = current["signal"]
-
+print(current)
 for bot in bots.iterrows():
     try:
         user = bot[1]["username"]
@@ -34,20 +29,11 @@ for bot in bots.iterrows():
         key = user_keys["key"]
         alp_client = ALPClientExtractor(key,secret)
         if live == True:
-            if signal == 1:
-                alp_client.close()
-                sleep(30)
+            alp_client.close()
+            sleep(60)
+            if signal == True:
                 cash = float(alp_client.account()["cash"])
-                if cash > 0:
-                    print(alp_client.buy(ticker,cash))
-            elif signal == -1:
-                alp_client.close()
-                sleep(30)
-                cash = float(alp_client.account()["cash"])
-                if cash > 0:
-                    print(alp_client.sell(ticker,cash))
-            else:
-                print(current["date"],"hold")
+                alp_client.buy(ticker,cash)
     except Exception as e:
         print(str(e))
         continue
