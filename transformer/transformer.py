@@ -10,7 +10,7 @@ class Transformer(object):
     def transform(self,strategy,start,end):
         prices = []
         overhead = strategy.overhead()
-        for ticker in tqdm(strategy.tickers):
+        for ticker in strategy.tickers:
             try:
                 ticker_prices = processor.column_date_processing(ALPPaperExtractor().prices(ticker,start,end))
                 ticker_prices["ticker"] = ticker
@@ -22,25 +22,7 @@ class Transformer(object):
                 print(str(e))
                 continue
         return pd.concat(prices)
-    
-    @classmethod
-    def bulk_transform(self,strategy,start,end):
-        prices = []
-        overhead = strategy.overhead()
-        prices = ALPPaperExtractor().prices(",".join([x for x in strategy.tickers]),start,end)
-        for ticker in tqdm(strategy.tickers):
-            try:
-                ticker_prices = processor.column_date_processing(prices[prices["ticker"]==ticker])
-                ticker_prices["ticker"] = ticker
-                ticker_prices.sort_values("date",inplace=True)
-                ticker_prices = strategy.signal(overhead,ticker_prices)
-                ticker_prices = Returns.returns(strategy,ticker_prices)
-                prices.append(ticker_prices)
-            except Exception as e:
-                print(str(e))
-                continue
-        return pd.concat(prices)
-    
+
     @classmethod
     def local_transform(self,strategy,start,end):
         market = ADatabase("market")
