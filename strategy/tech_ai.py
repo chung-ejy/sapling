@@ -1,10 +1,8 @@
 from strategy.anaistrategy import AnAIStrategy
 from database.adatabase import ADatabase
 from processor.processor import Processor as processor
-from xgboost import XGBRegressor
 import pandas as pd
 from datetime import datetime, timedelta
-from extractor.alp_extractor import ALPExtractor
 
 class TechAI(AnAIStrategy):
 
