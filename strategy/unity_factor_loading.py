@@ -1,9 +1,4 @@
 from strategy.afactorloadingstrategy import AFactorLoadingStrategy
-from database.adatabase import ADatabase
-from processor.processor import Processor as processor
-import pandas as pd
-from datetime import datetime, timedelta
-from extractor.alp_extractor import ALPExtractor
 
 class UnityFactorLoading(AFactorLoadingStrategy):
 

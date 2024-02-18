@@ -1,8 +1,6 @@
 from datetime import datetime, timedelta
 from transformer.transformer import Transformer
 from database.adatabase import ADatabase
-from extractor.alp_extractor import ALPExtractor
-from extractor.alp_client_extractor import ALPClientExtractor
 from strategy.strategy_factory import StrategyFactory
 from backtester.backtester import Backtester
 from parameter.aparameter import AParameter
@@ -10,10 +8,9 @@ import pandas as pd
 
 db = ADatabase("sapling")
 
-alp = ALPExtractor()
 today = datetime.now()
 start = datetime.now() - timedelta(days=365.25*2)
-end = datetime.now() - timedelta(hours=24)
+end = datetime.now() - timedelta(hours=48)
 db.cloud_connect()
 bots = db.retrieve("bots")
 keys = db.retrieve("secrets")

@@ -2,7 +2,7 @@ from processor.processor import Processor as processor
 from database.adatabase import ADatabase
 from returns.returns import Returns
 import pandas as pd
-from extractor.alp_extractor import ALPExtractor
+from extractor.alp_paper_extractor import ALPPaperExtractor
 from tqdm import tqdm
 class Transformer(object):
     
@@ -12,7 +12,7 @@ class Transformer(object):
         overhead = strategy.overhead()
         for ticker in strategy.tickers:
             try:
-                ticker_prices = processor.column_date_processing(ALPExtractor.prices(ticker,start,end))
+                ticker_prices = processor.column_date_processing(ALPPaperExtractor().prices(ticker,start,end))
                 ticker_prices["ticker"] = ticker
                 ticker_prices.sort_values("date",inplace=True)
                 ticker_prices = strategy.signal(overhead,ticker_prices)
