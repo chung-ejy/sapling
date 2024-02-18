@@ -23,7 +23,6 @@ class ALPPaperExtractor(object):
             "feed":"sip",
             "sort":"asc",
             "start":start.strftime("%Y-%m-%d"),
-            "end":end.strftime("%Y-%m-%d")
         }
         url = "https://data.alpaca.markets/v2/stocks/bars"
         requestBody = r.get(url,params=params,headers=headers)
@@ -41,8 +40,7 @@ class ALPPaperExtractor(object):
             "symbols":ticker,
             "timeframe":"15min",
             "sort":"asc",
-            "start":start.strftime("%Y-%m-%d"),
-            "end":end.strftime("%Y-%m-%d")
+            "start":start.strftime("%Y-%m-%d")
         }
         url = "https://data.alpaca.markets/v1beta3/crypto/us/bars"
         requestBody = r.get(url,params=params,headers=headers)
