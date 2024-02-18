@@ -8,15 +8,24 @@ from parameter.aparameter import AParameter
 import pandas as pd
 
 db = ADatabase("sapling")
-
 today = datetime.now()
-start = datetime.now() - timedelta(days=365.25*2)
-end = datetime.now() - timedelta(hours=48)
+start = datetime.now() - timedelta(days=365.25)
+end = datetime.now() - timedelta(hours=24)
 db.cloud_connect()
 bots = db.retrieve("bots")
 keys = db.retrieve("secrets")
 parameter = db.retrieve("kpi").sort_values("return",ascending=False).iloc[0].to_dict()
 db.disconnect()
+
+param = AParameter()
+param.build(parameter)
+sp500 = pd.read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",attrs={"id":"constituents"})[0].rename(columns={"Symbol":"ticker"})
+param.tickers = list(sp500["ticker"].values)
+strat = StrategyFactory.build(param)
+sim = Transformer.transform(strat,start,end)
+trades = Backtester.backtest(strat,sim)
+recs = Backtester.recommendations(trades)
+print(recs)
 
 for bot in bots.iterrows():
     try:
@@ -26,53 +35,19 @@ for bot in bots.iterrows():
         secret = user_keys["secret"]
         key = user_keys["key"]
         alp_client = ALPClientExtractor(key,secret)
+        positions = recs.index.size
         account = alp_client.account()
         cash = float(account["cash"])
-        print(user,live,cash)
+        notional = float(cash/positions)
+        if live == True:
+            if today.weekday() == 0:
+                for row in recs.iterrows():
+                    ticker = row[1]["ticker"]
+                    alp_client.buy(ticker,notional)
+            elif today.weekday() == 4:
+                alp_client.close()
+            else:
+                continue
     except Exception as e:
         print(str(e))
         continue
-
-if today.weekday() == 0:
-    param = AParameter()
-    param.build(parameter)
-    sp500 = pd.read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",attrs={"id":"constituents"})[0].rename(columns={"Symbol":"ticker"})
-    param.tickers = list(sp500["ticker"].values)
-    strat = StrategyFactory.build(param)
-    sim = Transformer.transform(strat,start,end)
-    trades = Backtester.backtest(strat,sim)
-    recs = Backtester.recommendations(trades)
-    for bot in bots.iterrows():
-        try:
-            user = bot[1]["username"]
-            live = bot[1]["live"]
-            user_keys = keys[keys["username"]==user].to_dict("records")[0]
-            secret = user_keys["secret"]
-            key = user_keys["key"]
-            if live == True:
-                alp_client = ALPClientExtractor(key,secret)
-                positions = recs.index.size
-                account = alp_client.account()
-                cash = float(account["cash"])
-                for row in recs.iterrows():
-                    ticker = row[1]["ticker"]
-                    price = round(row[1]["adjclose"],2)
-                    notional = int(cash/positions)
-                    alp_client.buy(ticker,notional)
-        except Exception as e:
-            print(str(e))
-            continue
-
-if today.weekday() == 4:
-    for bot in bots.iterrows():
-        try:
-            user = bot[1]["username"]
-            live = bot[1]["live"]
-            user_keys = keys[keys["username"]==user].to_dict("records")[0]
-            secret = user_keys["secret"]
-            key = user_keys["key"]
-            if live == True:
-                alp_client = ALPClientExtractor(key,secret)
-                alp_client.close()
-        except:
-            continue
