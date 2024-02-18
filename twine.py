@@ -25,8 +25,8 @@ strat = StrategyFactory.build(param)
 sim = Transformer.transform(strat,start,end)
 trades = Backtester.backtest(strat,sim)
 recs = Backtester.recommendations(trades)
-
 print(recs[["date","ticker","buy_date","sell_date"]].to_dict("records"))
+
 for bot in bots.iterrows():
     try:
         user = bot[1]["username"]
