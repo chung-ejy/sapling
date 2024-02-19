@@ -9,8 +9,8 @@ load_dotenv()
 org_id = ""
 key_id = ""
 private_key = ""
-api_key = "organizations/3acf215e-8e7c-4e6c-a455-bfd9ec511a40/apiKeys/e66319db-0bdc-4bea-9bc4-6957ea875eea"
-api_secret = "-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIE2TF1X/79ieqXGxIlnePDpy4a0sB9pOMYdR0yKfmk2doAoGCCqGSM49\nAwEHoUQDQgAE0J9DgBzqEGtC40yxR9Vy3KTzDwHiuuSnzX4Zt0pcc+9iASmWEPYc\nb8NSwFHB1s46C78wKmkJCFvwtPpYStQwiQ==\n-----END EC PRIVATE KEY-----\n"
+api_key = f"organizations/{key_id}"
+api_secret = f"-----BEGIN EC PRIVATE KEY-----\n{private_key}\n-----END EC PRIVATE KEY-----\n"
 
 client = RESTClient(api_key,api_secret)
 request_method = "GET"
