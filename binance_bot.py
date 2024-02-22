@@ -47,6 +47,7 @@ while True:
                 pv = float(xrp_positions["notional"].item())
                 if cash != 0 and pv == 0:
                     umf.cancel_open_orders("XRPUSDT")
+                    
                     if signal == 1:
                         ## market order
                         umf.change_leverage("XRPUSDT",15)
@@ -59,6 +60,7 @@ while True:
                                 "leverage":leverage
                             }
                         ))
+                        umf.change_leverage("XRPUSDT",15)
                         umf.new_order(**
                             {
                                 "reduceOnly": True,
@@ -72,6 +74,7 @@ while True:
                                 "leverage":leverage
                             }
                         )
+                        umf.change_leverage("XRPUSDT",15)
                         umf.new_order(**
                             {
                                 "reduceOnly": True,
@@ -86,6 +89,7 @@ while True:
                             }
                         )
                     elif signal == -1:
+                        umf.change_leverage("XRPUSDT",15)
                         print(umf.new_order(**
                             {
                                 "side": "SELL",
@@ -95,6 +99,7 @@ while True:
                                 "leverage":leverage
                             }
                         ))
+                        umf.change_leverage("XRPUSDT",15)
                         umf.new_order(**
                             {
                                 "reduceOnly": True,
@@ -108,6 +113,7 @@ while True:
                                 "leverage":leverage
                             }
                         )
+                        umf.change_leverage("XRPUSDT",15)
                         umf.new_order(**
                             {
                                 "reduceOnly": True,
