@@ -43,13 +43,13 @@ while True:
                 current_market = df.iloc[-1]
                 signal = current_market["signal"].item()
                 price = current_market["close"].item()
-                quantity = round(float(cash/price))
-                pv = float(xrp_positions["positionAmt"].item())
-                print(cash)
+                quantity = round(float(cash/price)) * leverage
+                pv = float(xrp_positions["notional"].item())
                 if cash != 0 and pv == 0:
-                    print(umf.cancel_open_orders("XRPUSDT"))
+                    umf.cancel_open_orders("XRPUSDT")
                     if signal == 1:
                         ## market order
+                        umf.change_leverage("XRPUSDT",15)
                         print(umf.new_order(**
                             {
                                 "side": "BUY",
@@ -59,7 +59,7 @@ while True:
                                 "leverage":leverage
                             }
                         ))
-                        print(umf.new_order(**
+                        umf.new_order(**
                             {
                                 "reduceOnly": True,
                                 "side": "SELL",
@@ -71,8 +71,8 @@ while True:
                                 "type": "TAKE_PROFIT",
                                 "leverage":leverage
                             }
-                        ))
-                        print(umf.new_order(**
+                        )
+                        umf.new_order(**
                             {
                                 "reduceOnly": True,
                                 "side": "SELL",
@@ -84,7 +84,7 @@ while True:
                                 "type": "STOP",
                                 "leverage":leverage
                             }
-                        ))
+                        )
                     elif signal == -1:
                         print(umf.new_order(**
                             {
@@ -95,7 +95,7 @@ while True:
                                 "leverage":leverage
                             }
                         ))
-                        print(umf.new_order(**
+                        umf.new_order(**
                             {
                                 "reduceOnly": True,
                                 "side": "BUY",
@@ -107,8 +107,8 @@ while True:
                                 "type": "TAKE_PROFIT",
                                 "leverage":leverage
                             }
-                        ))
-                        print(umf.new_order(**
+                        )
+                        umf.new_order(**
                             {
                                 "reduceOnly": True,
                                 "side": "BUY",
@@ -120,9 +120,9 @@ while True:
                                 "type": "STOP",
                                 "leverage":leverage
                             }
-                        ))
+                        )
                 else:
-                    print("waiting on positions")
+                    print(signal,cash,pv)
             except Exception as e:
                 print(str(e))
-            sleep(30)
+            sleep(10)
