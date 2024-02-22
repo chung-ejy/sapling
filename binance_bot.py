@@ -13,6 +13,7 @@ keys = db.retrieve("crypto_secrets")
 parameter = db.retrieve("crypto_parameter")
 db.disconnect()
 ticker = parameter["ticker"].item()
+ticker = "XRPUSD_PERP"
 band = parameter["band"].item()
 stoploss = parameter["stoploss"].item()
 profittake = parameter["profittake"].item()
@@ -46,7 +47,7 @@ for bot in bots.iterrows():
             print(current_market)
             signal = current_market["signal"].item()
             price = current_market["close"].item()
-            quantity = round(float(cash/price),2)
+            quantity = round(float(cash/price),2) * leverage
             print(quantity)
             if cash != 0:
                 print(cmf.cancel_open_orders("XRPUSD_PERP"))
