@@ -13,7 +13,6 @@ while True:
     parameter = db.retrieve("crypto_parameter")
     db.disconnect()
     ticker = parameter["ticker"].item()
-    ticker = "XRPUSDT"
     band = parameter["band"].item()
     stoploss = parameter["stoploss"].item()
     profittake = parameter["profittake"].item()
@@ -30,10 +29,10 @@ while True:
                 balances = pd.DataFrame(umf.balance())
                 usdp_balance = balances[balances["asset"]=="USDT"]
                 positions = pd.DataFrame(account["positions"])
-                xrp_positions = positions[positions["symbol"]=="XRPUSDT"]
+                xrp_positions = positions[positions["symbol"]==ticker]
                 cash = float(usdp_balance["balance"].item())
                 columns = ["start","open","high","low","close","volumne","end","volume","trades","buy_volumne","base_volume","ignore"]
-                df = pd.DataFrame(data=umf.klines("XRPUSDT",interval="1m"),columns=columns)
+                df = pd.DataFrame(data=umf.klines(ticker,interval="1m"),columns=columns)
                 df["date"] = [datetime.utcfromtimestamp(int(x/1000)) for x in df["start"]]
                 df.sort_values("date",inplace=True)
                 df["close"] = [float(x) for x in df["close"]]
@@ -46,21 +45,20 @@ while True:
                 quantity = round(float(cash/price)) * leverage
                 pv = float(xrp_positions["notional"].item())
                 if cash != 0 and pv == 0:
-                    umf.cancel_open_orders("XRPUSDT")
-                    
+                    umf.cancel_open_orders(ticker)    
                     if signal == 1:
                         ## market order
-                        umf.change_leverage("XRPUSDT",15)
+                        umf.change_leverage(ticker,15)
                         print(umf.new_order(**
                             {
                                 "side": "BUY",
                                 "quantity":quantity,
-                                "symbol": "XRPUSDT",
+                                "symbol": ticker,
                                 "type": "MARKET",
                                 "leverage":leverage
                             }
                         ))
-                        umf.change_leverage("XRPUSDT",15)
+                        umf.change_leverage(ticker,15)
                         umf.new_order(**
                             {
                                 "reduceOnly": True,
@@ -68,13 +66,13 @@ while True:
                                 "price":price,
                                 "stopPrice":round(price*(1+profittake),3),
                                 "quantity":quantity,
-                                "symbol": "XRPUSDT",
+                                "symbol": ticker,
                                 "timeInForce": "GTC",
                                 "type": "TAKE_PROFIT",
                                 "leverage":leverage
                             }
                         )
-                        umf.change_leverage("XRPUSDT",15)
+                        umf.change_leverage(ticker,15)
                         umf.new_order(**
                             {
                                 "reduceOnly": True,
@@ -82,24 +80,24 @@ while True:
                                 "price":price,
                                 "stopPrice":round(price*(1-stoploss),3),
                                 "quantity":quantity,
-                                "symbol": "XRPUSDT",
+                                "symbol": ticker,
                                 "timeInForce": "GTC",
                                 "type": "STOP",
                                 "leverage":leverage
                             }
                         )
                     elif signal == -1:
-                        umf.change_leverage("XRPUSDT",15)
+                        umf.change_leverage(ticker,15)
                         print(umf.new_order(**
                             {
                                 "side": "SELL",
                                 "quantity":quantity,
-                                "symbol": "XRPUSDT",
+                                "symbol": ticker,
                                 "type": "MARKET",
                                 "leverage":leverage
                             }
                         ))
-                        umf.change_leverage("XRPUSDT",15)
+                        umf.change_leverage(ticker,15)
                         umf.new_order(**
                             {
                                 "reduceOnly": True,
@@ -107,13 +105,13 @@ while True:
                                 "price":price,
                                 "stopPrice":round(price*(1-profittake),3),
                                 "quantity":quantity,
-                                "symbol": "XRPUSDT",
+                                "symbol": ticker,
                                 "timeInForce": "GTC",
                                 "type": "TAKE_PROFIT",
                                 "leverage":leverage
                             }
                         )
-                        umf.change_leverage("XRPUSDT",15)
+                        umf.change_leverage(ticker,15)
                         umf.new_order(**
                             {
                                 "reduceOnly": True,
@@ -121,7 +119,7 @@ while True:
                                 "price":price,
                                 "stopPrice":round(price*(1+stoploss),3),
                                 "quantity":quantity,
-                                "symbol": "XRPUSDT",
+                                "symbol": ticker,
                                 "timeInForce": "GTC",
                                 "type": "STOP",
                                 "leverage":leverage
