@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-from binance.cm_futures import CMFutures
 from binance.um_futures import UMFutures
 from database.adatabase import ADatabase
 from time import sleep
@@ -14,7 +13,7 @@ while True:
     parameter = db.retrieve("crypto_parameter")
     db.disconnect()
     ticker = parameter["ticker"].item()
-    ticker = "XRPUSD_PERP"
+    ticker = "XRPUSDT"
     band = parameter["band"].item()
     stoploss = parameter["stoploss"].item()
     profittake = parameter["profittake"].item()
@@ -26,18 +25,15 @@ while True:
             try:
                 secret = keys[keys["username"]==user]["bsecret"].item()
                 key = keys[keys["username"]==user]["bkey"].item()
-                cmf = CMFutures(key,secret)
                 umf = UMFutures(key,secret)
-                account = cmf.account()
+                account = umf.account()
                 balances = pd.DataFrame(umf.balance())
-                usdp_balance = balances[balances["asset"]=="USDP"]
+                usdp_balance = balances[balances["asset"]=="USDT"]
                 positions = pd.DataFrame(account["positions"])
-                xrp_positions = positions[positions["symbol"]=="XRPUSD_PERP"]
-                print(xrp_positions)
-                print(usdp_balance.columns)
+                xrp_positions = positions[positions["symbol"]=="XRPUSDT"]
                 cash = float(usdp_balance["balance"].item())
                 columns = ["start","open","high","low","close","volumne","end","volume","trades","buy_volumne","base_volume","ignore"]
-                df = pd.DataFrame(data=cmf.klines("XRPUSD_PERP",interval="1m"),columns=columns)
+                df = pd.DataFrame(data=umf.klines("XRPUSDT",interval="1m"),columns=columns)
                 df["date"] = [datetime.utcfromtimestamp(int(x/1000)) for x in df["start"]]
                 df.sort_values("date",inplace=True)
                 df["close"] = [float(x) for x in df["close"]]
@@ -45,78 +41,81 @@ while True:
                 df["signal"] = df["rolling"] > df["close"]
                 df["signal"] = [1 if x == True else - 1 for x in df["signal"]]
                 current_market = df.iloc[-1]
-                print(current_market)
                 signal = current_market["signal"].item()
                 price = current_market["close"].item()
-                # quantity = round(float(cash*0.98/price))
-                quantity = 1
-                print(quantity)
-                if cash != 0:
-                    print(cmf.cancel_open_orders("XRPUSD_PERP"))
+                quantity = round(float(cash/price))
+                pv = float(xrp_positions["positionAmt"].item())
+                print(cash)
+                if cash != 0 and pv == 0:
+                    print(umf.cancel_open_orders("XRPUSDT"))
                     if signal == 1:
                         ## market order
-                        print(cmf.new_order(**
+                        print(umf.new_order(**
                             {
                                 "side": "BUY",
                                 "quantity":quantity,
-                                "symbol": "XRPUSD_PERP",
+                                "symbol": "XRPUSDT",
                                 "type": "MARKET",
                                 "leverage":leverage
                             }
                         ))
-                        print(cmf.new_order(**
+                        print(umf.new_order(**
                             {
                                 "reduceOnly": True,
                                 "side": "SELL",
-                                "stopPrice":round(price*(1+profittake),4),
+                                "price":price,
+                                "stopPrice":round(price*(1+profittake),3),
                                 "quantity":quantity,
-                                "symbol": "XRPUSD_PERP",
+                                "symbol": "XRPUSDT",
                                 "timeInForce": "GTC",
                                 "type": "TAKE_PROFIT",
                                 "leverage":leverage
                             }
                         ))
-                        print(cmf.new_order(**
+                        print(umf.new_order(**
                             {
                                 "reduceOnly": True,
                                 "side": "SELL",
-                                "stopPrice":round(price*(1-stoploss),4),
+                                "price":price,
+                                "stopPrice":round(price*(1-stoploss),3),
                                 "quantity":quantity,
-                                "symbol": "XRPUSD_PERP",
+                                "symbol": "XRPUSDT",
                                 "timeInForce": "GTC",
                                 "type": "STOP",
                                 "leverage":leverage
                             }
                         ))
                     elif signal == -1:
-                        print(cmf.new_order(**
+                        print(umf.new_order(**
                             {
                                 "side": "SELL",
                                 "quantity":quantity,
-                                "symbol": "XRPUSD_PERP",
+                                "symbol": "XRPUSDT",
                                 "type": "MARKET",
                                 "leverage":leverage
                             }
                         ))
-                        print(cmf.new_order(**
+                        print(umf.new_order(**
                             {
                                 "reduceOnly": True,
                                 "side": "BUY",
-                                "stopPrice":round(price*(1-profittake),4),
+                                "price":price,
+                                "stopPrice":round(price*(1-profittake),3),
                                 "quantity":quantity,
-                                "symbol": "XRPUSD_PERP",
+                                "symbol": "XRPUSDT",
                                 "timeInForce": "GTC",
                                 "type": "TAKE_PROFIT",
                                 "leverage":leverage
                             }
                         ))
-                        print(cmf.new_order(**
+                        print(umf.new_order(**
                             {
                                 "reduceOnly": True,
                                 "side": "BUY",
-                                "stopPrice":round(price*(1+stoploss),4),
+                                "price":price,
+                                "stopPrice":round(price*(1+stoploss),3),
                                 "quantity":quantity,
-                                "symbol": "XRPUSD_PERP",
+                                "symbol": "XRPUSDT",
                                 "timeInForce": "GTC",
                                 "type": "STOP",
                                 "leverage":leverage
@@ -126,4 +125,4 @@ while True:
                     print("waiting on positions")
             except Exception as e:
                 print(str(e))
-            sleep(1)
+            sleep(30)
