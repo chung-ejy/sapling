@@ -5,10 +5,10 @@ from database.adatabase import ADatabase
 import pandas as pd
 from tqdm import tqdm
 load_dotenv()
+import os
 
-org_id = ""
-key_id = ""
-private_key = ""
+key_id = os.getenv("SEANCOINBASEKEY")
+private_key = os.getenv("SEANCOINBASESECRET")
 api_key = f"organizations/{key_id}"
 api_secret = f"-----BEGIN EC PRIVATE KEY-----\n{private_key}\n-----END EC PRIVATE KEY-----\n"
 
