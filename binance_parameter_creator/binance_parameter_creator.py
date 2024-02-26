@@ -96,5 +96,31 @@ class BinanceParameterCreator(object):
                         "reduceOnly":True
                     }
         return parameter
+    
+    @classmethod
+    def long_take_profit(self,ticker,quantity,price,stopPrice):
+       parameter =  {
+                        "side": "SELL",
+                        "quantity":abs(float(quantity)),
+                        "symbol": ticker,
+                        "type": "TAKE_PROFIT",
+                        "price":float(price),
+                        "stopPrice":round(stopPrice,3),
+                        "reduceOnly":True
+                    }
+       return parameter
+    
+    @classmethod
+    def short_take_profit(self,ticker,quantity,price,stopPrice):
+        parameter =  {
+                        "side": "BUY",
+                        "quantity":abs(float(quantity)),
+                        "symbol": ticker,
+                        "type": "TAKE_PROFIT",
+                        "price":float(price),
+                        "stopPrice":round(stopPrice,3),
+                        "reduceOnly":True
+                    }
+        return parameter
 
     

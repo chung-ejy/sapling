@@ -1,10 +1,8 @@
 from binance.um_futures import UMFutures
 from database.adatabase import ADatabase
-from binance_parameter_creator.binance_parameter_creator import BinanceParameterCreator as bpc
 from binance_strategy.binance_strategy_factory import BinanceStrategyFactory
 from crypto_parameter.acrypto_parameter import ACryptoParameter
 from time import sleep
-import pandas as pd
 
 run = True
 while run == True:
@@ -14,7 +12,6 @@ while run == True:
     keys = db.retrieve("crypto_secrets")
     parameters = db.retrieve("crypto_parameter")
     db.disconnect()
-    ## parameters
     for bot in bots.iterrows():
         user = bot[1]["username"]
         live = bot[1]["live"]
