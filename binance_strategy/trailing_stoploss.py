@@ -11,7 +11,6 @@ class TrailingStopLoss(ABinanceStrategy):
     def logic(self,umf):
 
         account = umf.account()
-        print(account)
         umf.change_leverage(self.ticker,self.leverage)
         balances = pd.DataFrame(umf.balance())
         usdt_balance = balances[balances["asset"]=="USDT"]
@@ -21,7 +20,6 @@ class TrailingStopLoss(ABinanceStrategy):
 
         columns = ["start","open","high","low","close","volumne","end","volume","trades","buy_volumne","base_volume","ignore"]
         df = pd.DataFrame(data=umf.klines(self.ticker,interval="1m"),columns=columns)
-        print(df.head())
         df["date"] = [datetime.utcfromtimestamp(int(x/1000)) for x in df["start"]]
         df.sort_values("date",inplace=True)
         df["close"] = [float(x) for x in df["close"]]
@@ -51,7 +49,7 @@ class TrailingStopLoss(ABinanceStrategy):
                 while breakeven_price == 0:
                     account = umf.account()
                     positions = pd.DataFrame(account["positions"])
-                    xrp_positions = positions[positions["symbol"]==ticker]
+                    xrp_positions = positions[positions["symbol"]==self.ticker]
                     breakeven_price = float(xrp_positions["breakEvenPrice"].item())
                     starting_amount = float(xrp_positions["positionAmt"].item())
                     sleep(1)

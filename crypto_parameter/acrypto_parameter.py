@@ -11,6 +11,8 @@ class ACryptoParameter(object):
                     self.__setattr__(key,int(query[key]))
                 case "profittake":
                     self.__setattr__(key,float(query[key]))
+                case "stoploss":
+                    self.__setattr__(key,float(query[key]))
                 case "leverage":
                     self.__setattr__(key,int(query[key]))
                 case "ticker":
