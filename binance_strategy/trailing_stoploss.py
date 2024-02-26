@@ -16,7 +16,6 @@ class TrailingStopLoss(ABinanceStrategy):
         usdt_balance = balances[balances["asset"]=="USDT"]
         positions = pd.DataFrame(account["positions"])
         xrp_positions = positions[positions["symbol"]==self.ticker]
-        ## signal
 
         columns = ["start","open","high","low","close","volumne","end","volume","trades","buy_volumne","base_volume","ignore"]
         df = pd.DataFrame(data=umf.klines(self.ticker,interval="1m"),columns=columns)
@@ -39,6 +38,7 @@ class TrailingStopLoss(ABinanceStrategy):
         pnl = float(xrp_positions["unrealizedProfit"].item())
         breakeven_price = float(xrp_positions["breakEvenPrice"].item())
         returns = pnl / self.leverage /cash
+
         if cash != 0 and pv == 0:
             umf.cancel_open_orders(self.ticker)
             umf.change_leverage(self.ticker,self.leverage)
@@ -70,14 +70,14 @@ class TrailingStopLoss(ABinanceStrategy):
                 umf.new_order(**bpc.short_trailing_stop(self.ticker,starting_amount,breakeven_price,self.profittake,self.callback))
         else:
             if new_orders.index.size < 2:
-                if returns < -self.stoploss:
+                if returns > -self.deadpoint and returns < -self.stoploss:
                     if float(starting_amount) > 0:
                         try:
                             umf.change_leverage(self.ticker,self.leverage)
                             umf.new_order(**bpc.long_stop_loss(self.ticker,starting_amount,price,breakeven_price))
                         except:
                             umf.change_leverage(self.ticker,self.leverage)
-                            umf.new_order(**bpc.long_stop_loss(self.ticker,starting_amount,price,breakeven_price*(1-self.stoploss),3))
+                            umf.new_order(**bpc.long_stop_loss(self.ticker,starting_amount,price,breakeven_price*(1-self.stoploss)))
                     else:
                         try:
                             umf.change_leverage(self.ticker,self.leverage)

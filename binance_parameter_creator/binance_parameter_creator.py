@@ -72,27 +72,27 @@ class BinanceParameterCreator(object):
         return parameter
     
     @classmethod
-    def long_stop_loss(self,ticker,quantity,price,stoploss):
+    def long_stop_loss(self,ticker,quantity,price,stopPrice):
        parameter =  {
                         "side": "SELL",
                         "quantity":abs(float(quantity)),
                         "symbol": ticker,
                         "type": "STOP",
                         "price":float(price),
-                        "stopPrice":round(price*(1-stoploss),4),
+                        "stopPrice":round(stopPrice,3),
                         "reduceOnly":True
                     }
        return parameter
     
     @classmethod
-    def short_stop_loss(self,ticker,quantity,price,stoploss):
+    def short_stop_loss(self,ticker,quantity,price,stopPrice):
         parameter =  {
                         "side": "BUY",
                         "quantity":abs(float(quantity)),
                         "symbol": ticker,
                         "type": "STOP",
                         "price":float(price),
-                        "stopPrice":round(price*(1+stoploss),4),
+                        "stopPrice":round(stopPrice,3),
                         "reduceOnly":True
                     }
         return parameter

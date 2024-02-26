@@ -12,7 +12,7 @@ while run == True:
     db.cloud_connect()
     bots = db.retrieve("crypto_bots")
     keys = db.retrieve("crypto_secrets")
-    parameter = db.retrieve("crypto_parameter").to_dict("records")[0]
+    parameters = db.retrieve("crypto_parameter")
     db.disconnect()
     ## parameters
     for bot in bots.iterrows():
@@ -20,6 +20,7 @@ while run == True:
         live = bot[1]["live"]
         if live == True:
             try:
+                parameter = parameters[parameters["username"]==user].to_dict("records")[0]
                 secret = keys[keys["username"]==user]["bsecret"].item()
                 key = keys[keys["username"]==user]["bkey"].item()
                 umf = UMFutures(key,secret)
