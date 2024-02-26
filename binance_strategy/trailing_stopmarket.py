@@ -4,7 +4,7 @@ from binance_parameter_creator.binance_parameter_creator import BinanceParameter
 from time import sleep
 from binance_strategy.abinance_strategy import ABinanceStrategy
 
-class TrailingStopLoss(ABinanceStrategy):
+class TrailingStopMarket(ABinanceStrategy):
 
     def __init__(self,parameter):
         super().__init__(parameter)
@@ -17,7 +17,6 @@ class TrailingStopLoss(ABinanceStrategy):
         xrp_positions = positions[positions["symbol"]==self.ticker]
         current_market = self.overhead()
         orders = pd.DataFrame(self.umf.get_all_orders("XRPUSDT"))
-        new_orders = orders[orders["status"]=="NEW"]
         cash = float(usdt_balance["balance"].item())
         signal = current_market["signal"].item()
         
@@ -44,6 +43,8 @@ class TrailingStopLoss(ABinanceStrategy):
                     sleep(1)
                 self.umf.change_leverage(self.ticker,self.leverage)
                 self.umf.new_order(**bpc.long_trailing_stop(self.ticker,starting_amount,breakeven_price,self.profittake,self.callback))
+                self.umf.change_leverage(self.ticker,self.leverage)
+                self.umf.new_order(**bpc.long_stop_market(self.ticker,starting_amount,price,breakeven_price*(1-self.stoploss)))
             elif signal == -1:
                 self.umf.change_leverage(self.ticker,self.leverage)
                 self.umf.new_order(**bpc.short_market_open(self.ticker,quantity))
@@ -57,28 +58,5 @@ class TrailingStopLoss(ABinanceStrategy):
                     sleep(1)
                 self.umf.change_leverage(self.ticker,self.leverage)
                 self.umf.new_order(**bpc.short_trailing_stop(self.ticker,starting_amount,breakeven_price,self.profittake,self.callback))
-        else:
-            if new_orders.index.size < 2:
-                if returns > -self.deadpoint and returns < -self.stoploss:
-                    if float(starting_amount) > 0:
-                        try:
-                            self.umf.change_leverage(self.ticker,self.leverage)
-                            self.umf.new_order(**bpc.long_stop_loss(self.ticker,starting_amount,price,breakeven_price))
-                        except:
-                            self.umf.change_leverage(self.ticker,self.leverage)
-                            self.umf.new_order(**bpc.long_stop_loss(self.ticker,starting_amount,price,breakeven_price*(1-self.stoploss)))
-                    else:
-                        try:
-                            self.umf.change_leverage(self.ticker,self.leverage)
-                            self.umf.new_order(**bpc.short_stop_loss(self.ticker,starting_amount,price,breakeven_price))
-                        except:
-                            self.umf.change_leverage(self.ticker,self.leverage)
-                            self.umf.new_order(**bpc.short_stop_loss(self.ticker,starting_amount,price,breakeven_price*(1+self.stoploss)))
-            else:
-                if returns < -self.deadpoint:
-                    if float(starting_amount) > 0:
-                        self.umf.change_leverage(self.ticker,self.leverage)
-                        self.umf.new_order(**bpc.long_market_close(self.ticker,starting_amount))
-                    else:
-                        self.umf.change_leverage(self.ticker,self.leverage)
-                        self.umf.new_order(**bpc.short_market_close(self.ticker,starting_amount))
+                self.umf.change_leverage(self.ticker,self.leverage)
+                self.umf.new_order(**bpc.short_stop_market(self.ticker,starting_amount,breakeven_price*(1+self.stoploss)))

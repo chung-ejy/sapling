@@ -1,5 +1,3 @@
-
-
 class BinanceParameterCreator(object):
 
     @classmethod
@@ -118,6 +116,30 @@ class BinanceParameterCreator(object):
                         "symbol": ticker,
                         "type": "TAKE_PROFIT",
                         "price":float(price),
+                        "stopPrice":round(stopPrice,3),
+                        "reduceOnly":True
+                    }
+        return parameter
+
+    @classmethod
+    def long_stop_market(self,ticker,quantity,stopPrice):
+       parameter =  {
+                        "side": "SELL",
+                        "quantity":abs(float(quantity)),
+                        "symbol": ticker,
+                        "type": "STOP_MARKET",
+                        "stopPrice":round(stopPrice,3),
+                        "reduceOnly":True
+                    }
+       return parameter
+    
+    @classmethod
+    def short_stop_market(self,ticker,quantity,stopPrice):
+        parameter =  {
+                        "side": "BUY",
+                        "quantity":abs(float(quantity)),
+                        "symbol": ticker,
+                        "type": "STOP_MARKET",
                         "stopPrice":round(stopPrice,3),
                         "reduceOnly":True
                     }

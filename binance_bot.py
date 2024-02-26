@@ -24,7 +24,8 @@ while run == True:
                 param = ACryptoParameter()
                 param.build(parameter)
                 binance_strategy = BinanceStrategyFactory.build(param)
-                binance_strategy.logic(umf)
+                binance_strategy.load_umf(umf)
+                binance_strategy.logic()
             except Exception as e:
                 print(str(e))
             sleep(1)
