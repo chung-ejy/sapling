@@ -3,6 +3,7 @@ from binance_strategy.trailing_stoploss import TrailingStopLoss
 from binance_strategy.takeprofit_market import TakeProfitMarket
 from binance_strategy.market_market import MarketMarket
 from binance_strategy.trailing_stopmarket import TrailingStopMarket
+from binance_strategy.trailing_limit import TrailingLimit
 class BinanceStrategyFactory(object):
 
     @classmethod
@@ -16,5 +17,7 @@ class BinanceStrategyFactory(object):
                 return MarketMarket(parameter)
             case BinanceStrategy.TRAILING_STOPMARKET.value:
                 return TrailingStopMarket(parameter)
+            case BinanceStrategy.TRAILING_LIMIT.value:
+                return TrailingLimit(parameter)
             case _:
                 return None

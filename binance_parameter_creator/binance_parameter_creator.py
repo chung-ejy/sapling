@@ -63,7 +63,7 @@ class BinanceParameterCreator(object):
                     "quantity":abs(float(quantity)),
                     "symbol": ticker,
                     "type": "TRAILING_STOP_MARKET",
-                    "activationPrice":round(price * (1-profittake),4),
+                    "activationPrice":round(price*(1-profittake),4),
                     "callbackRate":float(callback),
                     "reduceOnly":True
                 }
@@ -77,7 +77,7 @@ class BinanceParameterCreator(object):
                         "symbol": ticker,
                         "type": "STOP",
                         "price":float(price),
-                        "stopPrice":round(stopPrice,3),
+                        "stopPrice":round(stopPrice,4),
                         "reduceOnly":True
                     }
        return parameter
@@ -90,7 +90,33 @@ class BinanceParameterCreator(object):
                         "symbol": ticker,
                         "type": "STOP",
                         "price":float(price),
-                        "stopPrice":round(stopPrice,3),
+                        "stopPrice":round(stopPrice,4),
+                        "reduceOnly":True
+                    }
+        return parameter
+    
+    @classmethod
+    def long_limit_close(self,ticker,quantity,stopPrice):
+       parameter =  {
+                        "side": "SELL",
+                        "quantity":abs(float(quantity)),
+                        "symbol": ticker,
+                        "type": "LIMIT",
+                        "timeInForce":"GTC",
+                        "price":round(float(stopPrice),4),
+                        "reduceOnly":True
+                    }
+       return parameter
+    
+    @classmethod
+    def short_limit_close(self,ticker,quantity,stopPrice):
+        parameter =  {
+                        "side": "BUY",
+                        "quantity":abs(float(quantity)),
+                        "symbol": ticker,
+                        "type": "LIMIT",
+                        "timeInForce":"GTC",
+                        "price":round(float(stopPrice),4),
                         "reduceOnly":True
                     }
         return parameter
@@ -103,7 +129,7 @@ class BinanceParameterCreator(object):
                         "symbol": ticker,
                         "type": "TAKE_PROFIT",
                         "price":float(price),
-                        "stopPrice":round(stopPrice,3),
+                        "stopPrice":round(stopPrice,4),
                         "reduceOnly":True
                     }
        return parameter
@@ -116,7 +142,7 @@ class BinanceParameterCreator(object):
                         "symbol": ticker,
                         "type": "TAKE_PROFIT",
                         "price":float(price),
-                        "stopPrice":round(stopPrice,3),
+                        "stopPrice":round(stopPrice,4),
                         "reduceOnly":True
                     }
         return parameter
@@ -128,7 +154,7 @@ class BinanceParameterCreator(object):
                         "quantity":abs(float(quantity)),
                         "symbol": ticker,
                         "type": "STOP_MARKET",
-                        "stopPrice":round(stopPrice,3),
+                        "stopPrice":round(stopPrice,4),
                         "reduceOnly":True
                     }
        return parameter
@@ -140,7 +166,7 @@ class BinanceParameterCreator(object):
                         "quantity":abs(float(quantity)),
                         "symbol": ticker,
                         "type": "STOP_MARKET",
-                        "stopPrice":round(stopPrice,3),
+                        "stopPrice":round(stopPrice,4),
                         "reduceOnly":True
                     }
         return parameter
