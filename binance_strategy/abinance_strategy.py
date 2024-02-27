@@ -16,7 +16,7 @@ class ABinanceStrategy(object):
         df.sort_values("date",inplace=True)
         df["close"] = [float(x) for x in df["close"]]
         df["rolling"] = df["close"].rolling(self.band).mean()
-        df["signal"] = df["rolling"] > df["close"]
+        df["signal"] = df["rolling"] < df["close"]
         df["signal"] = [1 if x == True else -1 for x in df["signal"]]
         return  df.iloc[-1]
         

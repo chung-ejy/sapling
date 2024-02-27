@@ -9,13 +9,13 @@ db = ADatabase("sapling")
 db.cloud_connect()
 bots = db.retrieve("crypto_bots")
 keys = db.retrieve("crypto_secrets")
-parameter = db.retrieve("crypto_parameter")
+parameter= db.retrieve("crypto_parameter").iloc[0]
 db.disconnect()
-ticker = parameter["ticker"].item()
-band = parameter["band"].item()
-stoploss = parameter["stoploss"].item()
-profittake = parameter["profittake"].item()
-leverage = parameter["leverage"].item()
+ticker = parameter["ticker"]
+band = parameter["band"]
+stoploss = parameter["stoploss"]
+profittake = parameter["profittake"]
+leverage = parameter["leverage"]
 for bot in bots.iterrows():
     user = bot[1]["username"]
     live = bot[1]["live"]
