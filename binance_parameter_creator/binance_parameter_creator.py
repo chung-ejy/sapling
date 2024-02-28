@@ -120,6 +120,31 @@ class BinanceParameterCreator(object):
                         "reduceOnly":True
                     }
         return parameter
+
+    @classmethod
+    def long_limit_open(self,ticker,quantity,stopPrice):
+       parameter =  {
+                        "side": "BUY",
+                        "quantity":abs(float(quantity)),
+                        "symbol": ticker,
+                        "type": "LIMIT",
+                        "timeInForce":"GTC",
+                        "price":round(float(stopPrice),4),
+                    }
+       return parameter
+    
+    @classmethod
+    def short_limit_open(self,ticker,quantity,stopPrice):
+        parameter =  {
+                        "side": "SELL",
+                        "quantity":abs(float(quantity)),
+                        "symbol": ticker,
+                        "type": "LIMIT",
+                        "timeInForce":"GTC",
+                        "price":round(float(stopPrice),4),
+                    }
+        return parameter
+    
     
     @classmethod
     def long_take_profit(self,ticker,quantity,price,stopPrice):
