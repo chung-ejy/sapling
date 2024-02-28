@@ -22,7 +22,7 @@ class TrailingStopLoss(ABinanceStrategy):
         signal = current_market["signal"].item()
         
         price = float(current_market["close"].item())
-        quantity = round(float(cash*0.95/price)) * self.leverage
+        quantity = round(float(cash*0.9/price)) * self.leverage
         pv = float(xrp_positions["notional"].item())
         starting_amount = round(float(xrp_positions["positionAmt"].item()))
         pnl = float(xrp_positions["unrealizedProfit"].item())

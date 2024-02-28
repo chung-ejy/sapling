@@ -4,7 +4,7 @@ from binance_parameter_creator.binance_parameter_creator import BinanceParameter
 from time import sleep
 from binance_strategy.abinance_strategy import ABinanceStrategy
 
-class TrailingLimit(ABinanceStrategy):
+class TrailingBE(ABinanceStrategy):
 
     def __init__(self,parameter):
         super().__init__(parameter)
@@ -22,13 +22,12 @@ class TrailingLimit(ABinanceStrategy):
         signal = current_market["signal"].item()
         
         price = float(current_market["close"].item())
-        quantity = round(float(cash*0.95/price)) * self.leverage
+        quantity = round(float(cash*0.90/price)) * self.leverage
         pv = float(xrp_positions["notional"].item())
         starting_amount = round(float(xrp_positions["positionAmt"].item()))
         pnl = float(xrp_positions["unrealizedProfit"].item())
         breakeven_price = float(xrp_positions["breakEvenPrice"].item())
         returns = pnl / self.leverage /cash
-
         if cash != 0 and pv == 0:
             self.umf.cancel_open_orders(self.ticker)
             if signal == 1:
@@ -68,9 +67,10 @@ class TrailingLimit(ABinanceStrategy):
                         self.umf.new_order(**bpc.short_limit_close(self.ticker,starting_amount,breakeven_price))
             else:
                 if returns < -self.deadpoint:
+                    self.umf.cancel_open_orders(self.ticker)
                     if float(starting_amount) > 0:
                         self.umf.change_leverage(self.ticker,self.leverage)
-                        self.umf.new_order(**bpc.long_market_close(self.ticker,starting_amount))
+                        self.umf.new_order(**bpc.long_limit_close(self.ticker,starting_amount,breakeven_price*(1-self.deadpoint+.001)))
                     else:
                         self.umf.change_leverage(self.ticker,self.leverage)
-                        self.umf.new_order(**bpc.short_market_close(self.ticker,starting_amount))
+                        self.umf.new_order(**bpc.short_limit_close(self.ticker,starting_amount,breakeven_price*(1+self.deadpoint-.001)))
