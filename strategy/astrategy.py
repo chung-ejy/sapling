@@ -1,3 +1,4 @@
+from diversifier.diversifier_factory import DiversifierFactory
 
 class AStrategy(object):
 
@@ -11,3 +12,6 @@ class AStrategy(object):
     def signal(self,overhead,ticker_prices):
         ticker_prices[self.strategy.lower()] = ticker_prices["adjclose"]
         return ticker_prices
+    
+    def load_diversifier(self):
+        self.diversifier_set = DiversifierFactory.build(self.diversifier).load()

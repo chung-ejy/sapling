@@ -4,14 +4,14 @@ warnings.simplefilter(action="ignore")
 import pandas as pd
 
 class Backtester(object):
-
+    
     @classmethod
     def backtest(self,strategy,simulation):
         weekday = 4
         trades = simulation[simulation["weekday"]==weekday].copy()
         trades = trades[trades["week"] % int(strategy.holding_period/5) == 0]
         trades.sort_values("date",inplace=True)
-        iteration_trades = trades.copy().sort_values(strategy.strategy.lower(),ascending=strategy.ascending).groupby(["date"]).nth([i for i in range(strategy.positions)]).reset_index()
+        iteration_trades = trades.copy().sort_values(strategy.strategy.lower(),ascending=strategy.ascending).groupby(["date","category"]).first().reset_index()
         iteration_trades.sort_values("date",inplace=True)
         return iteration_trades
     
@@ -22,7 +22,7 @@ class Backtester(object):
         portfolio = portfolio.iloc[:-1]
         portfolio["year"] = [x.year for x in portfolio["date"]]
         portfolio["return"] = portfolio["return"] + 1
-        portfolio["cumulative_return"] = (portfolio["return"].cumprod() - 1) * 100
+        portfolio["cumulative_return"] = portfolio["return"].cumprod()
         return portfolio
     
     @classmethod

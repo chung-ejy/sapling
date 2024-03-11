@@ -82,7 +82,7 @@ class ABinanceStrategy(object):
             except:
                 print(str(e))
             db.drop("crypto_market")
-            db.store("crypto_market",current_market)
+            db.store("crypto_market",pd.DataFrame([current_market]).round(3))
             db.drop("crypto_trades")
             db.store("crypto_trades",trades.sort_values("date",ascending=False).round(3))
             db.disconnect()
