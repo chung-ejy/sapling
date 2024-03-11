@@ -8,6 +8,7 @@ from parameter.aparameter import AParameter
 import pandas as pd
 
 db = ADatabase("sapling")
+market = ADatabase("market")
 today = datetime.now()
 start = datetime.now() - timedelta(days=365.25)
 end = datetime.now() - timedelta(hours=24)
@@ -20,6 +21,10 @@ db.disconnect()
 param = AParameter()
 param.build(parameter)
 sp500 = pd.read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",attrs={"id":"constituents"})[0].rename(columns={"Symbol":"ticker"})
+market.cloud_connect()
+market.drop("sp500")
+market.store("sp500",sp500)
+market.disconnect()
 param.tickers = list(sp500["ticker"].values)
 strat = StrategyFactory.build(param)
 sim = Transformer.transform(strat,start,end)

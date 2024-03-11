@@ -38,7 +38,7 @@ class ALPPaperExtractor(object):
         }
         params = {
             "symbols":ticker,
-            "timeframe":"15min",
+            "timeframe":"1Min",
             "sort":"asc",
             "start":start.strftime("%Y-%m-%d")
         }
@@ -47,3 +47,72 @@ class ALPPaperExtractor(object):
         data =  pd.DataFrame(requestBody.json()["bars"][ticker]).rename(columns={"c":"adjclose","t":"date"})[["date","adjclose"]]
         data["ticker"] = ticker
         return data
+    
+    def account(self):
+        headers = {
+            'APCA-API-KEY-ID': self.key,
+            'APCA-API-SECRET-KEY': self.secret,
+            'accept': 'application/json'
+        }
+        params = {}
+        url = "https://paper-api.alpaca.markets/v2/account"
+        requestBody = r.get(url,params=params,headers=headers)
+        return requestBody.json()
+
+    def buy(self,ticker,notional):
+        headers = {
+            'APCA-API-KEY-ID': self.key,
+            'APCA-API-SECRET-KEY': self.secret,
+            "accept": "application/json",
+            "content-type": "application/json"
+        }
+        data = {
+            "side": "buy",
+            "type": "market",
+            "time_in_force": "ioc",
+            "symbol": ticker,
+            "notional": notional
+            }
+        url = "https://paper-api.alpaca.markets/v2/orders"
+        requestBody = r.post(url,json=data,headers=headers)
+        return requestBody.json()
+    
+    def sell(self,ticker,notional):
+        headers = {
+            'APCA-API-KEY-ID': self.key,
+            'APCA-API-SECRET-KEY': self.secret,
+            "accept": "application/json",
+            "content-type": "application/json"
+        }
+        data = {
+            "side": "sell",
+            "type": "market",
+            "time_in_force": "ioc",
+            "symbol": ticker,
+            "notional": notional
+            }
+        url = "https://paper-api.alpaca.markets/v2/orders"
+        requestBody = r.post(url,json=data,headers=headers)
+        return requestBody.json()
+    
+    def close(self):
+        headers = {
+            'APCA-API-KEY-ID': self.key,
+            'APCA-API-SECRET-KEY': self.secret,
+            "accept":"application/json"
+        }
+        params = {}
+        url = "https://paper-api.alpaca.markets/v2/positions?cancel_orders=true"
+        requestBody = r.delete(url,params=params,headers=headers)
+        return requestBody.json()
+    
+    def positions(self):
+        headers = {
+            'APCA-API-KEY-ID': self.key,
+            'APCA-API-SECRET-KEY': self.secret,
+            "accept":"application/json"
+        }
+        params = {}
+        url = "https://paper-api.alpaca.markets/v2/positions"
+        requestBody = r.get(url,params=params,headers=headers)
+        return requestBody.json()
