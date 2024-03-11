@@ -32,27 +32,27 @@ trades = Backtester.backtest(strat,sim)
 recs = Backtester.recommendations(trades)
 print(recs[["date","ticker","buy_date","sell_date"]].to_dict("records"))
 
-# for bot in bots.iterrows():
-#     try:
-#         user = bot[1]["username"]
-#         live = bot[1]["live"]
-#         user_keys = keys[keys["username"]==user].to_dict("records")[0]
-#         secret = user_keys["secret"]
-#         key = user_keys["key"]
-#         alp_client = ALPClientExtractor(key,secret)
-#         positions = recs.index.size
-#         account = alp_client.account()
-#         cash = float(account["cash"])
-#         notional = float(cash/positions)
-#         if live == True:
-#             if today.weekday() == 0:
-#                 for row in recs.iterrows():
-#                     ticker = row[1]["ticker"]
-#                     alp_client.buy(ticker,notional)
-#             elif today.weekday() == 4:
-#                 alp_client.close()
-#             else:
-#                 continue
-#     except Exception as e:
-#         print(str(e))
-#         continue
+for bot in bots.iterrows():
+    try:
+        user = bot[1]["username"]
+        live = bot[1]["live"]
+        user_keys = keys[keys["username"]==user].to_dict("records")[0]
+        secret = user_keys["secret"]
+        key = user_keys["key"]
+        alp_client = ALPClientExtractor(key,secret)
+        positions = recs.index.size
+        account = alp_client.account()
+        cash = float(account["cash"])
+        notional = float(cash/positions)
+        if live == True:
+            if today.weekday() == 0:
+                for row in recs.iterrows():
+                    ticker = row[1]["ticker"]
+                    alp_client.buy(ticker,notional)
+            elif today.weekday() == 4:
+                alp_client.close()
+            else:
+                continue
+    except Exception as e:
+        print(str(e))
+        continue
