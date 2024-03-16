@@ -7,6 +7,26 @@ class ALPClientExtractor(object):
         self.key = key
         self.secret = secret
             
+    def prices(self,ticker,start,end):
+        headers = {
+            'APCA-API-KEY-ID': self.key,
+            'APCA-API-SECRET-KEY': self.secret,
+            'accept': 'application/json'
+        }
+        params = {
+            "symbols":ticker,
+            "adjustment":"split",
+            "timeframe":"1Day",
+            "feed":"sip",
+            "sort":"asc",
+            "start":start.strftime("%Y-%m-%d"),
+        }
+        url = "https://data.alpaca.markets/v2/stocks/bars"
+        requestBody = r.get(url,params=params,headers=headers)
+        data =  pd.DataFrame(requestBody.json()["bars"][ticker]).rename(columns={"c":"adjclose","t":"date"})[["date","adjclose"]]
+        data["ticker"] = ticker
+        return data
+    
     def account(self):
         headers = {
             'APCA-API-KEY-ID': self.key,
