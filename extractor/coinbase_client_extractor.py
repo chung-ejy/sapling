@@ -23,4 +23,7 @@ class CoinbaseClientExtractor(object):
                 }
             }
         self.client.create_order(client_order_id="",product_id=ticker,side="SELL",order_configuration=order_config,leverage=leverage)
+    
+    def prices(self,ticker,start,end):
+        return self.client.get_candles(ticker,start,end,"15MIN")
         
