@@ -9,7 +9,7 @@ load_dotenv()
 import os
 
 end = datetime.now()
-start = datetime.now() - timedelta(days=365.25*20)
+start = datetime.now() - timedelta(days=365.25*2)
 market = ADatabase("market")
 
 market.connect()
@@ -18,8 +18,8 @@ tickers = market.retrieve("sp500")["ticker"].values
 market.drop("prices")
 for ticker in tqdm(tickers):
     try:
-        # ticker_prices = processor.column_date_processing(ALPClientExtractor(os.getenv("APCAKEY"),os.getenv("APCASECRET")).prices(ticker,start,end))
-        ticker_prices = processor.column_date_processing(TiingoExtractor.prices(ticker,start,end))
+        ticker_prices = processor.column_date_processing(ALPClientExtractor(os.getenv("APCAKEY"),os.getenv("APCASECRET")).prices(ticker,start,end))
+        # ticker_prices = processor.column_date_processing(TiingoExtractor.prices(ticker,start,end))
         ticker_prices["ticker"] = ticker
         ticker_prices.sort_values("date",inplace=True)  
         market.store("prices",ticker_prices)
