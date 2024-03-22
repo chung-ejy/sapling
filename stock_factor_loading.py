@@ -31,7 +31,7 @@ def calculate_expected_return(row, factors):
 sp500 = pd.read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",attrs={"id":"constituents"})[0].rename(columns={"Symbol":"ticker"})
 
 simulation = []
-for ticker in sp500["ticker"][::10]:
+for ticker in sp500["ticker"]:
     try:
         ticker_prices = processor.column_date_processing(alp_client.prices(ticker,start,end))
         ticker_prices["ticker"] = ticker
@@ -57,17 +57,17 @@ trades.sort_values("date",inplace=True)
 iteration_trades = trades.copy().sort_values(ranker,ascending=ascending).groupby("date").nth([i for i in range(positions)]).reset_index()
 iteration_trades.sort_values("date",inplace=True)
 recommendations = iteration_trades[iteration_trades["date"]==iteration_trades["date"].max()].copy()
-print(recommendations)
-# try:
-#     if today.weekday() == 0:
-#         positions = recommendations.index.size
-#         notional = math.floor(float(cash/positions)*100)/100
-#         for row in recommendations.iterrows():
-#             ticker = row[1]["ticker"]
-#             print(alp_client.buy(ticker,notional))
-#     elif today.weekday() == 4:
-#         print(alp_client.close())
-#     else:
-#         print(recommendations.head())
-# except Exception as e:
-#     print(str(e))
+
+try:
+    if today.weekday() == 0:
+        positions = recommendations.index.size
+        notional = math.floor(float(cash/positions)*100)/100
+        for row in recommendations.iterrows():
+            ticker = row[1]["ticker"]
+            print(alp_client.buy(ticker,notional))
+    elif today.weekday() == 4:
+        print(alp_client.close())
+    else:
+        print(recommendations.head())
+except Exception as e:
+    print(str(e))
