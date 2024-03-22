@@ -9,7 +9,7 @@ load_dotenv()
 import os
 
 end = datetime.now()
-start = datetime.now() - timedelta(days=365.25*2)
+start = datetime.now() - timedelta(days=365.25  *2)
 market = ADatabase("market")
 
 market.connect()
