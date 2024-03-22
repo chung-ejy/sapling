@@ -2,3 +2,4 @@ pandas==2.1.2
 python-dotenv==0.19.2
 requests==2.31.0
 certifi==2021.10.8
+lxml==4.9.3

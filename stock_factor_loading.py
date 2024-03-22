@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
+from time import sleep
 load_dotenv()
 import os
 import warnings
@@ -44,6 +45,7 @@ for ticker in sp500["ticker"][::10]:
         ticker_prices["sell_price"] = ticker_prices["adjclose"].shift(-holding_period)
         ticker_prices["return"] = (ticker_prices["sell_price"] - ticker_prices["buy_price"]) / ticker_prices["buy_price"]
         simulation.append(ticker_prices)
+        sleep(0.5)
     except Exception as e:
         print(ticker,str(e))
         continue
