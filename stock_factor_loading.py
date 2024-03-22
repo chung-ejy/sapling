@@ -1,6 +1,5 @@
 from processor.processor import Processor as processor
 from extractor.alp_client_extractor import ALPClientExtractor
-from database.adatabase import ADatabase
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
@@ -16,7 +15,6 @@ secret = os.getenv("APCASECRET")
 alp_client = ALPClientExtractor(key,secret)
 account = alp_client.account()
 cash = float(account["cash"])
-market = ADatabase("market")
 holding_period = 5
 stoploss = 1
 positions = 1
@@ -33,7 +31,6 @@ def calculate_expected_return(row, factors):
 sp500 = pd.read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",attrs={"id":"constituents"})[0].rename(columns={"Symbol":"ticker"})
 
 simulation = []
-market.connect()
 for ticker in tqdm(sp500["ticker"][::10]):
     try:
         ticker_prices = processor.column_date_processing(alp_client.prices(ticker,start,end))

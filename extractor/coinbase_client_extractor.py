@@ -1,8 +1,7 @@
 from coinbase.rest import RESTClient
 from dotenv import load_dotenv
 load_dotenv()
-import os
-import random
+
 class CoinbaseClientExtractor(object):
     
     def __init__(self,key,secret):
