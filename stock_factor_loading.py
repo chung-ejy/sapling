@@ -1,7 +1,9 @@
 from processor.processor import Processor as processor
+from database.adatabase import ADatabase
 from extractor.alp_client_extractor import ALPClientExtractor
 import pandas as pd
 import numpy as np
+import math
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from time import sleep
@@ -23,6 +25,11 @@ ascending = False
 end = datetime.now()
 start = datetime.now() - timedelta(days=365.25)
 today = datetime.now()
+
+db = ADatabase("sapling")
+db.cloud_connect()
+keys = db.retrieve("secrets")
+db.disconnect()
 
 def calculate_expected_return(row, factors):
     factor_loadings = [row[factor] * row[f"{factor}_beta"] for factor in factors]
@@ -58,16 +65,21 @@ iteration_trades = trades.copy().sort_values(ranker,ascending=ascending).groupby
 iteration_trades.sort_values("date",inplace=True)
 recommendations = iteration_trades[iteration_trades["date"]==iteration_trades["date"].max()].copy()
 
-try:
-    if today.weekday() == 0:
-        positions = recommendations.index.size
-        notional = math.floor(float(cash/positions)*100)/100
-        for row in recommendations.iterrows():
-            ticker = row[1]["ticker"]
-            print(alp_client.buy(ticker,notional))
-    elif today.weekday() == 4:
-        print(alp_client.close())
-    else:
-        print(recommendations.head())
-except Exception as e:
-    print(str(e))
+for row in keys.iterrows():
+    try:
+        alp_client = ALPClientExtractor(row[1]["key"],row[1]["secret"])
+        account = alp_client.account()
+        cash = float(account["cash"])
+        notional = round(math.floor(float(cash/positions)*100) / 100.00,2)
+        print(cash,notional)
+        # if today.weekday() == 0 and notional > 0:
+        #     for row in recommendations.iterrows():
+        #         ticker = row[1]["ticker"]
+        #         alp_client.buy(ticker,notional)
+        # elif today.weekday() == 4:
+        #     alp_client.close()
+        # else:
+        #     continue
+    except Exception as e:
+        print(str(e))
+        continue
