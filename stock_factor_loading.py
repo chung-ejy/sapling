@@ -20,8 +20,8 @@ cash = float(account["cash"])
 holding_period = 5
 stoploss = 1
 positions = 1
-ranker = "coev"
-ascending = False
+ranker = "average_return"
+ascending = True
 end = datetime.now()
 start = datetime.now() - timedelta(days=365.25)
 today = datetime.now()
@@ -56,6 +56,7 @@ for ticker in sp500["ticker"]:
     except Exception as e:
         print(ticker,str(e))
         continue
+    
 sim = pd.concat(simulation)
 
 trades = sim[sim["weekday"]==4].copy()
