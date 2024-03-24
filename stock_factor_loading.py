@@ -64,14 +64,13 @@ trades.sort_values("date",inplace=True)
 iteration_trades = trades.copy().sort_values(ranker,ascending=ascending).groupby("date").nth([i for i in range(positions)]).reset_index()
 iteration_trades.sort_values("date",inplace=True)
 recommendations = iteration_trades[iteration_trades["date"]==iteration_trades["date"].max()].copy()
-print(recommendations[["date","ticker"]])
+
 for row in keys.iterrows():
     try:
         alp_client = ALPClientExtractor(row[1]["key"],row[1]["secret"])
         account = alp_client.account()
         cash = float(account["cash"])
         notional = round(math.floor(float(cash/positions)*100) / 100.00,2)
-        print(cash,notional)
         if today.weekday() == 0 and notional > 0:
             for row in recommendations.iterrows():
                 ticker = row[1]["ticker"]
