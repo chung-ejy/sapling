@@ -34,7 +34,7 @@ sec = ADatabase("sec")
 market = ADatabase("market")
 fred = ADatabase("fred")
 db = ADatabase("sapling")
-sp500 = pd.read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",attrs={"id":"constituents"})[0].rename(columns={"Symbol":"ticker"})
+
 
 ## extract fred data
 sp500 = FREDExtractor.sp500(start,end)
@@ -46,22 +46,23 @@ fred.store("sp500",sp500)
 fred.store("market_yield",market_yield)
 fred.disconnect()
 
+sp500 = pd.read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",attrs={"id":"constituents"})[0].rename(columns={"Symbol":"ticker"})
 ## extract price data
-market.cloud_connect()
-tickers = []
-tickers.extend(sp500["ticker"].values)
-market.drop("prices")
-for ticker in tqdm(tickers):
-    try:
-        if "." not in ticker:
-            ticker_prices = processor.column_date_processing(TiingoExtractor.prices(ticker,start,end))
-            ticker_prices["ticker"] = ticker
-            ticker_prices.sort_values("date",inplace=True)  
-            market.store("prices",ticker_prices)
-    except Exception as e:
-        print(ticker,str(e))
-market.create_index("prices","ticker")
-market.disconnect()
+# market.cloud_connect()
+# tickers = []
+# tickers.extend(sp500["ticker"].values)
+# market.drop("prices")
+# for ticker in tqdm(tickers):
+#     try:
+#         if "." not in ticker:
+#             ticker_prices = processor.column_date_processing(TiingoExtractor.prices(ticker,start,end))
+#             ticker_prices["ticker"] = ticker
+#             ticker_prices.sort_values("date",inplace=True)  
+#             market.store("prices",ticker_prices)
+#     except Exception as e:
+#         print(ticker,str(e))
+# market.create_index("prices","ticker")
+# market.disconnect()
 
 fred.cloud_connect()
 market_yield = fred.retrieve("market_yield")
@@ -302,7 +303,9 @@ t["return"] = (t["adjclose"] - t["buy_price"]) / t["buy_price"]
 
 db.cloud_connect()
 db.drop("trades")
+db.drop("holdings")
 db.drop("visualization")
 db.store("visualization",visualization)
-db.store("trades",trades)
+db.store("trades",t)
+db.store("holdings",holdings)
 db.disconnect() 
