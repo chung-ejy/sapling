@@ -1,0 +1,10 @@
+*.csv
+.env
+*/__pycache__/
+*.pkl
+catboost_info/
+.ipynb_checkpoints/
+sec/
+node_modules/
+venv/
+.venv/
