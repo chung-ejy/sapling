@@ -145,7 +145,7 @@ sim = sim[(sim["date"]>datetime(2024,1,1).astimezone(pytz.utc))].dropna()
 start = sim["date"].min()
 end = sim["date"].max()
 date = start
-number_of_stocks = 5
+number_of_stocks = 1
 portfolio = {
     "date": date,
     "tax": 0,
