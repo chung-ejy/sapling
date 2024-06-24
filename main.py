@@ -234,7 +234,7 @@ for date in sim.sort_values("date")["date"].unique():
                             position["options"][j] = option
                             bond = Bond.buy(opportunity_row, bond, notional * 0.4)
                             position["bonds"][j] = bond
-                    positions[i] = position
+                positions[i] = position
             portfolio["positions"] = positions
             if date == sim["date"].min():
                 for i in range(11):
