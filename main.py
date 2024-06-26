@@ -58,7 +58,7 @@ for ticker in tqdm(tickers):
             ticker_prices = processor.column_date_processing(TiingoExtractor.prices(ticker,start,end))
             ticker_prices["ticker"] = ticker
             ticker_prices.sort_values("date",inplace=True)  
-            market.store("prices",ticker_prices)
+            market.store("prices",ticker_prices[["ticker","date","adjclose"]])
     except Exception as e:
         print(ticker,str(e))
 market.create_index("prices","ticker")
