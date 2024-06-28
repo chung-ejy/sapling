@@ -228,11 +228,11 @@ for date in sim.sort_values("date")["date"].unique():
                             position["options"][j] = option
                             bond = Bond.sell(row, bond)
                             position["bonds"][j] = bond
-                            stock = Stock.buy(opportunity_row, stock, notional * 0.6)
+                            stock = Stock.buy(opportunity_row, stock, notional * 1)
                             position["stocks"][j] = stock
                             option = Option.buy(opportunity_row, option, notional * 0.0)
                             position["options"][j] = option
-                            bond = Bond.buy(opportunity_row, bond, notional * 0.4)
+                            bond = Bond.buy(opportunity_row, bond, notional * 0.0)
                             position["bonds"][j] = bond
                 positions[i] = position
             portfolio["positions"] = positions
@@ -250,11 +250,11 @@ for date in sim.sort_values("date")["date"].unique():
                         option = options[j]
                         bond = bonds[j]
                         row = today[today["GICS Sector"] == sector].sort_values("expected_return", ascending=False).iloc[j]
-                        stock = Stock.buy(row, stock, notional * 0.6)
+                        stock = Stock.buy(row, stock, notional * 1)
                         position["stocks"][j] = stock
                         option = Option.buy(row, option, notional * 0.0)
                         position["options"][j] = option
-                        bond = Bond.buy(row, bond, notional * 0.4)
+                        bond = Bond.buy(row, bond, notional * 0.0)
                         position["bonds"][j] = bond
                     positions[i] = position
                 portfolio["positions"] = positions
