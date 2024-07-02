@@ -18,61 +18,26 @@ from database.adatabase import ADatabase
 warnings.simplefilter(action="ignore")
 
 end = datetime.now()
-start = datetime.now() - timedelta(days=365.25*10)
-factors =  [
-            "assets"
-            ,"liabilities"
-            ,"netincomeloss"
-            ,"adjclose" 
-            ,"rf"
-            ,"spy"
-           ]
-required = ["year","quarter","ticker"]
-required.extend(factors)
-market = ADatabase("market")
-sec = ADatabase("sec")
-market = ADatabase("market")
-fred = ADatabase("fred")
+start = datetime.now() - timedelta(days=365.25*5)
 db = ADatabase("sapling")
 
 
 ## extract fred data
-sp500 = FREDExtractor.sp500(start,end)
+spy = FREDExtractor.sp500(start,end)
 market_yield = FREDExtractor.market_yield(start,end)
-fred.cloud_connect()
-fred.drop("sp500")
-fred.drop("market_yield")
-fred.store("sp500",sp500)
-fred.store("market_yield",market_yield)
-fred.disconnect()
-
 sp500 = pd.read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",attrs={"id":"constituents"})[0].rename(columns={"Symbol":"ticker"})
 # extract price data
-market.cloud_connect()
 tickers = []
 tickers.extend(sp500["ticker"].values)
-market.drop("prices")
-for ticker in tqdm(tickers):
-    try:
-        if "." not in ticker:
-            ticker_prices = processor.column_date_processing(TiingoExtractor.prices(ticker,start,end))
-            ticker_prices["ticker"] = ticker
-            ticker_prices.sort_values("date",inplace=True)  
-            market.store("prices",ticker_prices[["ticker","date","adjclose"]])
-    except Exception as e:
-        print(ticker,str(e))
-market.create_index("prices","ticker")
-market.disconnect()
-
 db.cloud_connect()
 sim = db.retrieve("sim")
 db.disconnect()
 
 prices = []
-market.cloud_connect()
 for ticker in tqdm(sim["ticker"].unique()):
     try:
-        price = processor.column_date_processing(market.query("prices",{"ticker":ticker}))
+        price = processor.column_date_processing(processor.column_date_processing(TiingoExtractor.prices(ticker,start,end)))
+        prices["ticker"] = ticker
         price.sort_values("date",inplace=True)
         price["sigma"] = price["adjclose"].pct_change(262).rolling(262).std()
         price = price.merge(spy[["date","spy"]],on="date",how="left")
@@ -95,7 +60,6 @@ for ticker in tqdm(sim["ticker"].unique()):
     except Exception as e:
         print(ticker,str(e))
         continue
-market.disconnect()
 
 sim = pd.concat(prices)[["date","quarter","weekday","ticker","adjclose","GICS Sector","expected_return","excess_return","coev","absolute_return","type","rf","sigma","z_score"]]
 sim = sim[(sim["date"]>datetime(2024,1,1).astimezone(pytz.utc))].dropna()
