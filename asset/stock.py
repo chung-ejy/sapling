@@ -21,7 +21,6 @@ class Stock(object):
     def buy(self,row,asset,notional):
         updated = asset.copy()
         updated["ticker"] = row["ticker"]
-        updated["type"] = row["type"]
         updated["expected_return"] = row["expected_return"]
         updated["adjclose"] = row["adjclose"]
         updated["buy_price"] = row["adjclose"]

@@ -64,51 +64,9 @@ for ticker in tqdm(tickers):
 market.create_index("prices","ticker")
 market.disconnect()
 
-fred.cloud_connect()
-market_yield = fred.retrieve("market_yield")
-market_yield = market_yield.rename(columns={"value":"rf"})
-market_yield["rf"] = market_yield["rf"].replace(".",np.nan)
-market_yield.dropna(inplace=True)
-market_yield["rf"] = [float(x)/100 for x in market_yield["rf"]]
-market_yield["date"] = market_yield["date"].shift(-5)
-market_yield = processor.column_date_processing(market_yield)
-spy = fred.retrieve("sp500")
-spy = spy.rename(columns={"value":"spy"})
-spy["spy"] = spy["spy"].replace(".",np.nan)
-spy.dropna(inplace=True)
-spy["spy"] = [float(x) for x in spy["spy"]]
-spy = processor.column_date_processing(spy)
-fred.disconnect()
-
-data = []
-sec.cloud_connect()
-market.cloud_connect()
-for ticker in tqdm(sp500["ticker"]):
-    try:
-        cik = int(sp500[sp500["ticker"]==ticker]["CIK"].item())
-        filing = sec.query("filings",{"cik":cik}).drop("date",axis=1)
-        prices = processor.column_date_processing(market.query("prices",{"ticker":ticker})).drop("date",axis=1)
-        filing["ticker"] = ticker
-        filing["year"] = filing["year"] + 1
-        ticker_data = prices.merge(filing,on=["year","quarter","ticker"],how="left")
-        ticker_data = ticker_data.merge(market_yield[["year","quarter","rf"]].groupby(["year","quarter"]).mean().reset_index(),on=["year","quarter"],how="left")
-        ticker_data = ticker_data.merge(spy[["year","quarter","spy"]].groupby(["year","quarter"]).mean().reset_index(),on=["year","quarter"],how="left")
-        ticker_data = ticker_data.groupby(["year","quarter","ticker"]).mean().reset_index()
-        ticker_data.sort_values(["year","quarter"],inplace=True)
-        ticker_data["y"] = ticker_data["adjclose"].shift(-1)
-        data.append(ticker_data.bfill().ffill().dropna())
-    except Exception as e:
-        print(ticker,str(e))
-        continue
-sec.disconnect()
-market.disconnect()
-
-training_data = pd.concat(data).sort_values(["year","quarter"]).merge(sp500[["ticker","GICS Sector"]],on="ticker")
-model = XGBRegressor(fit_intercept=True)
-model_data = training_data[(training_data["year"]<=2023) & (training_data["year"]>=2016)].dropna()
-sim = training_data[(training_data["year"]>=2022)]
-model.fit(model_data[factors],model_data["y"])
-sim["prediction"] = model.predict(sim[factors])
+db.cloud_connect()
+sim = db.retrieve("sim")
+db.disconnect()
 
 prices = []
 market.cloud_connect()

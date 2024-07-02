@@ -6,7 +6,7 @@ class ALPClientExtractor(object):
     def __init__(self,key,secret):
         self.key = key
         self.secret = secret
-            
+
     def prices(self,ticker,start,end):
         headers = {
             'APCA-API-KEY-ID': self.key,
