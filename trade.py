@@ -15,13 +15,14 @@ while True:
         tickers = sp500["ticker"]
         trading_client = AlpacaPaperClient()
         prices = processor.column_date_processing(trading_client.bar(tickers))
-        db.cloud_connect()
-        sim = db.retrieve("sim")
-        db.disconnect()
-        sim = prices.merge(sim[["year","quarter","ticker","GICS Sector","prediction"]],on=["year","quarter","ticker"],how="left").dropna()
-        sim["expected_return"] = (sim["prediction"] - sim["adjclose"]) / sim["adjclose"]
-        trader = LiveTrader(trading_client=trading_client,parameters=AParameters())
-        trader.trade(sim)
+        if prices.index.size > 0:
+            db.cloud_connect()
+            sim = db.retrieve("sim")
+            db.disconnect()
+            sim = prices.merge(sim[["year","quarter","ticker","GICS Sector","prediction"]],on=["year","quarter","ticker"],how="left").dropna()
+            sim["expected_return"] = (sim["prediction"] - sim["adjclose"]) / sim["adjclose"]
+            trader = LiveTrader(trading_client=trading_client,parameters=AParameters())
+            trader.trade(sim)
     except Exception as e:
         print(str(e))
     sleep(60)

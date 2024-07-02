@@ -2,6 +2,7 @@ import pandas as pd
 from trading_client.atradingclient import ATradingClient
 from parameters.AParameters import AParameters
 from time import sleep
+
 class LiveTrader(object):
 
     def __init__(self,trading_client: ATradingClient,parameters: AParameters):
@@ -29,27 +30,29 @@ class LiveTrader(object):
                 if position == {} and cash > 1 and cash >= notional:
                     ticker = recommendation["ticker"]
                     price = round(recommendation["adjclose"],2)
-                    amount = int(notional/price)
+                    amount = max(1,int(notional/price))
                     self.trading_client.buy(ticker,price,amount)
                 elif position != {}:
                     price = round(position["current_price"],2)
                     amount = position["qty"]
                     ticker = position["ticker"]
-                    if True:
+                    if position["expected_return"] <= 0:
                         self.trading_client.sell(ticker,price,amount)
                         orders = self.trading_client.orders()
+                        account = self.trading_client.account()
+                        cash = float(account["cash"])
                         while orders.index.size > 0:
                             orders = self.trading_client.orders()
-                            sleep(1)
-                        notional = price * amount
+                            account = self.trading_client.account()
+                            cash = float(account["cash"])
+                            sleep(5)
                         ticker = recommendation["ticker"]
                         price = round(recommendation["adjclose"],2)
-                        amount = int(notional/price)
+                        amount = max(1,int(notional/price))
                         self.trading_client.buy(ticker,price,amount)
-                    else:
-                        continue
                 else:
                     continue
             except Exception as e:
                 str(e)
+            sleep(1)
                 

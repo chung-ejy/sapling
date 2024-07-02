@@ -10,7 +10,7 @@ import os
 import pandas as pd
 
 end = datetime.now()
-start = datetime.now() - timedelta(days=365.25*20)
+start = datetime.now() - timedelta(days=365.25*10)
 market = ADatabase("market")
 
 market.connect()
