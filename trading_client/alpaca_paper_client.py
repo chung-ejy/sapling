@@ -48,7 +48,7 @@ class AlpacaPaperClient(ATradingClient):
         parameters = {
             "side": "buy",
             "type": "limit",
-            "time_in_force": "gtc",
+            "time_in_force": "day",
             "symbol": ticker,
             "limit_price": price,
             "qty": amount
@@ -61,7 +61,7 @@ class AlpacaPaperClient(ATradingClient):
         parameters = {
             "side": "sell",
             "type": "limit",
-            "time_in_force": "gtc",
+            "time_in_force": "day",
             "symbol": ticker,
             "limit_price": price,
             "qty": amount
