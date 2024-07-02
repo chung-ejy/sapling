@@ -49,7 +49,7 @@ class LiveTrader(object):
                 ticker = position["ticker"]
                 if ticker != recommendation["ticker"] and position["expected_return"] <= 0:
                     self.trading_client.sell(ticker,price,amount)
-                    sleep(5)
+                    sleep(1)
                     orders = self.trading_client.orders()
                     orders = orders[orders["symbol"]==ticker]
                     account = self.trading_client.account()
