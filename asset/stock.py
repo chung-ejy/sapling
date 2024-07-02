@@ -5,8 +5,6 @@ class Stock(object):
     def update(self,row,asset):
         updated = asset.copy()
         updated["adjclose"] = row["adjclose"]
-        # updated["returns"] = (updated["adjclose"] - updated["buy_price"]) / updated["buy_price"] 
-        # updated["remaining_returns"] = updated["expected_return"] - updated["returns"]
         updated["expected_return"] = row["expected_return"]
         updated["pv"] = updated["adjclose"] * updated["quantity"]
         return updated

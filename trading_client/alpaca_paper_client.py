@@ -2,18 +2,23 @@ import os
 import requests as r
 import pandas as pd
 from dotenv import load_dotenv
+from trading_client.atradingclient import ATradingClient
 load_dotenv()
-secret = os.getenv("APCAPAPERSECRET")
-key = os.getenv("APCAPAPERKEY")
 
-class AlpacaPaperClient(object):
+class AlpacaPaperClient(ATradingClient):
 
     def __init__(self):
+        super().__init__()
         self.headers = {
-            'APCA-API-KEY-ID': key,
-            'APCA-API-SECRET-KEY': secret,
+            'APCA-API-KEY-ID': os.getenv("APCAPAPERKEY"),
+            'APCA-API-SECRET-KEY': os.getenv("APCAPAPERSECRET"),
             'accept': 'application/json'
         }
+
+    def orders(self):
+        url = "https://paper-api.alpaca.markets/v2/orders"
+        response = r.get(url,headers=self.headers).json()
+        return pd.DataFrame(response)
     
     def bar(self,tickers):
         url = "https://data.alpaca.markets/v2/stocks/bars/latest"
