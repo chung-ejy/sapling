@@ -1,4 +1,3 @@
-from xgboost import XGBRegressor
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
@@ -11,14 +10,14 @@ import pytz
 import copy
 from processor.processor import Processor as processor
 from database.adatabase import ADatabase
-from extractor.tiingo_extractor import TiingoExtractor
+from extractor.alp_client_extractor import ALPClientExtractor
 from extractor.fred_extractor import FREDExtractor
 from datetime import datetime, timedelta
 from database.adatabase import ADatabase
 warnings.simplefilter(action="ignore")
 
 end = datetime.now()
-start = datetime.now() - timedelta(days=365.25*5)
+start = datetime.now() - timedelta(days=365.25*2)
 db = ADatabase("sapling")
 
 
@@ -36,7 +35,7 @@ db.disconnect()
 prices = []
 for ticker in tqdm(sim["ticker"].unique()):
     try:
-        price = processor.column_date_processing(processor.column_date_processing(TiingoExtractor.prices(ticker,start,end)))
+        price = processor.column_date_processing(processor.column_date_processing(ALPClientExtractor.prices(ticker,start,end)))
         prices["ticker"] = ticker
         price.sort_values("date",inplace=True)
         price["sigma"] = price["adjclose"].pct_change(262).rolling(262).std()
