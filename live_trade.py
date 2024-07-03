@@ -41,4 +41,4 @@ while True:
             trader.trade(sim)
     except Exception as e:
         print(str(e))
-    sleep(60)
+    sleep(30)
