@@ -27,8 +27,8 @@ while True:
             for ticker in tickers:
                 try:
                     price = processor.column_date_processing(
-                        ALPClientExtractor(os.getenv("APCAKEY"),os.getenv("APCASECRET")).prices_minute(
-                            ticker,datetime.now() - timedelta(minutes=100),datetime.now())).sort_values("date")
+                        ALPClientExtractor(os.getenv("APCAKEY"),os.getenv("APCASECRET")).prices(
+                            ticker,datetime.now() - timedelta(days=150),datetime.now())).sort_values("date")
                     price["average_return"] = price["adjclose"].pct_change(60)
                     sim.append(price.iloc[-1].dropna())
                     sleep(0.2)
