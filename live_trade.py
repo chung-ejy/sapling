@@ -1,5 +1,5 @@
 from trader.live_trader import LiveTrader
-from trading_client.alpaca_paper_client import AlpacaPaperClient
+from trading_client.alpaca_live_client import AlpacaLiveClient
 from strategy.average_return_strategy import AverageReturnStrategy
 from parameter.aparameter import AParameter
 import pandas as pd
@@ -14,11 +14,12 @@ from extractor.alp_client_extractor import ALPClientExtractor
 from dotenv import load_dotenv
 load_dotenv()
 db = ADatabase("sapling")
+from tqdm import tqdm
 while True:
     try:
         sp500 = pd.read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",attrs={"id":"constituents"})[0].rename(columns={"Symbol":"ticker"})
         tickers = sp500["ticker"]
-        trading_client = AlpacaPaperClient()
+        trading_client = AlpacaLiveClient()
         strategy = AverageReturnStrategy(AParameter(1))
         prices = processor.column_date_processing(trading_client.bar(tickers))
         if prices.index.size > 0:
@@ -29,12 +30,13 @@ while True:
                         ALPClientExtractor(os.getenv("APCAKEY"),os.getenv("APCASECRET")).prices_minute(
                             ticker,datetime.now() - timedelta(minutes=100),datetime.now())).sort_values("date")
                     price["average_return"] = price["adjclose"].pct_change(60)
-                    sim.append(price.dropna())
+                    sim.append(price.iloc[-1].dropna())
                     sleep(0.1)
-                except:
+                except Exception as e:
+                    print(str(e))
                     continue
-            sim = pd.concat(sim).sort_values("date")
-            sim = strategy.preprocessing(sim,prices)
+            stuff = pd.DataFrame(sim)
+            sim = strategy.preprocessing(stuff,prices)
             trader = LiveTrader(trading_client=trading_client,strategy=strategy)
             trader.trade(sim)
     except Exception as e:
