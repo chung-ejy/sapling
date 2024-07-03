@@ -24,7 +24,7 @@ while True:
         prices = processor.column_date_processing(trading_client.bar(tickers))
         if prices.index.size > 0:
             sim = []
-            for ticker in tqdm(tickers):
+            for ticker in tickers:
                 try:
                     price = processor.column_date_processing(
                         ALPClientExtractor(os.getenv("APCAKEY"),os.getenv("APCASECRET")).prices_minute(
