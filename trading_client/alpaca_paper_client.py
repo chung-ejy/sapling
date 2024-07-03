@@ -43,26 +43,26 @@ class AlpacaPaperClient(ATradingClient):
         response = r.get(url,headers=self.headers).json()
         return pd.DataFrame(response)
     
-    def buy(self,ticker,price,amount):
+    def buy(self,ticker,amount):
         url = "https://paper-api.alpaca.markets/v2/orders"
         parameters = {
             "side": "buy",
             "type": "market",
             "time_in_force": "day",
             "symbol": ticker,
-            "qty": amount
+            "notional": amount
             }
         response = r.post(url,json=parameters,headers=self.headers)
         return response.json()
     
-    def sell(self,ticker,price,amount):
+    def sell(self,ticker,amount):
         url = "https://paper-api.alpaca.markets/v2/orders"
         parameters = {
             "side": "sell",
             "type": "market",
             "time_in_force": "day",
             "symbol": ticker,
-            "qty": amount
+            "notional": amount
             }
         response = r.post(url,json=parameters,headers=self.headers)
         return response.json()
