@@ -31,7 +31,7 @@ while True:
                             ticker,datetime.now() - timedelta(minutes=100),datetime.now())).sort_values("date")
                     price["average_return"] = price["adjclose"].pct_change(60)
                     sim.append(price.iloc[-1].dropna())
-                    sleep(0.1)
+                    sleep(0.2)
                 except Exception as e:
                     print(str(e))
                     continue
@@ -41,4 +41,4 @@ while True:
             trader.trade(sim)
     except Exception as e:
         print(str(e))
-    sleep(30)
+    sleep(60)
