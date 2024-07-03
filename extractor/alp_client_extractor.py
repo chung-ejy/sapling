@@ -26,6 +26,25 @@ class ALPClientExtractor(object):
         data =  pd.DataFrame(requestBody.json()["bars"][ticker]).rename(columns={"c":"adjclose","t":"date"})[["date","adjclose"]]
         data["ticker"] = ticker
         return data
+
+    def prices_minute(self,ticker,start,end):
+        headers = {
+            'APCA-API-KEY-ID': self.key,
+            'APCA-API-SECRET-KEY': self.secret,
+            'accept': 'application/json'
+        }
+        params = {
+            "symbols":ticker,
+            "adjustment":"split",
+            "timeframe":"1min",
+            "feed":"sip",
+            "sort":"asc",
+        }
+        url = "https://data.alpaca.markets/v2/stocks/bars"
+        requestBody = r.get(url,params=params,headers=headers)
+        data =  pd.DataFrame(requestBody.json()["bars"][ticker]).rename(columns={"c":"adjclose","t":"date"})[["date","adjclose"]]
+        data["ticker"] = ticker
+        return data
     
     def parse_option_symbol(self,option_symbol):
         # Ticker symbol is the first characters (AAPL)
