@@ -25,7 +25,7 @@ class LiveTrader(object):
                                     and position.index.size < 1 and self.strategy.buy_clause(position,recommendation):
                         ticker = recommendation["ticker"]
                         price = round(recommendation["adjclose"],2)
-                        amount = max(1,int(notional/price))
+                        amount = float(notional/price)
                         self.trading_client.buy(ticker,price,amount)  
                         account = self.trading_client.account()
                         cash = float(account["cash"]) 
@@ -53,7 +53,7 @@ class LiveTrader(object):
                                 sleep(5)
                             ticker = recommendation["ticker"]
                             price = round(recommendation["adjclose"],2)
-                            amount = max(1,int(notional/price))
+                            amount = float(notional/price)
                             self.trading_client.buy(ticker,price,amount)
                     except Exception as e:
                         print(str(e))

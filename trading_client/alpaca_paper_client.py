@@ -47,10 +47,9 @@ class AlpacaPaperClient(ATradingClient):
         url = "https://paper-api.alpaca.markets/v2/orders"
         parameters = {
             "side": "buy",
-            "type": "limit",
+            "type": "market",
             "time_in_force": "day",
             "symbol": ticker,
-            "limit_price": price,
             "qty": amount
             }
         response = r.post(url,json=parameters,headers=self.headers)
@@ -60,10 +59,9 @@ class AlpacaPaperClient(ATradingClient):
         url = "https://paper-api.alpaca.markets/v2/orders"
         parameters = {
             "side": "sell",
-            "type": "limit",
+            "type": "market",
             "time_in_force": "day",
             "symbol": ticker,
-            "limit_price": price,
             "qty": amount
             }
         response = r.post(url,json=parameters,headers=self.headers)
