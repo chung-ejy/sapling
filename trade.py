@@ -1,7 +1,7 @@
 from trader.live_trader import LiveTrader
 from trading_client.alpaca_paper_client import AlpacaPaperClient
 from strategy.fundamental_strategy import FundamentalStrategy
-from parameters.aparameters import AParameters
+from parameter.aparameter import AParameter
 import pandas as pd
 import warnings
 from processor.processor import Processor as processor
@@ -15,7 +15,7 @@ while True:
         sp500 = pd.read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",attrs={"id":"constituents"})[0].rename(columns={"Symbol":"ticker"})
         tickers = sp500["ticker"]
         trading_client = AlpacaPaperClient()
-        strategy = FundamentalStrategy(AParameters())
+        strategy = FundamentalStrategy(AParameter())
         prices = processor.column_date_processing(trading_client.bar(tickers))
         if prices.index.size > 0:
             db.cloud_connect()

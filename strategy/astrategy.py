@@ -1,8 +1,8 @@
-from parameters.aparameters import AParameters
+from parameter.aparameter import AParameter
 import pandas as pd
 class AStrategy(object):
 
-    def __init__(self,name :str, parameters: AParameters):
+    def __init__(self,name :str, parameters: AParameter):
         self.name = name
         self.parameters = parameters
         self.ranker = "price"

@@ -1,10 +1,10 @@
 from strategy.astrategy import AStrategy
 import pandas as pd
-from parameters.aparameters import AParameters
+from parameter.aparameter import AParameter
 
 class AverageReturnStrategy(AStrategy):
 
-    def __init__(self,parameters: AParameters):
+    def __init__(self,parameters: AParameter):
         super().__init__("average_return",parameters)
         self.ranker = "average_return"
         self.ascending = True
