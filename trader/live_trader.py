@@ -37,8 +37,6 @@ class LiveTrader(object):
                 for i in range(self.strategy.parameters.number_of_positions):
                     try:
                         recommendation, recommendation_order, position = self.strategy.sell_position_filter(i,recommendations,orders,positions)
-                        price = round(float(position["current_price"]),2)
-                        amount = int(position["qty"])
                         ticker = position["ticker"]
                         if self.strategy.sell_clause(position,recommendation):
                             self.trading_client.sell(ticker,notional)
