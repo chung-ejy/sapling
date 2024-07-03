@@ -39,7 +39,7 @@ class LiveTrader(object):
                         recommendation, recommendation_order, position = self.strategy.sell_position_filter(i,recommendations,orders,positions)
                         ticker = position["ticker"]
                         if self.strategy.sell_clause(position,recommendation):
-                            self.trading_client.sell(ticker,notional)
+                            self.trading_client.sell(ticker,float(position["market_value"]))
                             sleep(1)
                             orders = self.trading_client.orders()
                             orders = orders[orders["symbol"]==ticker]
