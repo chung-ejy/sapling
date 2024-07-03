@@ -14,6 +14,7 @@ from extractor.alp_client_extractor import ALPClientExtractor
 from dotenv import load_dotenv
 load_dotenv()
 db = ADatabase("sapling")
+from tqdm import tqdm
 while True:
     try:
         sp500 = pd.read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",attrs={"id":"constituents"})[0].rename(columns={"Symbol":"ticker"})
@@ -23,13 +24,14 @@ while True:
         prices = processor.column_date_processing(trading_client.bar(tickers))
         if prices.index.size > 0:
             sim = []
-            for ticker in tickers[::50]:
+            for ticker in tqdm(tickers):
                 try:
                     price = processor.column_date_processing(
                         ALPClientExtractor(os.getenv("APCAKEY"),os.getenv("APCASECRET")).prices_minute(
                             ticker,datetime.now() - timedelta(minutes=100),datetime.now())).sort_values("date")
                     price["average_return"] = price["adjclose"].pct_change(60)
                     sim.append(price.dropna())
+                    sleep(0.1)
                 except:
                     continue
             sim = pd.concat(sim).sort_values("date")

@@ -21,7 +21,7 @@ class FundamentalStrategy(AStrategy):
         return sim
     
     def position_merge(self,positions:pd.DataFrame,recommendations:pd.DataFrame):
-        return positions.rename(columns={"symbol":"ticker"}).merge(recommendations [["ticker","GICS Sector",self.strategy.ranker]],on="ticker",how="left")
+        return positions.rename(columns={"symbol":"ticker"}).merge(recommendations [["ticker","GICS Sector",self.ranker]],on="ticker",how="left")
 
     def buy_position_filter(self,i: int,recommendations:pd.DataFrame,orders:pd.DataFrame,positions:pd.DataFrame):
         sectors = list(recommendations["GICS Sector"].unique())

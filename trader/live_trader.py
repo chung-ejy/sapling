@@ -34,26 +34,29 @@ class LiveTrader(object):
                 except Exception as e:
                      print(str(e))
         else:
-            positions = self.strategy.position_merge(positions,recommendations)
-            
+            positions = self.strategy.position_merge(positions,recommendations)          
             try:
-                recommendation, recommendation_order, position = self.strategy.sell_position_filter(i,recommendations,orders,positions)
-                price = round(float(position["current_price"]),2)
-                amount = int(position["qty"])
-                ticker = position["ticker"]
-                if self.strategy.sell_clause(position,recommendation):
-                    self.trading_client.sell(ticker,price,amount)
-                    sleep(1)
-                    orders = self.trading_client.orders()
-                    orders = orders[orders["symbol"]==ticker]
-                    while orders.index.size > 0:
-                        orders = self.trading_client.orders()
-                        orders = orders[orders["symbol"]==ticker]
-                        sleep(5)
-                    ticker = recommendation["ticker"]
-                    price = round(recommendation["adjclose"],2)
-                    amount = max(1,int(notional/price))
-                    self.trading_client.buy(ticker,price,amount)
+                for i in range(self.strategy.parameters.number_of_positions):
+                    try:
+                        recommendation, recommendation_order, position = self.strategy.sell_position_filter(i,recommendations,orders,positions)
+                        price = round(float(position["current_price"]),2)
+                        amount = int(position["qty"])
+                        ticker = position["ticker"]
+                        if self.strategy.sell_clause(position,recommendation):
+                            self.trading_client.sell(ticker,price,amount)
+                            sleep(1)
+                            orders = self.trading_client.orders()
+                            orders = orders[orders["symbol"]==ticker]
+                            while orders.index.size > 0:
+                                orders = self.trading_client.orders()
+                                orders = orders[orders["symbol"]==ticker]
+                                sleep(5)
+                            ticker = recommendation["ticker"]
+                            price = round(recommendation["adjclose"],2)
+                            amount = max(1,int(notional/price))
+                            self.trading_client.buy(ticker,price,amount)
+                    except Exception as e:
+                        print(str(e))
             except Exception as e:
                 print(str(e))
             sleep(1)

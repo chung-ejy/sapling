@@ -20,7 +20,7 @@ class AverageReturnStrategy(AStrategy):
         return sim
     
     def position_merge(self,positions:pd.DataFrame,recommendations:pd.DataFrame):
-        return positions.rename(columns={"symbol":"ticker"}).merge(recommendations [["ticker",self.strategy.ranker]],on="ticker",how="left") 
+        return positions.rename(columns={"symbol":"ticker"}).merge(recommendations [["ticker",self.ranker]],on="ticker",how="left") 
     
     def buy_position_filter(self,i: int,recommendations:pd.DataFrame,orders:pd.DataFrame,positions:pd.DataFrame):
         recommendation = recommendations.iloc[i]
