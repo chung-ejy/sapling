@@ -8,24 +8,27 @@ from dotenv import load_dotenv
 load_dotenv()
 import os
 import pandas as pd
+from time import sleep
 
 end = datetime.now()
-start = datetime.now() - timedelta(days=365.25*10)
+start = datetime.now() - timedelta(days=365.25)
 market = ADatabase("market")
 
-market.connect()
+
 sp500 = pd.read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",attrs={"id":"constituents"})[0].rename(columns={"Symbol":"ticker"})
-tickers = ["SPY"]
+tickers = []
 tickers.extend(sp500["ticker"].values)
+market.connect()
 market.drop("prices")
-for ticker in tqdm(tickers):
+chunks = [tickers[i:i + 25] for i in range(0, len(tickers), 25)]
+for chunk in chunks:
     try:
-        if "." not in ticker:
-            ticker_prices = processor.column_date_processing(TiingoExtractor.prices(ticker,start,end))
-            ticker_prices["ticker"] = ticker
-            ticker_prices.sort_values("date",inplace=True)  
-            market.store("prices",ticker_prices)
+        ticker_data = ALPClientExtractor(key=os.getenv("APCAKEY"),secret=os.getenv("APCASECRET")).prices_bulk(",".join(chunk),start,end)
+        for key in ticker_data["bars"].keys():
+            prices = pd.DataFrame(ticker_data["bars"][key]).rename(columns={"c":"adjclose","t":"date"})[["date","adjclose"]]
+            prices["ticker"] = key
+            market.store("prices",prices)
     except Exception as e:
-        print(ticker,str(e))
+        print(str(e))
 market.create_index("prices","ticker")
 market.disconnect()

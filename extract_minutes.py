@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 import os
 import pandas as pd
-
+from time import sleep
 end = datetime.now()
 start = datetime.now() - timedelta(days=1)
 market = ADatabase("market")
@@ -24,6 +24,7 @@ for ticker in tqdm(tickers):
             ticker_prices["ticker"] = ticker
             ticker_prices.sort_values("date",inplace=True)  
             market.store("prices_minute",ticker_prices)
+            sleep(1)
     except Exception as e:
         print(ticker,str(e))
 market.create_index("prices_minute","ticker")

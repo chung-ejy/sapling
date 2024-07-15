@@ -14,7 +14,7 @@ from extractor.alp_client_extractor import ALPClientExtractor
 from dotenv import load_dotenv
 load_dotenv()
 db = ADatabase("sapling")
-from tqdm import tqdm
+
 while True:
     try:
         sp500 = pd.read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",attrs={"id":"constituents"})[0].rename(columns={"Symbol":"ticker"})

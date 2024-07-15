@@ -5,7 +5,7 @@ class Stock(object):
     def update(self,row,asset):
         updated = asset.copy()
         updated["adjclose"] = row["adjclose"]
-        updated["expected_return"] = row["expected_return"]
+        updated["excess_return"] = row["excess_return"]
         updated["pv"] = updated["adjclose"] * updated["quantity"]
         return updated
     
@@ -19,7 +19,7 @@ class Stock(object):
     def buy(self,row,asset,notional):
         updated = asset.copy()
         updated["ticker"] = row["ticker"]
-        updated["expected_return"] = row["expected_return"]
+        updated["excess_return"] = row["excess_return"]
         updated["adjclose"] = row["adjclose"]
         updated["buy_price"] = row["adjclose"]
         updated["buy_date"] = row["date"]

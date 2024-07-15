@@ -5,9 +5,8 @@ from tqdm import tqdm
 sec = ADatabase("sec")
 
 sec.connect()   
-sec.drop("filings")
-for year in tqdm(range(2012,2025)):
-    for quarter in range(1,5):
+for year in tqdm(range(2024,2025)):
+    for quarter in range(2,3):
         try:
             folder = f"./sec/{year}q{quarter}/"
             num = pd.read_csv(folder+"num.txt", quotechar='"',sep="\t",engine="c",low_memory=False,encoding="utf-8")
