@@ -16,7 +16,7 @@ class FundamentalStrategy(AStrategy):
         return position["ticker"] != recommendation["ticker"] and position["expected_return"] <= 0
     
     def preprocessing(self,sim: pd.DataFrame,prices:pd.DataFrame):
-        sim = prices.merge(sim[["year","quarter","ticker","GICS Sector","prediction"]],on=["year","quarter","ticker"],how="left").dropna()
+        sim = prices.merge(sim[["ticker","GICS Sector","prediction"]],on=["ticker"],how="left").dropna()
         sim["expected_return"] = (sim["prediction"] - sim["adjclose"]) / sim["adjclose"]
         return sim
     
