@@ -12,6 +12,7 @@ import  os
 from datetime import datetime, timedelta
 from extractor.alp_client_extractor import ALPClientExtractor
 from dotenv import load_dotenv
+from tqdm import tqdm
 load_dotenv()
 db = ADatabase("sapling")
 
@@ -24,18 +25,28 @@ while True:
         prices = processor.column_date_processing(trading_client.bar(tickers))
         if prices.index.size > 0:
             sim = []
+            chunks = [tickers[i:i + 25] for i in range(0, len(tickers), 25)]
+            for chunk in chunks:
+                try:
+                    ticker_data = ALPClientExtractor(key=os.getenv("APCAKEY"),secret=os.getenv("APCASECRET")).prices_bulk(",".join(chunk),datetime.now() - timedelta(days=150),datetime.now())
+                    sleep(1)
+                    for key in ticker_data["bars"].keys():
+                        price = pd.DataFrame(ticker_data["bars"][key]).rename(columns={"c":"adjclose","t":"date"})[["date","adjclose"]]
+                        price["ticker"] = key
+                        sim.append(price)
+                except Exception as e:
+                    print(str(e))
+            sim = pd.concat(sim)
+            datas = []
             for ticker in tickers:
                 try:
-                    price = processor.column_date_processing(
-                        ALPClientExtractor(os.getenv("APCAKEY"),os.getenv("APCASECRET")).prices(
-                            ticker,datetime.now() - timedelta(days=150),datetime.now())).sort_values("date")
+                    price = processor.column_date_processing(sim[sim["ticker"]==ticker]).sort_values("date")
                     price["average_return"] = price["adjclose"].pct_change(100)
-                    sim.append(price.iloc[-1].dropna())
-                    sleep(0.2)
+                    datas.append(price.iloc[-1].dropna())
                 except Exception as e:
                     print(str(e))
                     continue
-            stuff = pd.DataFrame(sim)
+            stuff = pd.DataFrame(datas)
             sim = strategy.preprocessing(stuff,prices)
             trader = LiveTrader(trading_client=trading_client,strategy=strategy)
             trader.trade(sim)

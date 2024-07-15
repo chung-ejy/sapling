@@ -66,3 +66,9 @@ class AlpacaPaperClient(ATradingClient):
             }
         response = r.post(url,json=parameters,headers=self.headers)
         return response.json()
+    
+    def close(self):
+        params = {}
+        url = "https://paper-api.alpaca.markets/v2/positions?cancel_orders=true"
+        requestBody = r.delete(url,params=params,headers=self.headers)
+        return requestBody.json()

@@ -16,7 +16,7 @@ class LiveTrader(object):
         cash = float(account["cash"])
         pv = float(account["portfolio_value"])
         positions = self.trading_client.positions()
-        notional = float(pv/self.strategy.parameters.number_of_positions)
+        notional = round(float(pv/self.strategy.parameters.number_of_positions),2)
         if positions.index.size < self.strategy.parameters.number_of_positions:
             for i in range(self.strategy.parameters.number_of_positions):
                 try:
@@ -39,14 +39,8 @@ class LiveTrader(object):
                         recommendation, recommendation_order, position = self.strategy.sell_position_filter(i,recommendations,orders,positions)
                         ticker = position["ticker"]
                         if self.strategy.sell_clause(position,recommendation):
-                            self.trading_client.sell(ticker,float(position["market_value"]))
-                            sleep(1)
-                            orders = self.trading_client.orders()
-                            orders = orders[orders["symbol"]==ticker]
-                            while orders.index.size > 0:
-                                orders = self.trading_client.orders()
-                                orders = orders[orders["symbol"]==ticker]
-                                sleep(5)
+                            self.trading_client.close()
+                            sleep(5)
                             ticker = recommendation["ticker"]
                             self.trading_client.buy(ticker,notional)
                     except Exception as e:

@@ -32,3 +32,6 @@ class ATradingClient(object):
     
     def sell(self,ticker,price,amount):
         return ""
+    
+    def close(self):
+        return ""
