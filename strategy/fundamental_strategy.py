@@ -38,6 +38,6 @@ class FundamentalStrategy(AStrategy):
         sector = sectors[i] 
         recommendation = recommendations[recommendations["GICS Sector"]==sector].iloc[0]
         recommendation_order = pd.DataFrame([]) if orders.index.size < 1 else orders[orders["symbol"]==recommendation["ticker"]] 
-        position = positions[positions["GICS Sector"]==sector]
+        position = positions[positions["GICS Sector"]==sector].iloc[0]
         return recommendation, recommendation_order, position
     
