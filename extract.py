@@ -28,6 +28,7 @@ for chunk in chunks:
             prices = pd.DataFrame(ticker_data["bars"][key]).rename(columns={"c":"adjclose","t":"date"})[["date","adjclose"]]
             prices["ticker"] = key
             market.store("prices",prices)
+            sleep(1)
     except Exception as e:
         print(str(e))
 market.create_index("prices","ticker")
