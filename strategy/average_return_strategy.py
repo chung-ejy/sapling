@@ -16,7 +16,7 @@ class AverageReturnStrategy(AStrategy):
         return position["ticker"] != recommendation["ticker"]
     
     def preprocessing(self,sim: pd.DataFrame,prices:pd.DataFrame):
-        final = prices.merge(sim[["ticker","average_return"]],on=["ticker"],how="left").dropna()
+        final = prices.merge(sim[["ticker","prev_return"]],on=["ticker"],how="left").dropna()
         return final
     
     def position_merge(self,positions:pd.DataFrame,recommendations:pd.DataFrame):
