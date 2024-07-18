@@ -41,7 +41,7 @@ while True:
             for ticker in tickers:
                 try:
                     price = processor.column_date_processing(sim[sim["ticker"]==ticker]).sort_values("date")
-                    price["average_return"] = price["adjclose"].pct_change(100)
+                    price["prev_return"] = price["adjclose"].pct_change(5)
                     datas.append(price.iloc[-1].dropna())
                 except Exception as e:
                     print(str(e))
