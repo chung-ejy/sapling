@@ -31,7 +31,7 @@ try:
                 ticker_data = ALPClientExtractor(key=os.getenv("APCAKEY"),secret=os.getenv("APCASECRET")).prices_bulk(",".join(chunk),datetime.now() - timedelta(days=150),datetime.now())
                 sleep(1)
                 for key in ticker_data["bars"].keys():
-                    price = pd.DataFrame(ticker_data["bars"][key]).rename(columns={"c":"adjclose","t":"date"})[["date","adjclose"]]
+                    price = pd.DataFrame(ticker_data["bars"][key]).rename(columns={"c":"adjclose","t":"date","l":"adjlow","h":"adjhigh","v":"volume"})[["date","adjclose","adjlow","adjhigh","volume"]]
                     price["ticker"] = key
                     sim.append(price)
             except Exception as e:
