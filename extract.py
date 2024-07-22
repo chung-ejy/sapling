@@ -25,7 +25,7 @@ for chunk in tqdm(chunks):
     try:
         ticker_data = ALPClientExtractor(key=os.getenv("APCAKEY"),secret=os.getenv("APCASECRET")).prices_bulk(",".join(chunk),start,end)
         for key in tqdm(ticker_data["bars"].keys()):
-            prices = pd.DataFrame(ticker_data["bars"][key]).rename(columns={"c":"adjclose","t":"date","l":"adjlow","h":"adjhigh"})[["date","adjclose","adjlow","adjhigh"]]
+            prices = pd.DataFrame(ticker_data["bars"][key]).rename(columns={"c":"adjclose","t":"date","l":"adjlow","h":"adjhigh","v":"volume"})[["date","adjclose","adjlow","adjhigh","volume"]]
             prices["ticker"] = key
             market.store("prices",prices)
     except Exception as e:

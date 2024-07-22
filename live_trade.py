@@ -15,6 +15,7 @@ from dotenv import load_dotenv
 from tqdm import tqdm
 load_dotenv()
 db = ADatabase("sapling")
+import numpy as np
 
 try:
     sp500 = pd.read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",attrs={"id":"constituents"})[0].rename(columns={"Symbol":"ticker"})
@@ -40,7 +41,7 @@ try:
         for ticker in tickers:
             try:
                 price = processor.column_date_processing(sim[sim["ticker"]==ticker]).sort_values("date")
-                price["prev_return"] = price["adjclose"].pct_change(5)
+                price["obv"] = (np.sign(price["adjclose"].diff()) * price["volume"]).fillna(0).cumsum()
                 datas.append(price.iloc[-1].dropna())
             except Exception as e:
                 print(str(e))

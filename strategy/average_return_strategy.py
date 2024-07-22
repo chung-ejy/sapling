@@ -5,8 +5,8 @@ from parameter.aparameter import AParameter
 class AverageReturnStrategy(AStrategy):
 
     def __init__(self,parameters: AParameter):
-        super().__init__("prev_return",parameters)
-        self.ranker = "prev_return"
+        super().__init__("obv",parameters)
+        self.ranker = "obv"
         self.ascending = False
 
     def buy_clause(self,position: pd.DataFrame, recommendation:pd.DataFrame):
@@ -16,7 +16,7 @@ class AverageReturnStrategy(AStrategy):
         return position["ticker"] != recommendation["ticker"]
     
     def preprocessing(self,sim: pd.DataFrame,prices:pd.DataFrame):
-        final = prices.merge(sim[["ticker","prev_return"]],on=["ticker"],how="left").dropna()
+        final = prices.merge(sim[["ticker","obv"]],on=["ticker"],how="left").dropna()
         return final
     
     def position_merge(self,positions:pd.DataFrame,recommendations:pd.DataFrame):
