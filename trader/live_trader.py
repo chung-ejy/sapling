@@ -40,7 +40,7 @@ class LiveTrader(object):
                         ticker = position["ticker"]
                         if self.strategy.sell_clause(position,recommendation):
                             self.trading_client.close()
-                            sleep(10)
+                            sleep(60)
                             ticker = recommendation["ticker"]
                             self.trading_client.buy(ticker,notional)
                     except Exception as e:

@@ -5,8 +5,8 @@ from parameter.aparameter import AParameter
 class AverageReturnStrategy(AStrategy):
 
     def __init__(self,parameters: AParameter):
-        super().__init__("obv",parameters)
-        self.ranker = "obv"
+        super().__init__("garch",parameters)
+        self.ranker = "garch"
         self.ascending = False
 
     def buy_clause(self,position: pd.DataFrame, recommendation:pd.DataFrame):

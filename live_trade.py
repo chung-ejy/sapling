@@ -6,13 +6,14 @@ import pandas as pd
 import warnings
 from processor.processor import Processor as processor
 from database.adatabase import ADatabase
-warnings.simplefilter(action="ignore")
 from time import sleep
 import  os
 from datetime import datetime, timedelta
 from extractor.alp_client_extractor import ALPClientExtractor
 from dotenv import load_dotenv
 from tqdm import tqdm
+from arch import arch_model
+warnings.simplefilter(action="ignore")
 load_dotenv()
 db = ADatabase("sapling")
 import numpy as np
@@ -41,7 +42,19 @@ try:
         for ticker in tickers:
             try:
                 price = processor.column_date_processing(sim[sim["ticker"]==ticker]).sort_values("date")
-                price["obv"] = (np.sign(price["adjclose"].diff()) * price["volume"]).fillna(0).cumsum()
+                returns = price["adjclose"].pct_change(5).dropna()
+    
+                # Fit ARMA(1,1) model with GARCH(1,1) errors
+                model = arch_model(returns, mean='AR', lags=1, vol='Garch', p=1, q=1)
+                garch_fit = model.fit(disp='off')
+                
+                # Make predictions
+                forecasts = garch_fit.forecast(horizon=returns.size)
+                mean_forecast = forecasts.mean
+                variance_forecast = forecasts.variance.iloc[-1, :]
+                forecasts = [0 for i in range(price.index.size - len(mean_forecast.values[0]))]
+                forecasts.extend(mean_forecast.values[0])
+                price["garch"] = forecasts
                 datas.append(price.iloc[-1].dropna())
             except Exception as e:
                 print(str(e))
@@ -49,6 +62,7 @@ try:
         stuff = pd.DataFrame(datas)
         sim = strategy.preprocessing(stuff,prices)
         trader = LiveTrader(trading_client=trading_client,strategy=strategy)
+        # print(sim.sort_values(strategy.ranker,ascending=strategy.ascending))
         trader.trade(sim)
 except Exception as e:
     print(str(e))
