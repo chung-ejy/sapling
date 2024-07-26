@@ -42,19 +42,7 @@ try:
         for ticker in tickers:
             try:
                 price = processor.column_date_processing(sim[sim["ticker"]==ticker]).sort_values("date")
-                returns = price["adjclose"].pct_change(5).dropna()
-    
-                # Fit ARMA(1,1) model with GARCH(1,1) errors
-                model = arch_model(returns, mean='AR', lags=1, vol='Garch', p=1, q=1)
-                garch_fit = model.fit(disp='off')
-                
-                # Make predictions
-                forecasts = garch_fit.forecast(horizon=returns.size)
-                mean_forecast = forecasts.mean
-                variance_forecast = forecasts.variance.iloc[-1, :]
-                forecasts = [0 for i in range(price.index.size - len(mean_forecast.values[0]))]
-                forecasts.extend(mean_forecast.values[0])
-                price["garch"] = forecasts
+                price["prev_return"] = price["adjclose"].pct_change(5)
                 datas.append(price.iloc[-1].dropna())
             except Exception as e:
                 print(str(e))
