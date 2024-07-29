@@ -42,7 +42,7 @@ class LiveTrader(object):
                             self.trading_client.close()
                             sleep(60)
                             ticker = recommendation["ticker"]
-                            self.trading_client.buy(ticker,notional)
+                            print(self.trading_client.buy(ticker,notional))
                     except Exception as e:
                         print(str(e))
             except Exception as e:
