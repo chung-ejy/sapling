@@ -41,6 +41,12 @@ class LiveTrader(object):
                         if self.strategy.sell_clause(position,recommendation):
                             self.trading_client.close()
                             sleep(60)
+                            account = self.trading_client.account()
+                            orders = self.trading_client.orders()
+                            cash = float(account["cash"])
+                            pv = float(account["portfolio_value"])
+                            positions = self.trading_client.positions()
+                            notional = round(float(pv/self.strategy.parameters.number_of_positions),2)
                             ticker = recommendation["ticker"]
                             print(self.trading_client.buy(ticker,notional))
                     except Exception as e:
