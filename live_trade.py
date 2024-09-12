@@ -18,7 +18,7 @@ db = ADatabase("sapling")
 import numpy as np
 
 try:
-    sp500 = pd.read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",attrs={"id":"constituents"})[0].rename(columns={"Symbol":"ticker"})
+    sp500 = pd.read_html("https://en.wikipedia.org/wiki/Russell_1000_Index")[2].rename(columns={"Symbol":"ticker"})
     tickers = sp500["ticker"]
     trading_client = AlpacaLiveClient()
     strategy = strat_fact.build(Strategy.PREVIOUS_RETURN,AParameter(1))
@@ -49,7 +49,7 @@ try:
         stuff = pd.DataFrame(datas)
         sim = strategy.preprocessing(stuff,prices)
         trader = LiveTrader(trading_client=trading_client,strategy=strategy)
-        # print(sim.sort_values(strategy.ranker,ascending=strategy.ascending))
         trader.trade(sim)
 except Exception as e:
     print(str(e))
+    

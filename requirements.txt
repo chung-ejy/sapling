@@ -11,3 +11,4 @@ scikit-learn==1.5.0
 arch==7.0.0
 tensorflow==2.17.0
 keras==3.4.1
+html5lib==1.1
