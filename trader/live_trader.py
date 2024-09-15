@@ -1,57 +1,45 @@
 import pandas as pd
+from metric.ametric import AMetric
 from trading_client.atradingclient import ATradingClient
-from strategy.astrategy import AStrategy
 from time import sleep
+from processor.processor import Processor
+
 
 class LiveTrader(object):
 
-    def __init__(self,trading_client: ATradingClient,strategy: AStrategy):
+    def __init__(self, metric: AMetric,trading_client: ATradingClient):
         self.trading_client = trading_client
-        self.strategy = strategy
+        self.metric = metric
     
-    def trade(self,recommendations: pd.DataFrame):
-        recommendations.sort_values(self.strategy.ranker,ascending=self.strategy.ascending,inplace=True)
-        account = self.trading_client.account()
-        orders = self.trading_client.orders()
-        cash = float(account["cash"])
-        pv = float(account["portfolio_value"])
-        positions = self.trading_client.positions()
-        notional = round(float(pv/self.strategy.parameters.number_of_positions),2)
-        if positions.index.size < self.strategy.parameters.number_of_positions:
-            for i in range(self.strategy.parameters.number_of_positions):
-                try:
-                    recommendation, recommendation_order, position = self.strategy.buy_position_filter(i,recommendations,orders,positions)
-                    if cash > 1 and cash >= notional and recommendation_order.index.size < 1 \
-                                    and position.index.size < 1 and self.strategy.buy_clause(position,recommendation):
-                        ticker = recommendation["ticker"]
-                        self.trading_client.buy(ticker,notional)  
-                        account = self.trading_client.account()
-                        cash = float(account["cash"]) 
-                    else:
-                         continue
-                except Exception as e:
-                     print(str(e))
-        else:
-            positions = self.strategy.position_merge(positions,recommendations)          
-            try:
-                for i in range(self.strategy.parameters.number_of_positions):
-                    try:
-                        recommendation, recommendation_order, position = self.strategy.sell_position_filter(i,recommendations,orders,positions)
-                        ticker = position["ticker"]
-                        if self.strategy.sell_clause(position,recommendation):
-                            self.trading_client.close()
-                            sleep(60)
-                            account = self.trading_client.account()
-                            orders = self.trading_client.orders()
-                            cash = float(account["cash"])
-                            pv = float(account["portfolio_value"])
-                            positions = self.trading_client.positions()
-                            notional = round(float(pv/self.strategy.parameters.number_of_positions),2)
-                            ticker = recommendation["ticker"]
-                            print(self.trading_client.buy(ticker,notional))
-                    except Exception as e:
-                        print(str(e))
-            except Exception as e:
-                print(str(e))
-            sleep(1)
+    def preprocessing(self,tickers):
+        chunks = [list(tickers[i:i + 25]) for i in range(0, len(tickers), 25)]
+        prices = []
+        for chunk in chunks:
+            bars = Processor.column_date_processing(self.trading_client.bar(chunk)).sort_values("date")
+            # metric calculation
+            for ticker in bars["ticker"].unique():
+                price = bars[bars["ticker"]==ticker]
+                price = self.metric.create_metric(price)
+                prices.append(price)
+        prices = pd.concat(prices).sort_values("date")
+        return prices
+    
+    def trade(self,account,positions,date,recommendations):
+        todays_recs = recommendations[recommendations["date"]==recommendations["date"].max()]
+        if todays_recs.index.size >= self.metric.positions:
+            todays_recs.sort_values(self.metric.name,ascending=self.metric.ascending,inplace=True)
+            pv = float(account["portfolio_value"])
+            notional = round(float(pv/self.metric.positions),2)
+            if positions.index.size == self.metric.positions:
+                if date.weekday() == 4:
+                    self.trading_client.close()
+            elif positions.index.size == 0:    
+                for i in range(self.metric.positions):
+                    recommendation = todays_recs.iloc[i]
+                    ticker = recommendation["ticker"]
+                    adjclose = recommendation["adjclose"]
+                    self.trading_client.buy(ticker,adjclose,notional)
+            else:
+                return
+
                 

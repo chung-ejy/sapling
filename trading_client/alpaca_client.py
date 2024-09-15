@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from trading_client.atradingclient import ATradingClient
 load_dotenv()
 
-class AlpacaLiveClient(ATradingClient):
+class AlpacaClient(ATradingClient):
 
     def __init__(self):
         super().__init__()
@@ -43,7 +43,7 @@ class AlpacaLiveClient(ATradingClient):
         response = r.get(url,headers=self.headers).json()
         return pd.DataFrame(response)
     
-    def buy(self,ticker,amount):
+    def buy(self,ticker,adjclose,amount):
         url = "https://api.alpaca.markets/v2/orders"
         parameters = {
             "side": "buy",

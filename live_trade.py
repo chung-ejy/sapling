@@ -1,55 +1,41 @@
+from metric.metric import Metric
+from metric.metric_factory import MetricFactory
+from trading_client.alpaca_client import AlpacaClient
 from trader.live_trader import LiveTrader
-from trading_client.alpaca_live_client import AlpacaLiveClient
-from strategy.strategy_factory import StrategyFactory as strat_fact
-from strategy.strategy import Strategy
-from parameter.aparameter import AParameter
 import pandas as pd
-import warnings
-from processor.processor import Processor as processor
-from database.adatabase import ADatabase
-from time import sleep
-import  os
-from datetime import datetime, timedelta
+from processor.processor import Processor
 from extractor.alp_client_extractor import ALPClientExtractor
+from tqdm import tqdm
 from dotenv import load_dotenv
-warnings.simplefilter(action="ignore")
 load_dotenv()
-db = ADatabase("sapling")
-import numpy as np
+import os
+import warnings
+from database.adatabase import ADatabase
+from datetime import datetime, timedelta
+warnings.simplefilter(action="ignore")
 
-try:
-    sp500 = pd.read_html("https://en.wikipedia.org/wiki/Russell_1000_Index")[2].rename(columns={"Symbol":"ticker"})
-    tickers = sp500["ticker"]
-    trading_client = AlpacaLiveClient()
-    strategy = strat_fact.build(Strategy.PREVIOUS_RETURN,AParameter(1))
-    prices = processor.column_date_processing(trading_client.bar(tickers))
-    if prices.index.size > 0:
-        sim = []
-        chunks = [tickers[i:i + 25] for i in range(0, len(tickers), 25)]
-        for chunk in chunks:
-            try:
-                ticker_data = ALPClientExtractor(key=os.getenv("APCAKEY"),secret=os.getenv("APCASECRET")).prices_bulk(",".join(chunk),datetime.now() - timedelta(days=150),datetime.now())
-                sleep(1)
-                for key in ticker_data["bars"].keys():
-                    price = pd.DataFrame(ticker_data["bars"][key]).rename(columns={"c":"adjclose","t":"date","l":"adjlow","h":"adjhigh","v":"volume"})[["date","adjclose","adjlow","adjhigh","volume"]]
-                    price["ticker"] = key
-                    sim.append(price)
-            except Exception as e:
-                print(str(e))
-        sim = pd.concat(sim)
-        datas = []
-        for ticker in tickers:
-            try:
-                price = processor.column_date_processing(sim[sim["ticker"]==ticker]).sort_values("date")
-                price = strategy.create_signal(price)
-                datas.append(price.iloc[-1].dropna())
-            except Exception as e:
-                print(str(e))
-                continue
-        stuff = pd.DataFrame(datas)
-        sim = strategy.preprocessing(stuff,prices)
-        trader = LiveTrader(trading_client=trading_client,strategy=strategy)
-        trader.trade(sim)
-except Exception as e:
-    print(str(e))
-    
+end = datetime.now()
+start = datetime.now() - timedelta(days=150)
+russell1000 = pd.read_html("https://en.wikipedia.org/wiki/Russell_1000_Index")[2].rename(columns={"Symbol":"ticker"})
+db = ADatabase("sapling")
+tickers = russell1000["ticker"].values
+chunks = [tickers[i:i + 25] for i in range(0, len(tickers), 25)]
+metric = MetricFactory.build(Metric.COEFFICIENT_OF_VARIANCE)
+analysis = []
+all_positions = []
+client = AlpacaClient()
+trader = LiveTrader(metric,client)
+ticker_prices = []
+for chunk in chunks:
+    ticker_data = ALPClientExtractor(key=os.getenv("APCAKEY"),secret=os.getenv("APCASECRET")).prices_bulk(",".join(chunk),start,end)
+    for key in ticker_data["bars"].keys():
+        prices = Processor.column_date_processing(pd.DataFrame(ticker_data["bars"][key]).rename(columns={"c":"adjclose","t":"date","l":"adjlow","h":"adjhigh","v":"volume"})[["date","adjclose","adjlow","adjhigh","volume"]]).sort_values("date")
+        prices = metric.create_metric(prices)
+        prices["ticker"] = key
+        ticker_prices.append(prices)
+recommendations = pd.concat(ticker_prices).dropna().sort_values("date")
+account = client.account()
+positions = client.positions()
+print(positions)
+# positions = []
+# trader.trade(account,positions,end,recommendations)
