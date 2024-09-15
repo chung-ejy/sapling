@@ -16,7 +16,6 @@ class LiveTrader(object):
         prices = []
         for chunk in chunks:
             bars = Processor.column_date_processing(self.trading_client.bar(chunk)).sort_values("date")
-            # metric calculation
             for ticker in bars["ticker"].unique():
                 price = bars[bars["ticker"]==ticker]
                 price = self.metric.create_metric(price)
