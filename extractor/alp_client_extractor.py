@@ -15,7 +15,7 @@ class ALPClientExtractor(object):
         }
         params = {
             "symbols":ticker,
-            "adjustment":"split",
+            "adjustment":"all",
             "timeframe":"1Day",
             "feed":"sip",
             "sort":"asc",
@@ -35,7 +35,7 @@ class ALPClientExtractor(object):
         }
         params = {
             "symbols":ticker,
-            "adjustment":"split",
+            "adjustment":"all",
             "timeframe":"1Day",
             "feed":"sip",
             "sort":"asc",
@@ -54,7 +54,7 @@ class ALPClientExtractor(object):
         }
         params = {
             "symbols":ticker,
-            "adjustment":"split",
+            "adjustment":"all",
             "timeframe":"1min",
             "feed":"sip",
             "sort":"asc",

@@ -27,11 +27,9 @@ class LocalTrader(object):
         todays_recs = recommendations[recommendations["date"]==date]
         if todays_recs.index.size >= self.metric.positions:
             todays_recs.sort_values(self.metric.name,ascending=self.metric.ascending,inplace=True)
-            pv = float(account["portfolio_value"])
-            notional = round(float(pv/self.metric.positions),2)
+            ## updates
+            new_positions = []
             if len(positions) == self.metric.positions:
-                ## updates
-                new_positions = []
                 account["portfolio_value"] = 0
                 for i in range(self.metric.positions):
                     position = positions[i].copy()
@@ -40,30 +38,10 @@ class LocalTrader(object):
                     position["date"] = date
                     new_positions.append(position)
                     account["portfolio_value"] += position["adjclose"] * position["quantity"]
-                positions = [x for x in new_positions]
-                # sell the positions if it makes sense too   
-                sell_positions = []
-                for i in range(self.metric.positions):
-                    position = positions[i]
-                    ticker = position["symbol"]
-                    recommendation = todays_recs.iloc[i]
-                    if (date - position["buy_date"]).days > self.metric.holding_period:
-                        # ticker = recommendation["ticker"]
-                        # adjclose = recommendation["adjclose"]
-                        # notional = position["adjclose"] * position["quantity"]
-                        # order = self.trading_client.buy(ticker,adjclose,notional)
-                        # order["buy_date"] = date
-                        # order["buy_price"] = adjclose
-                        # order["date"] = date
-                        # order["position"] = i
-                        # order["name"] = self.metric.name
-                        # sell_positions.append(order)
-                        continue
-                    else:
-                        sell_positions.append(position)
-                return account, sell_positions
-            elif len(positions) == 0:
-                new_positions = []      
+            if date.weekday() == 0:
+                new_positions = []  
+                pv = float(account["portfolio_value"])
+                notional = round(float(pv/self.metric.positions),2)    
                 for i in range(self.metric.positions):
                     recommendation = todays_recs.iloc[i]
                     ticker = recommendation["ticker"]
@@ -74,11 +52,12 @@ class LocalTrader(object):
                     order["date"] = date
                     order["position"] = i
                     order["name"] = self.metric.name
+                    order["positions"] = self.metric.positions
+                    order["boolean"] = self.metric.ascending
                     new_positions.append(order)
                 return account, new_positions
             else:
-                return account, positions    
-        else:
-            return account, positions
+                return account, new_positions
+                
 
                 

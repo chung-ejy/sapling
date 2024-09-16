@@ -1,9 +1,8 @@
 import pandas as pd
 from metric.ametric import AMetric
 from trading_client.atradingclient import ATradingClient
-from time import sleep
 from processor.processor import Processor
-
+from time import sleep
 
 class LiveTrader(object):
 
@@ -25,20 +24,19 @@ class LiveTrader(object):
     
     def trade(self,account,positions,date,recommendations):
         todays_recs = recommendations[recommendations["date"]==recommendations["date"].max()]
-        if todays_recs.index.size >= self.metric.positions:
-            todays_recs.sort_values(self.metric.name,ascending=self.metric.ascending,inplace=True)
-            pv = float(account["portfolio_value"])
-            notional = round(float(pv/self.metric.positions),2)
-            if positions.index.size == self.metric.positions:
-                if date.weekday() == 4:
-                    self.trading_client.close()
-            elif positions.index.size == 0:    
+        if date.weekday() == 4:
+            self.trading_client.close()
+        elif date.weekday() == 0:
+            if todays_recs.index.size >= self.metric.positions:
+                todays_recs.sort_values(self.metric.name,ascending=self.metric.ascending,inplace=True)            
+                pv = float(account["portfolio_value"])
+                notional = round(float(pv/self.metric.positions),2)
                 for i in range(self.metric.positions):
                     recommendation = todays_recs.iloc[i]
                     ticker = recommendation["ticker"]
                     adjclose = recommendation["adjclose"]
                     self.trading_client.buy(ticker,adjclose,notional)
-            else:
-                return
+        else:
+            return
 
                 
