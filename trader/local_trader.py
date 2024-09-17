@@ -43,7 +43,7 @@ class LocalTrader(object):
                 pv = float(account["portfolio_value"])
                 notional = round(float(pv/self.metric.positions),2)    
                 for i in range(self.metric.positions):
-                    recommendation = todays_recs.iloc[i]
+                    recommendation = todays_recs[todays_recs["cluster"]==i].iloc[0]
                     ticker = recommendation["ticker"]
                     adjclose = recommendation["adjclose"]
                     order = self.trading_client.buy(ticker,adjclose,notional)

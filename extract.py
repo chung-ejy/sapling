@@ -11,23 +11,20 @@ import pandas as pd
 from time import sleep
 
 end = datetime.now()
-start = datetime.now() - timedelta(days=365.25*2)
+start = datetime.now() - timedelta(days=365.25*20)
 market = ADatabase("market")
 
 
-sp500 = pd.read_html("https://en.wikipedia.org/wiki/Russell_1000_Index")[2].rename(columns={"Symbol":"ticker"})
+sp500 = pd.read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",attrs={"id":"constituents"})[0].rename(columns={"Symbol":"ticker"})
 tickers = []
 tickers.extend(sp500["ticker"].values)
 market.connect()
 market.drop("prices")
-chunks = [tickers[i:i + 10] for i in range(0, len(tickers), 10)]
-for chunk in tqdm(chunks):
+for ticker in tqdm(tickers):
     try:
-        ticker_data = ALPClientExtractor(key=os.getenv("APCAKEY"),secret=os.getenv("APCASECRET")).prices_bulk(",".join(chunk),start,end)
-        for key in tqdm(ticker_data["bars"].keys()):
-            prices = pd.DataFrame(ticker_data["bars"][key]).rename(columns={"c":"adjclose","t":"date","l":"adjlow","h":"adjhigh","v":"volume"})[["date","adjclose","adjlow","adjhigh","volume"]]
-            prices["ticker"] = key
-            market.store("prices",prices)
+        ticker_data = TiingoExtractor().prices(ticker,start,end).rename(columns={"adjClose":"adjclose"})
+        ticker_data["ticker"] = ticker
+        market.store("prices",ticker_data)
     except Exception as e:
         print(str(e))
 market.create_index("prices","ticker")

@@ -17,12 +17,13 @@ analysis = []
 all_positions = []
 db.connect()
 db.drop("positions")
+clusters = db.retrieve("clusters")
 for metric in tqdm(metrics):
     client = LocalClient()
     trader = LocalTrader(metric,client)
     recommendations = trader.preprocessing(tickers)
-    recommendations = recommendations[~recommendations["ticker"].isin(["SN","CART","SIRI"])]
-    for position in [1,10]:
+    recommendations = recommendations[~recommendations["ticker"].isin(["SN","CART","SIRI"])].merge(clusters,on="ticker",how="left")
+    for position in [10]:
         for boolean in [True,False]:
             metric.ascending = boolean
             metric.positions = position
