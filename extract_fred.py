@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from database.adatabase import ADatabase
 
 fred = ADatabase("fred")
-start = datetime.now() - timedelta(days=365.25*10)
+start = datetime.now() - timedelta(days=365.25*20)
 end = datetime.now()
 sp500 = FREDExtractor.sp500(start,end)
 market_yield = FREDExtractor.market_yield(start,end)
