@@ -11,7 +11,7 @@ import pandas as pd
 from time import sleep
 
 end = datetime.now()
-start = datetime.now() - timedelta(days=365.25*20)
+start = datetime.now() - timedelta(days=365.25*25)
 market = ADatabase("market")
 
 

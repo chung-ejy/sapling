@@ -17,7 +17,7 @@ analysis = []
 all_positions = []
 db.connect()
 db.drop("positions")
-clusters = db.retrieve("clusters")
+clusters = db.retrieve("clusters")      
 for metric in tqdm(metrics):
     client = LocalClient()
     trader = LocalTrader(metric,client)
