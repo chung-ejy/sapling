@@ -15,6 +15,7 @@ class Bond(object):
     @classmethod
     def buy(self,row,asset,notional):
         updated = asset.copy()
+        updated["ticker"] = row["ticker"]
         updated["buy_date"] = row["date"]
         updated["sell_date"] = row["date"]
         updated["adjclose"] = 1000 / (1 + row["rf"])**10

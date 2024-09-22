@@ -34,6 +34,7 @@ class Option(object):
     @classmethod
     def buy(self,row,asset,notional):
         updated = asset.copy()
+        updated["ticker"] = row["ticker"]
         updated["buy_date"] = row["date"]
         updated["strike_price"] = row["adjclose"] * (1.15)
         updated["premium"] = self.black_scholes_put(row["adjclose"],updated["strike_price"],float(0.25),row["rf"],row["sigma"])
