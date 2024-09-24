@@ -3,14 +3,14 @@ class Bond(object):
     @classmethod
     def update(cls, row, asset):
         updated = asset.copy()
-        # Calculate bond price considering coupon payments
-        updated["adjclose"] = cls.calculate_price(
-            face_value=1000,
-            rate=row["rf"],
-            coupon_rate=asset.get("coupon_rate", 0.05),  # Default 5% coupon rate
-            years=10
-        )
-        updated["pv"] = updated["adjclose"] * updated["quantity"]
+        # # Calculate bond price considering coupon payments
+        # updated["adjclose"] = cls.calculate_price(
+        #     face_value=1000,
+        #     rate=row["rf"],
+        #     coupon_rate=asset.get("coupon_rate", 0.05),  # Default 5% coupon rate
+        #     years=10
+        # )
+        # updated["pv"] = updated["adjclose"] * updated["quantity"]
         return updated
 
     @classmethod

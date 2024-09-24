@@ -21,7 +21,7 @@ class Stock(object):
         updated["adjclose"] = row["adjclose"]
         updated["buy_price"] = row["adjclose"]
         updated["buy_date"] = row["date"]
-        updated["sell_date"] = row["date"]
+        updated["sell_date"] = None
         updated["quantity"] = notional / updated["adjclose"]
         updated["pv"] = updated["adjclose"] * updated["quantity"]
         return updated
