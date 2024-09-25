@@ -29,7 +29,7 @@ while True:
 
         prices = pd.concat(prices).sort_values("date").dropna()
         recommendations = prices[prices["date"]==prices["date"].max()]
-        recommendation = recommendations.sort_values("rolling_return",ascending=False).iloc[0]
+        recommendation = recommendations.sort_values("rolling_return",ascending=True).iloc[0]
         client = AlpacaClient()
         account = client.account()
         cash = float(account["cash"])
