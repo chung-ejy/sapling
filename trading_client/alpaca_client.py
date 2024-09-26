@@ -55,6 +55,18 @@ class AlpacaClient(ATradingClient):
         response = r.post(url,json=parameters,headers=self.headers)
         return response.json()
     
+    def crypto_buy(self,ticker,notional):
+        data = {
+            "side": "buy",
+            "type": "market",
+            "time_in_force": "gtc",
+            "symbol": ticker,
+            "notional": notional
+            }
+        url = "https://api.alpaca.markets/v2/orders"
+        requestBody = r.post(url,json=data,headers=self.headers)
+        return requestBody.json()
+    
     def sell(self,ticker,amount):
         url = "https://api.alpaca.markets/v2/orders"
         parameters = {

@@ -17,7 +17,7 @@ class ALPClientExtractor(object):
         requestBody = r.get(url,headers=headers)
         return requestBody.json()
     
-    def crypto(self,ticker,start,end):
+    def crypto_interval(self,ticker,start,end):
         headers = {
             'APCA-API-KEY-ID': self.key,
             'APCA-API-SECRET-KEY': self.secret,
@@ -26,6 +26,24 @@ class ALPClientExtractor(object):
         params = {
             "symbols":ticker,
             "timeframe":"1Min",
+            "sort":"asc",
+            "limit":str(10000),
+            "start":start.strftime("%Y-%m-%d"),
+            "end":end.strftime("%Y-%m-%d")
+        }
+        url = "https://data.alpaca.markets/v1beta3/crypto/us/bars"
+        requestBody = r.get(url,params=params,headers=headers)
+        return requestBody.json()
+    
+    def crypto(self,ticker,start,end):
+        headers = {
+            'APCA-API-KEY-ID': self.key,
+            'APCA-API-SECRET-KEY': self.secret,
+            'accept': 'application/json'
+        }
+        params = {
+            "symbols":ticker,
+            "timeframe":"1Day",
             "sort":"asc",
             "limit":str(10000),
             "start":start.strftime("%Y-%m-%d"),
@@ -144,6 +162,24 @@ class ALPClientExtractor(object):
             "side": "buy",
             "type": "market",
             "time_in_force": "day",
+            "symbol": ticker,
+            "notional": notional
+            }
+        url = "https://api.alpaca.markets/v2/orders"
+        requestBody = r.post(url,json=data,headers=headers)
+        return requestBody.json()
+
+    def crypto_buy(self,ticker,notional):
+        headers = {
+            'APCA-API-KEY-ID': self.key,
+            'APCA-API-SECRET-KEY': self.secret,
+            "accept": "application/json",
+            "content-type": "application/json"
+        }
+        data = {
+            "side": "buy",
+            "type": "market",
+            "time_in_force": "gtc",
             "symbol": ticker,
             "notional": notional
             }
