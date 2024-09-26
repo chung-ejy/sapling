@@ -11,12 +11,13 @@ from time import sleep
 while True:
     try:
         start = datetime.now() - timedelta(days=2)
+        end = datetime.now()
         extractor = ALPClientExtractor(os.getenv("APCAKEY"),os.getenv("APCASECRET"))
         tickers = ["AAVE", "AVAX", "BAT", "BCH", "BTC", "CRV", "DOGE", "DOT", "ETH", "GRT", "LINK", "LTC", "MKR", "SHIB", "SUSHI","USDT","USDC", "UNI", "XTZ", "YFI"]
         tickers = [x +"/USD" for x in tickers]
         prices = []
         for ticker in tickers:
-            response = extractor.crypto(ticker,start)
+            response = extractor.crypto(ticker,start,end)
             price = pd.DataFrame(response["bars"][ticker]).rename(columns={"c":"adjclose","t":"date"})[["date","adjclose"]]
             price["date"] = pd.to_datetime(price["date"])
             price = price.sort_values("date")

@@ -29,7 +29,7 @@ class ALPClientExtractor(object):
             "sort":"asc",
             "limit":str(10000),
             "start":start.strftime("%Y-%m-%d"),
-            "end":end.strftime("%Y-%m-%d")
+            # "end":end.strftime("%Y-%m-%d")
         }
         url = "https://data.alpaca.markets/v1beta3/crypto/us/bars"
         requestBody = r.get(url,params=params,headers=headers)
