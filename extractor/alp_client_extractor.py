@@ -17,7 +17,7 @@ class ALPClientExtractor(object):
         requestBody = r.get(url,headers=headers)
         return requestBody.json()
     
-    def crypto(self,ticker,start):
+    def crypto(self,ticker,start,end):
         headers = {
             'APCA-API-KEY-ID': self.key,
             'APCA-API-SECRET-KEY': self.secret,
@@ -29,6 +29,7 @@ class ALPClientExtractor(object):
             "sort":"asc",
             "limit":str(10000),
             "start":start.strftime("%Y-%m-%d"),
+            "end":end.strftime("%Y-%m-%d")
         }
         url = "https://data.alpaca.markets/v1beta3/crypto/us/bars"
         requestBody = r.get(url,params=params,headers=headers)
