@@ -31,10 +31,10 @@ while True:
         recommendations = prices[prices["date"]==prices["date"].max()]
         recommendation = recommendations.sort_values("coev",ascending=True).iloc[0]
         client = AlpacaClient()
-        account = client.account()
-        cash = float(account["cash"])
         client.close()
         sleep(60)
+        account = client.account()
+        cash = float(account["cash"])
         client.buy(recommendation["ticker"],recommendation["adjclose"],cash)
         sleep(300)
     except Exception as e:
