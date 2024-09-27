@@ -5,7 +5,7 @@ class CoefficientOfVariance(AMetric):
 
     def __init__(self):
         super().__init__("coefficient_of_variance")
-        self.ascending =  False
+        self.ascending =  True
         self.positions = 10
         self.holding_period = 4
     

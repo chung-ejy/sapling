@@ -22,7 +22,6 @@ for metric in tqdm(metrics):
     client = LocalClient()
     trader = LocalTrader(metric,client)
     recommendations = trader.preprocessing(tickers)
-    recommendations = recommendations[recommendations["date"]>=datetime(2023,1,25)]
     for position in [10]:
         for boolean in [True,False]:
             metric.ascending = boolean
