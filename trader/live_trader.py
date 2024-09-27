@@ -23,10 +23,10 @@ class LiveTrader(object):
         return prices
     
     def trade(self,account,positions,date,recommendations):
-        todays_recs = recommendations[recommendations["date"]==recommendations["date"].max()]
-        if date.weekday() == 4:
+        todays_recs = recommendations[recommendations["date"]==recommendations["date"].max()]    
+        if date.weekday() == 0:
             self.trading_client.close()
-        elif date.weekday() == 0:
+            sleep(300)
             if todays_recs.index.size >= self.metric.positions:
                 todays_recs.sort_values(self.metric.name,ascending=self.metric.ascending,inplace=True)            
                 pv = float(account["portfolio_value"])

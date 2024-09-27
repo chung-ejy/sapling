@@ -6,6 +6,7 @@ import pandas as pd
 from tqdm import tqdm
 import warnings
 from database.adatabase import ADatabase
+from datetime import datetime
 warnings.simplefilter(action="ignore")
 
 russell1000 = pd.read_html("https://en.wikipedia.org/wiki/Russell_1000_Index")[2].rename(columns={"Symbol":"ticker"})
@@ -16,13 +17,12 @@ metrics = [MetricFactory.build(x) for x in Metric]
 analysis = []
 all_positions = []
 db.connect()
-db.drop("positions")
-clusters = db.retrieve("clusters")      
+db.drop("positions")    
 for metric in tqdm(metrics):
     client = LocalClient()
     trader = LocalTrader(metric,client)
     recommendations = trader.preprocessing(tickers)
-    recommendations = recommendations.merge(clusters,on="ticker",how="left")
+    recommendations = recommendations[recommendations["date"]>=datetime(2023,1,25)]
     for position in [10]:
         for boolean in [True,False]:
             metric.ascending = boolean
