@@ -59,7 +59,7 @@ while True:
             position_data = recommendations[recommendations["currency"]==position["symbol"][:-3]].iloc[0]
             pnl = (float(position_data["adjclose"])-float(position["avg_entry_price"])) / float(position["avg_entry_price"])
             # print(client.account()["portfolio_value"],pnl)
-            if True:
+            if pnl >= req:
                 client.close()
                 sleep(60)
                 account = client.account()
