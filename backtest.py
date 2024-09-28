@@ -12,6 +12,7 @@ warnings.simplefilter(action="ignore")
 russell1000 = pd.read_html("https://en.wikipedia.org/wiki/Russell_1000_Index")[2].rename(columns={"Symbol":"ticker"})
 db = ADatabase("sapling")
 tickers = russell1000["ticker"].values
+banlist = ["CART"]
 
 metrics = [MetricFactory.build(x) for x in Metric]
 analysis = []
@@ -22,6 +23,7 @@ for metric in tqdm(metrics):
     client = LocalClient()
     trader = LocalTrader(metric,client)
     recommendations = trader.preprocessing(tickers)
+    recommendations = recommendations[~recommendations["ticker"].isin(banlist)]
     for position in [1]:
         for boolean in [True,False]:
             metric.ascending = boolean
