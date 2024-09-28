@@ -22,7 +22,7 @@ for metric in tqdm(metrics):
     client = LocalClient()
     trader = LocalTrader(metric,client)
     recommendations = trader.preprocessing(tickers)
-    for position in [10]:
+    for position in [1]:
         for boolean in [True,False]:
             metric.ascending = boolean
             metric.positions = position
