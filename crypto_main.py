@@ -13,13 +13,13 @@ warnings.simplefilter(action="ignore")
 ## parameters
 
 client = AlpacaClient()
-window = 300
-gain_window = 60
-req = 0.05
-floor = -0.05
+window = 100
+gain_window = 5
+req = 0.005
+floor = -0.005
 metric = "rolling_return"
-ascending = True
-timeframe = 60
+ascending = False
+timeframe = 300
 extractor = ALPClientExtractor(os.getenv("APCAKEY"), os.getenv("APCASECRET"))
 tickers = ["AAVE", "AVAX", "BAT", "BTC", "CRV", "DOGE", "DOT", "ETH", "GRT", "LINK", "LTC", "MKR", "SHIB", "SUSHI", "UNI", "XTZ", "YFI"]
 tickers = [x + "/USD" for x in tickers]
@@ -59,9 +59,9 @@ while True:
             position_data = recommendations[recommendations["currency"]==position["symbol"][:-3]].iloc[0]
             pnl = (float(position_data["adjclose"])-float(position["avg_entry_price"])) / float(position["avg_entry_price"])
             # print(client.account()["portfolio_value"],pnl)
-            if pnl >= req or pnl <= floor:
+            if position["symbol"][:-3] != recommendation["currency"]:
                 client.close()
-                sleep(timeframe)
+                sleep(60)
                 account = client.account()
                 cash = float(account["cash"])
                 client.crypto_buy(recommendation["ticker"],cash)
