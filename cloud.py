@@ -26,7 +26,7 @@ market.drop("prices")
 for ticker in tqdm(tickers):
     try:
         ticker_data = ALPClientExtractor(os.getenv("APCAKEY"),os.getenv("APCASECRET")).prices(ticker,start,end)
-        sleep(1)
+        sleep(0.5)
         ticker_data["ticker"] = ticker
         market.store("prices",ticker_data)
     except Exception as e:
