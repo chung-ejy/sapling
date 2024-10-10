@@ -153,18 +153,17 @@ for date in tqdm(sim.sort_values("date")["date"].unique()):
                 for j in range(number_of_stocks):
                     stock = stocks[j]
                     ticker = stock["ticker"]
-                    if ticker != "" and quarter != prev_quarter:
+                    if ticker != "" and opportunity_ticker != ticker:
                         notional = stock["pv"]
                         opportunity_row = today[today["GICS Sector"] == sector].sort_values("excess_return", ascending=True).iloc[j]
                         opportunity_ticker = opportunity_row["ticker"]
-                        if (opportunity_ticker != ticker):
-                            row = today[today["ticker"] == ticker].iloc[0]
-                            stock = Stock.sell(row, stock)
-                            position["stocks"][j] = stock
-                            trades.append(stock)
-                            stock = Stock.buy(opportunity_row, stock, notional)
-                            position["stocks"][j] = stock
-                            positions[i] = position
+                        row = today[today["ticker"] == ticker].iloc[0]
+                        stock = Stock.sell(row, stock)
+                        position["stocks"][j] = stock
+                        trades.append(stock)
+                        stock = Stock.buy(opportunity_row, stock, notional)
+                        position["stocks"][j] = stock
+                        positions[i] = position
                 portfolio["positions"] = positions
             if date == sim["date"].min():
                 for i in range(11):
