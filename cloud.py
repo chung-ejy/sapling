@@ -13,7 +13,7 @@ import pandas as pd
 from time import sleep
 import numpy as np
 import warnings
-warnings.simplefilter(actions="ignore")
+warnings.simplefilter(action="ignore")
 end = datetime.now()
 start = datetime.now() - timedelta(days=365.25*2)
 market = ADatabase("market")
