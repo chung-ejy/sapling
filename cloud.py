@@ -157,14 +157,14 @@ for date in tqdm(sim.sort_values("date")["date"].unique()):
                         notional = stock["pv"]
                         opportunity_row = today[today["GICS Sector"] == sector].sort_values("excess_return", ascending=True).iloc[j]
                         opportunity_ticker = opportunity_row["ticker"]
-                        if opportunity_ticker != ticker:
+                        if (opportunity_ticker != ticker):
                             row = today[today["ticker"] == ticker].iloc[0]
                             stock = Stock.sell(row, stock)
                             position["stocks"][j] = stock
                             trades.append(stock)
                             stock = Stock.buy(opportunity_row, stock, notional)
-                        position["stocks"][j] = stock
-                        positions[i] = position
+                            position["stocks"][j] = stock
+                            positions[i] = position
                 portfolio["positions"] = positions
             if date == sim["date"].min():
                 for i in range(11):
