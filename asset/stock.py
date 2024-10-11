@@ -1,27 +1,21 @@
 
 class Stock(object):
 
-    @classmethod
-    def update(self,row,asset):
-        updated = asset.copy()
-        updated["adjclose"] = row["adjclose"]
-        updated["pv"] = updated["adjclose"] * updated["quantity"]
-        return updated
+    def __init__(self,ticker="",adjclose=0,quantity=0):
+        self.ticker = ticker
+        self.adjclose = adjclose
+        self.quantity = quantity
+
+    def update(self,row):
+        self.adjclose = row["adjclose"]
+        self.date = row["date"]
+        self.pv = self.adjclose * self.quantity
     
-    @classmethod
-    def sell(self,row,asset):
-        updated = asset.copy()
-        updated["sell_date"] = row["date"]
-        return updated
-    
-    @classmethod
-    def buy(self,row,asset,notional):
-        updated = asset.copy()
-        updated["ticker"] = row["ticker"]
-        updated["adjclose"] = row["adjclose"]
-        updated["buy_price"] = row["adjclose"]
-        updated["buy_date"] = row["date"]
-        updated["sell_date"] = None
-        updated["quantity"] = notional / updated["adjclose"]
-        updated["pv"] = updated["adjclose"] * updated["quantity"]
-        return updated
+    def buy(self,row,notional):
+        self.ticker = row["ticker"]
+        self.date = row["date"]
+        self.adjclose = row["adjclose"]
+        self.buy_price = row["adjclose"]
+        self.buy_date = row["date"]
+        self.quantity = notional / self.adjclose
+        self.pv = self.adjclose * self.quantity
