@@ -17,7 +17,7 @@ warnings.simplefilter(action="ignore")
 end = datetime.now()
 start = datetime.now() - timedelta(days=365.25*2)
 market = ADatabase("market")
-
+fred = ADatabase("fred")
 
 russell1000 = pd.read_html("https://en.wikipedia.org/wiki/Russell_1000_Index")[2].rename(columns={"Symbol":"ticker"})
 tickers = []
@@ -27,7 +27,7 @@ market.drop("prices")
 for ticker in tqdm(tickers):
     try:
         ticker_data = ALPClientExtractor(os.getenv("APCAKEY"),os.getenv("APCASECRET")).prices(ticker,start,end)
-        sleep(0.5)
+        # sleep(0.5)
         ticker_data["ticker"] = ticker
         market.store("prices",ticker_data)
     except Exception as e:
@@ -35,7 +35,6 @@ for ticker in tqdm(tickers):
 market.create_index("prices","ticker")
 market.disconnect()
 
-fred = ADatabase("fred")
 sp500 = FREDExtractor.sp500(start,end)
 market_yield = FREDExtractor.market_yield(start,end)
 fred.cloud_connect()
@@ -153,7 +152,7 @@ for date in tqdm(sim.sort_values("date")["date"].unique()):
                 for j in range(number_of_stocks):
                     stock = stocks[j]
                     ticker = stock["ticker"]
-                    if ticker != "":
+                    if ticker != "" and quarter != prev_quarter:
                         notional = stock["pv"]
                         opportunity_row = today[today["GICS Sector"] == sector].sort_values("excess_return", ascending=True).iloc[j]
                         opportunity_ticker = opportunity_row["ticker"]
@@ -211,8 +210,6 @@ visualization = visualization.merge(market_yield[["date","rf"]],on="date",how="l
 visualization["return"] = (visualization["pv"] - visualization["pv"].iloc[0]) / visualization["pv"].iloc[0]
 visualization["benchmark_return"] = (visualization["spy"] - visualization["spy"].iloc[0]) / visualization["spy"].iloc[0]
 visualization["ir_return"] = (visualization["rf"] - visualization["rf"].iloc[0]) / visualization["rf"].iloc[0]
-
-
 
 (visualization["return"].iloc[-1] - visualization["benchmark_return"].iloc[-1]) / visualization["return"].std()
 
