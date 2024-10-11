@@ -22,27 +22,27 @@ fred = ADatabase("fred")
 russell1000 = pd.read_html("https://en.wikipedia.org/wiki/Russell_1000_Index")[2].rename(columns={"Symbol":"ticker"})
 tickers = []
 tickers.extend(russell1000["ticker"].values)
-market.cloud_connect()
-market.drop("prices")
-for ticker in tqdm(tickers):
-    try:
-        ticker_data = ALPClientExtractor(os.getenv("APCAKEY"),os.getenv("APCASECRET")).prices(ticker,start,end)
-        # sleep(0.5)
-        ticker_data["ticker"] = ticker
-        market.store("prices",ticker_data)
-    except Exception as e:
-        print(str(e))
-market.create_index("prices","ticker")
-market.disconnect()
+# market.cloud_connect()
+# market.drop("prices")
+# for ticker in tqdm(tickers):
+#     try:
+#         ticker_data = ALPClientExtractor(os.getenv("APCAKEY"),os.getenv("APCASECRET")).prices(ticker,start,end)
+#         # sleep(0.5)
+#         ticker_data["ticker"] = ticker
+#         market.store("prices",ticker_data)
+#     except Exception as e:
+#         print(str(e))
+# market.create_index("prices","ticker")
+# market.disconnect()
 
-sp500 = FREDExtractor.sp500(start,end)
-market_yield = FREDExtractor.market_yield(start,end)
-fred.cloud_connect()
-fred.drop("sp500")
-fred.drop("market_yield")
-fred.store("sp500",sp500)
-fred.store("market_yield",market_yield)
-fred.disconnect()
+# sp500 = FREDExtractor.sp500(start,end)
+# market_yield = FREDExtractor.market_yield(start,end)
+# fred.cloud_connect()
+# fred.drop("sp500")
+# fred.drop("market_yield")
+# fred.store("sp500",sp500)
+# fred.store("market_yield",market_yield)
+# fred.disconnect()
 
 sapling = ADatabase("sapling")
 
@@ -200,12 +200,12 @@ for state in states:
         print(str(e))
         continue
 
-performance = pd.DataFrame(states).dropna()
+performance = pd.DataFrame(states).dropna()[["date","pv","stock_pv"]]
 performance["stock_return"] = (performance["stock_pv"] - performance["stock_pv"].iloc[0]) / performance["stock_pv"].iloc[0]
 performance["return"] = (performance["pv"] - performance["pv"].iloc[0]) / performance["pv"].iloc[0]
 
 visualization = performance.merge(spy,on="date",how="left")
-visualization = visualization.merge(market_yield[["date","rf"]],on="date",how="left")
+visualization = visualization.merge(market_yield[["date","rf"]],on="date",how="left").groupby("date").first().reset_index()
 
 visualization["return"] = (visualization["pv"] - visualization["pv"].iloc[0]) / visualization["pv"].iloc[0]
 visualization["benchmark_return"] = (visualization["spy"] - visualization["spy"].iloc[0]) / visualization["spy"].iloc[0]
