@@ -1,5 +1,7 @@
 from strategy.magnificent_seven_quarterly import MagnificentSevenQuarterly
 from strategy.coefficient_of_variance import CoefficientOfVariance
+from strategy.financial_statement_quarterly import FinancialStatementQuarterly
+from strategy.korean_tech_quarterly import KoreanTechQuarterly
 from processor.processor import Processor as processor
 from database.adatabase import ADatabase
 import numpy as np
@@ -24,10 +26,7 @@ spy = processor.column_date_processing(spy)
 spy = spy.sort_values("date")
 fred.disconnect()
 
-
-
-
-strategy = CoefficientOfVariance()
+strategy = KoreanTechQuarterly()
 strategy.db.connect()
 states = strategy.db.retrieve("states")
 trades = strategy.db.retrieve("trades")

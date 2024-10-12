@@ -7,15 +7,18 @@ class Stock(object):
         self.quantity = quantity
 
     def update(self,row):
-        self.adjclose = row["adjclose"]
+        if float(row["adjclose"]) > self.adjclose * 1.2:
+            self.adjclose = self.adjclose
+        else:
+            self.adjclose = float(row["adjclose"])
         self.date = row["date"]
         self.pv = self.adjclose * self.quantity
     
     def buy(self,row,notional):
-        self.ticker = row["ticker"]
+        self.ticker = str(row["ticker"])
         self.date = row["date"]
-        self.adjclose = row["adjclose"]
-        self.buy_price = row["adjclose"]
+        self.adjclose = float(row["adjclose"])
+        self.buy_price = float(row["adjclose"])
         self.buy_date = row["date"]
         self.quantity = notional / self.adjclose
         self.pv = self.adjclose * self.quantity

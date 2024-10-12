@@ -4,6 +4,8 @@ from backtester.backtester import Backtester
 from strategy.single_index_weekly import SingleIndexWeekly
 from strategy.magnificent_seven_quarterly import MagnificentSevenQuarterly
 from strategy.coefficient_of_variance import CoefficientOfVariance
+from strategy.financial_statement_quarterly import FinancialStatementQuarterly
+from strategy.korean_tech_quarterly import KoreanTechQuarterly
 from datetime import datetime, timedelta 
 import pandas as pd
 
@@ -11,7 +13,7 @@ import pandas as pd
 end = datetime.now()
 start = datetime.now() - timedelta(days=365.25*2)
 
-strategy = CoefficientOfVariance()
+strategy = KoreanTechQuarterly()
 market = ADatabase("market")
 fred = ADatabase("fred")
 sapling = ADatabase("sapling")
