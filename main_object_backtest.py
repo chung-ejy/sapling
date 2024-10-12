@@ -3,32 +3,38 @@ from portfolio.portfolio import Portfolio
 from backtester.backtester import Backtester
 from strategy.single_index_quarterly import SingleIndexQuarterly
 from strategy.magnificent_seven_quarterly import MagnificentSevenQuarterly
-from strategy.coefficient_of_variance import CoefficientOfVariance
 from strategy.financial_statement_quarterly import FinancialStatementQuarterly
 from strategy.korean_tech_quarterly import KoreanTechQuarterly
+from strategy.optimal_quarterly import OptimalQuarterly
 from datetime import datetime, timedelta 
 import pandas as pd
 
-strategy = KoreanTechQuarterly()
-
-
 end = datetime.now()
-start = datetime.now() - timedelta(days=365.25*2)
-
-
+start = datetime(datetime.now().year,1,1)
 market = ADatabase("market")
 fred = ADatabase("fred")
 sapling = ADatabase("sapling")
 
+strategies = [
+                OptimalQuarterly()
+                ,KoreanTechQuarterly()
+              , SingleIndexQuarterly()
+              ,MagnificentSevenQuarterly()
+              ,FinancialStatementQuarterly()
+              ]
 
-sim = strategy.get_sim()
-portfolio = Portfolio(strategy,start,100000,10)
-backtester = Backtester(portfolio,start,end)
-portfolio_dictionaries, trades = backtester.backtest(sim)
-states = pd.DataFrame(portfolio_dictionaries)
-strategy.db.connect()
-strategy.db.drop("states")
-strategy.db.store("states",states)
-strategy.db.drop("trades")
-strategy.db.store("trades",pd.DataFrame(trades))
-strategy.db.disconnect()
+for strategy in strategies:
+    sim = strategy.get_sim()
+    if strategy.name == "single_index_quarterly":
+        portfolio = Portfolio(strategy,start,1000000,900)
+    else:
+        portfolio = Portfolio(strategy,start,1000000,100)
+    backtester = Backtester(portfolio,start,end)
+    portfolio_dictionaries, trades = backtester.backtest(sim)
+    states = pd.DataFrame(portfolio_dictionaries)
+    strategy.db.connect()
+    strategy.db.drop("states")
+    strategy.db.store("states",states)
+    strategy.db.drop("trades")
+    strategy.db.store("trades",pd.DataFrame(trades))
+    strategy.db.disconnect()

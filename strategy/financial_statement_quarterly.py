@@ -1,3 +1,4 @@
+from strategy.astrategy import AStrategy
 from database.adatabase import ADatabase
 import pandas as  pd
 from processor.processor import Processor as processor
@@ -8,38 +9,20 @@ from xgboost import XGBRegressor
 
 warnings.simplefilter(action="ignore")
 
-class FinancialStatementQuarterly(object):
+class FinancialStatementQuarterly(AStrategy):
     
     def __init__(self):
-        self.name = "financial_statement_quarterly"
-        self.db = ADatabase(self.name)
-        self.market = ADatabase("market")
-        self.sec = ADatabase("sec")
-        self.fred = ADatabase("fred")
+        super().__init__("financial_statement_quarterly")
         self.metric = "excess_return"
+        self.growth = False
 
     def sell_clause(self,date,stock):
         return date.quarter != stock.buy_date.quarter
     
     def load_dataset(self):
         russell1000 = pd.read_html("https://en.wikipedia.org/wiki/Russell_1000_Index")[2].rename(columns={"Symbol":"ticker"})
-        self.fred.connect()
-        market_yield = self.fred.retrieve("market_yield")
-        market_yield = market_yield.rename(columns={"value":"rf"})
-        market_yield["rf"] = market_yield["rf"].replace(".",np.nan)
-        market_yield.dropna(inplace=True)
-        market_yield["rf"] = [float(x)/100 for x in market_yield["rf"]]
-        market_yield = processor.column_date_processing(market_yield)
-        spy = self.fred.retrieve("sp500")
-        spy = spy.rename(columns={"value":"spy"})
-        spy["spy"] = spy["spy"].replace(".",np.nan)
-        spy.dropna(inplace=True)
-        spy["spy"] = [float(x) for x in spy["spy"]]
-        spy = processor.column_date_processing(spy)
-        spy = spy.sort_values("date")
-        self.fred.disconnect()
-        
-        unneeded_columns = ["ticker","year","quarter","gsector","gicdesc","y"]
+        market_yield, spy = self.load_macro()
+    
         self.market.connect()
         self.sec.connect()
         factors_df = []
@@ -91,13 +74,7 @@ class FinancialStatementQuarterly(object):
                 price = price.merge(sim[["year","quarter","ticker","prediction"]],on=["year","quarter","ticker"],how="left")
                 price = price.merge(spy[["date","spy"]],on="date",how="left")
                 price = price.merge(market_yield[["date","rf"]],on="date",how="left")
-                price["expected_return"] = (price["prediction"] - price["adjclose"]) / price["adjclose"]
-                price["historical_return"] = price["adjclose"].pct_change(90)
-                price["factor_return"] = price["spy"].pct_change(90)
-                price["cov"] = price["factor_return"].rolling(100).cov(price["expected_return"])
-                price["var"] = price["factor_return"].rolling(100).var()
-                price["beta"] = price["cov"] / price["var"]
-                price["excess_return"] = price["rf"] + price["beta"] * (price["expected_return"] - price["rf"])
+                price = self.index_factor_load(price)
                 price["sigma"] = price["adjclose"].rolling(262).std()
                 prices.append(price)
             except Exception as e:
@@ -106,12 +83,8 @@ class FinancialStatementQuarterly(object):
         self.market.disconnect()
 
         sim = pd.concat(prices)
-        sim = sim[["date","ticker","adjclose",self.metric]].dropna()
-        self.db.connect()
-        self.db.drop("sim")
-        self.db.store("sim",sim)
-        self.db.disconnect()
-    
+        self.save_sim(sim)
+
     def get_sim(self):
         self.db.connect()
         sim = processor.column_date_processing(self.db.retrieve("sim")).sort_values("date")
