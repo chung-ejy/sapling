@@ -2,12 +2,12 @@ from strategy.magnificent_seven_quarterly import MagnificentSevenQuarterly
 from strategy.coefficient_of_variance import CoefficientOfVariance
 from strategy.financial_statement_quarterly import FinancialStatementQuarterly
 from strategy.korean_tech_quarterly import KoreanTechQuarterly
+from strategy.single_index_quarterly import SingleIndexQuarterly
 from processor.processor import Processor as processor
 from database.adatabase import ADatabase
 import numpy as np
 import matplotlib.pyplot as plt
 
-db = ADatabase("sapling")
 fred = ADatabase("fred")
 fred.connect()
 
@@ -26,7 +26,7 @@ spy = processor.column_date_processing(spy)
 spy = spy.sort_values("date")
 fred.disconnect()
 
-strategy = KoreanTechQuarterly()
+strategy = SingleIndexQuarterly()
 strategy.db.connect()
 states = strategy.db.retrieve("states")
 trades = strategy.db.retrieve("trades")
@@ -37,7 +37,15 @@ visualization["return"] = (visualization["pv"] - visualization["pv"].iloc[0]) / 
 visualization["benchmark_return"] = (visualization["spy"] - visualization["spy"].iloc[0]) / visualization["spy"].iloc[0]
 visualization["ir_return"] = (visualization["rf"] - visualization["rf"].iloc[0]) / visualization["rf"].iloc[0]
 
-plt.plot(visualization["date"].values,visualization["return"])
-plt.plot(visualization["date"].values,visualization["benchmark_return"])
-plt.plot(visualization["date"].values,visualization["ir_return"])
-plt.show()
+# plt.plot(visualization["date"].values,visualization["return"])
+# plt.plot(visualization["date"].values,visualization["benchmark_return"])
+# plt.plot(visualization["date"].values,visualization["ir_return"])
+# plt.show()
+
+
+strategy.db.cloud_connect()
+strategy.db.drop("trades")
+strategy.db.drop("visualization")
+strategy.db.store("trades",trades)
+strategy.db.store("visualization",visualization)
+strategy.db.disconnect()

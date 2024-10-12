@@ -6,7 +6,7 @@ import numpy as np
 import warnings
 warnings.simplefilter(action="ignore")
 
-class SingleIndexWeekly(object):
+class SingleIndexQuarterly(object):
     
     def __init__(self):
         self.name = "single_index_weekly"
@@ -17,7 +17,7 @@ class SingleIndexWeekly(object):
 
 
     def sell_clause(self,date,stock):
-        return stock.ticker != "" and (date-stock.buy_date).days > 6
+        return (date.quarter != stock.buy_date.quarter)
     
     def load_dataset(self):
 
@@ -48,9 +48,9 @@ class SingleIndexWeekly(object):
                 price = price.merge(spy[["date","spy"]],on="date",how="left")
                 price = price.merge(market_yield[["date","rf"]],on="date",how="left")
                 price = price.merge(russell1000[["ticker","GICS Sector"]],on="ticker",how="left")
-                price["prev_return"] = price["adjclose"].pct_change(5)
-                price["historical_return"] = price["adjclose"].pct_change(5)
-                price["factor_return"] = price["spy"].pct_change(5)
+                price["prev_return"] = price["adjclose"].pct_change(90)
+                price["historical_return"] = price["adjclose"].pct_change(90)
+                price["factor_return"] = price["spy"].pct_change(90)
                 price["cov"] = price["factor_return"].rolling(100).cov(price["historical_return"])
                 price["var"] = price["factor_return"].rolling(100).var()
                 price["beta"] = price["cov"] / price["var"]

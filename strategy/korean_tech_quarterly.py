@@ -39,13 +39,14 @@ class KoreanTechQuarterly(object):
         spy = spy.sort_values("date")
         self.fred.disconnect()
         
-        factors = ["AMZN","NVDA","AAPL","META","GOOGL","TSLA","MSFT"]
+        factors = [str(x) for x in kospi["ticker"][:7]]
         self.market.connect()
         self.db.connect()
         factors_df = []
         for ticker in tqdm(factors):
             try:
-                price = processor.column_date_processing(self.market.query("prices",{"ticker":ticker}))
+                price = processor.column_date_processing(self.market.query("kr_prices",{"ticker":str(ticker)}).rename(columns={"Date":"date"}))
+                price["adjclose"] = [int(x) for x in price["close"]]
                 factors_df.append(price)
             except Exception as e:
                 print(ticker,str(e))

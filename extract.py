@@ -23,7 +23,6 @@ market.drop("prices")
 for ticker in tqdm(tickers):
     try:
         ticker_data = ALPClientExtractor(os.getenv("APCAKEY"),os.getenv("APCASECRET")).prices(ticker,start,end)
-        # ticker_data = TiingoExtractor().prices(ticker,start,end).rename(columns={"adjClose":"adjclose"})
         sleep(1)
         ticker_data["ticker"] = ticker
         market.store("prices",ticker_data)

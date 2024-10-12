@@ -1,8 +1,8 @@
-from strategy.single_index_weekly import SingleIndexWeekly
+from strategy.single_index_quarterly import SingleIndexQuarterly
 from strategy.magnificent_seven_quarterly import MagnificentSevenQuarterly
 from strategy.coefficient_of_variance import CoefficientOfVariance
 from strategy.financial_statement_quarterly import FinancialStatementQuarterly
 from strategy.korean_tech_quarterly import KoreanTechQuarterly
 
-strategy = KoreanTechQuarterly()
+strategy = SingleIndexQuarterly()
 strategy.load_dataset()

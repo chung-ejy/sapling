@@ -1,7 +1,7 @@
 from database.adatabase import ADatabase
 from portfolio.portfolio import Portfolio
 from backtester.backtester import Backtester
-from strategy.single_index_weekly import SingleIndexWeekly
+from strategy.single_index_quarterly import SingleIndexQuarterly
 from strategy.magnificent_seven_quarterly import MagnificentSevenQuarterly
 from strategy.coefficient_of_variance import CoefficientOfVariance
 from strategy.financial_statement_quarterly import FinancialStatementQuarterly
@@ -13,7 +13,7 @@ import pandas as pd
 end = datetime.now()
 start = datetime.now() - timedelta(days=365.25*2)
 
-strategy = KoreanTechQuarterly()
+strategy = SingleIndexQuarterly()
 market = ADatabase("market")
 fred = ADatabase("fred")
 sapling = ADatabase("sapling")
