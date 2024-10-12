@@ -85,7 +85,7 @@ class MagnificentSevenQuarterly(object):
         self.market.disconnect()
         sim = pd.concat(prices)
         
-        sim = sim[["date","ticker","adjclose","excess_return"]].dropna()
+        sim = sim[["date","ticker","adjclose",self.metric]].dropna()
         self.db.connect()
         self.db.drop("sim")
         self.db.store("sim",sim)

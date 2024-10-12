@@ -1,5 +1,5 @@
 from strategy.single_index_weekly import SingleIndexWeekly
 from strategy.magnificent_seven_quarterly import MagnificentSevenQuarterly
-
-strategy = MagnificentSevenQuarterly()
+from strategy.coefficient_of_variance import CoefficientOfVariance
+strategy = CoefficientOfVariance()
 strategy.load_dataset()

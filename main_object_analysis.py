@@ -1,7 +1,9 @@
 from strategy.magnificent_seven_quarterly import MagnificentSevenQuarterly
+from strategy.coefficient_of_variance import CoefficientOfVariance
 from processor.processor import Processor as processor
 from database.adatabase import ADatabase
 import numpy as np
+import matplotlib.pyplot as plt
 
 db = ADatabase("sapling")
 fred = ADatabase("fred")
@@ -21,7 +23,11 @@ spy["spy"] = [float(x) for x in spy["spy"]]
 spy = processor.column_date_processing(spy)
 spy = spy.sort_values("date")
 fred.disconnect()
-strategy = MagnificentSevenQuarterly()
+
+
+
+
+strategy = CoefficientOfVariance()
 strategy.db.connect()
 states = strategy.db.retrieve("states")
 trades = strategy.db.retrieve("trades")
@@ -32,9 +38,7 @@ visualization["return"] = (visualization["pv"] - visualization["pv"].iloc[0]) / 
 visualization["benchmark_return"] = (visualization["spy"] - visualization["spy"].iloc[0]) / visualization["spy"].iloc[0]
 visualization["ir_return"] = (visualization["rf"] - visualization["rf"].iloc[0]) / visualization["rf"].iloc[0]
 
-db.cloud_connect()
-db.drop("visualization")
-db.drop("trades")
-db.store("visualization",visualization)
-db.store("trades",trades)
-db.disconnect()
+plt.plot(visualization["date"].values,visualization["return"])
+plt.plot(visualization["date"].values,visualization["benchmark_return"])
+plt.plot(visualization["date"].values,visualization["ir_return"])
+plt.show()
