@@ -11,7 +11,7 @@ warnings.simplefilter(action="ignore")
 class KoreanTechQuarterly(object):
     
     def __init__(self):
-        self.name = "KoreanTechQuarterly"
+        self.name = "korean_tech_quarterly"
         self.db = ADatabase(self.name)
         self.market = ADatabase("market")
         self.fred = ADatabase("fred")

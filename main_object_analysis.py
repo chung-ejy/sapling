@@ -8,6 +8,8 @@ from database.adatabase import ADatabase
 import numpy as np
 import matplotlib.pyplot as plt
 
+
+strategy = KoreanTechQuarterly()
 fred = ADatabase("fred")
 fred.connect()
 
@@ -26,7 +28,7 @@ spy = processor.column_date_processing(spy)
 spy = spy.sort_values("date")
 fred.disconnect()
 
-strategy = SingleIndexQuarterly()
+
 strategy.db.connect()
 states = strategy.db.retrieve("states")
 trades = strategy.db.retrieve("trades")

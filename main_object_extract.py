@@ -4,5 +4,5 @@ from strategy.coefficient_of_variance import CoefficientOfVariance
 from strategy.financial_statement_quarterly import FinancialStatementQuarterly
 from strategy.korean_tech_quarterly import KoreanTechQuarterly
 
-strategy = SingleIndexQuarterly()
+strategy = KoreanTechQuarterly()
 strategy.load_dataset()

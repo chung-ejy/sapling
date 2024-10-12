@@ -9,7 +9,7 @@ warnings.simplefilter(action="ignore")
 class SingleIndexQuarterly(object):
     
     def __init__(self):
-        self.name = "single_index_weekly"
+        self.name = "single_index_quarterly"
         self.db = ADatabase(self.name)
         self.market = ADatabase("market")
         self.fred = ADatabase("fred")

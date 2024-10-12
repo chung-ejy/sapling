@@ -9,11 +9,13 @@ from strategy.korean_tech_quarterly import KoreanTechQuarterly
 from datetime import datetime, timedelta 
 import pandas as pd
 
+strategy = KoreanTechQuarterly()
+
 
 end = datetime.now()
 start = datetime.now() - timedelta(days=365.25*2)
 
-strategy = SingleIndexQuarterly()
+
 market = ADatabase("market")
 fred = ADatabase("fred")
 sapling = ADatabase("sapling")
