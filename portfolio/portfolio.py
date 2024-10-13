@@ -3,8 +3,9 @@ from asset.stock import Stock
 import copy
 class Portfolio(object):
     
-    def __init__(self,strategy,date=datetime(datetime.now().year,1,1),cash=100000,number_of_positions=50):
+    def __init__(self,strategy,diversifier,date=datetime(datetime.now().year,1,1),cash=100000,number_of_positions=50):
         self.strategy = strategy
+        self.diversifier = diversifier
         self.date = date
         self.initial_pv = cash
         self.cash = cash
@@ -41,7 +42,11 @@ class Portfolio(object):
         notional = float(self.cash / self.number_of_positions)
         if len(self.stocks) == 0:
             for i in range(self.number_of_positions):
-                row = todays_sim.sort_values(self.strategy.metric, ascending=self.strategy.growth).iloc[i]
+                diversified_sim = self.diversifier.diversify(todays_sim,i)
+                if diversified_sim.index.size < 1:
+                    row = todays_sim.sort_values(self.strategy.metric, ascending=self.strategy.growth).iloc[i]
+                else:
+                    row = diversified_sim.sort_values(self.strategy.metric, ascending=self.strategy.growth).iloc[i]
                 stock = Stock()
                 stock.buy(row, notional)
                 self.add_stock(stock)

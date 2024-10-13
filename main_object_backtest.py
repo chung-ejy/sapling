@@ -6,29 +6,30 @@ from strategy.magnificent_seven_quarterly import MagnificentSevenQuarterly
 from strategy.financial_statement_quarterly import FinancialStatementQuarterly
 from strategy.korean_tech_quarterly import KoreanTechQuarterly
 from strategy.optimal_quarterly import OptimalQuarterly
+from diversifier.industry_diversifier import IndustryDiversifier
+from diversifier.base_diversifier import BaseDiversifier
 from datetime import datetime, timedelta 
 import pandas as pd
 
 end = datetime.now()
-start = datetime(datetime.now().year,1,1)
+start = datetime(2020,1,1)
 market = ADatabase("market")
 fred = ADatabase("fred")
 sapling = ADatabase("sapling")
 
+diversifier = IndustryDiversifier()
 strategies = [
                 OptimalQuarterly()
                 ,KoreanTechQuarterly()
               , SingleIndexQuarterly()
               ,MagnificentSevenQuarterly()
               ,FinancialStatementQuarterly()
+ 
               ]
 
 for strategy in strategies:
     sim = strategy.get_sim()
-    if strategy.name == "single_index_quarterly":
-        portfolio = Portfolio(strategy,start,1000000,900)
-    else:
-        portfolio = Portfolio(strategy,start,1000000,100)
+    portfolio = Portfolio(strategy,diversifier,start,1000000,11)
     backtester = Backtester(portfolio,start,end)
     portfolio_dictionaries, trades = backtester.backtest(sim)
     states = pd.DataFrame(portfolio_dictionaries)

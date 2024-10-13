@@ -1,32 +1,29 @@
-from strategy.astrategy import AStrategy
-from database.adatabase import ADatabase
+from strategy.anaistrategy import AnAIStrategy
 import pandas as  pd
 from processor.processor import Processor as processor
 from tqdm import tqdm
-import numpy as np
 import warnings
-from xgboost import XGBRegressor
-
 warnings.simplefilter(action="ignore")
 
-class FinancialStatementQuarterly(AStrategy):
+class FinancialStatementQuarterly(AnAIStrategy):
     
     def __init__(self):
-        super().__init__("financial_statement_quarterly")
+        super().__init__("financial_statement_quarterly",["ptb","roa","mktcap","bm","short_debt","divyield","adjclose"])
         self.metric = "excess_return"
         self.growth = False
+        self.start_year = 2013
+        self.end_year = 2020
+        self.sim_end_year = 2025
 
     def sell_clause(self,date,stock):
         return date.quarter != stock.buy_date.quarter
     
-    def load_dataset(self):
-        russell1000 = pd.read_html("https://en.wikipedia.org/wiki/Russell_1000_Index")[2].rename(columns={"Symbol":"ticker"})
-        market_yield, spy = self.load_macro()
-    
+    def load_factors(self):       
+        sp500 = self.load_sp500()
         self.market.connect()
         self.sec.connect()
         factors_df = []
-        for ticker in tqdm(russell1000["ticker"].unique()):
+        for ticker in tqdm(sp500["ticker"].unique()):
             try:
                 price = processor.column_date_processing(self.market.query("prices",{"ticker":ticker}))
                 price["year"] = [x.year for x in price["date"]]
@@ -40,41 +37,37 @@ class FinancialStatementQuarterly(AStrategy):
                 price["y"] = price["adjclose"].shift(-4)
                 factors_df.append(price)
             except Exception as e:
-                # print(ticker,str(e))
+                print(ticker,str(e))
                 continue
         self.sec.disconnect()
         self.market.disconnect()
-
         factors_df = pd.concat(factors_df)
         for column in factors_df:
             if column in factors_df[column]:
                 factors_df.drop(column,axis=1,inplace=True)
         factors_df = factors_df.fillna(0)
-        start_year = 2022
-        end_year = 2023
-        sim_end_year = 2025
-
-        model = XGBRegressor()
-        factors = ["ptb","roa","mktcap","bm","short_debt","divyield","adjclose"]
         factors_df.sort_values(["year","quarter"],inplace=True)
-        training_data = factors_df[(factors_df["year"]>start_year) & (factors_df["year"]<end_year)].dropna()
-        sim = factors_df[(factors_df["year"]>=end_year-1) & (factors_df["year"]<sim_end_year)].drop("y",axis=1).dropna()
-        model.fit(training_data[factors],training_data["y"])
-        sim["prediction"] = model.predict(sim[factors])
+        return factors_df
+
+    def load_dataset(self):
+        
+        sp500 = self.load_sp500()
+        market_yield, spy = self.load_macro()
+        factors_df = self.load_factors()
+        training_data = factors_df[(factors_df["year"]>self.start_year) & (factors_df["year"]<self.end_year)].dropna()
+        sim = factors_df[(factors_df["year"]>=self.end_year-1) & (factors_df["year"]<self.sim_end_year)].drop("y",axis=1).dropna()
+        sim = self.model(training_data,sim)
 
         prices = []
         self.market.connect()
-        for ticker in tqdm(russell1000["ticker"].unique()):
+        for ticker in tqdm(sp500["ticker"].unique()):
             try:
-                price = processor.column_date_processing(self.market.query("historical_prices",{"ticker":ticker}))
+                price = processor.column_date_processing(self.market.query("prices",{"ticker":ticker}))
                 price["year"] = [x.year for x in price["date"]]
                 price["quarter"] = [x.quarter for x in price["date"]]
                 price.sort_values("date",inplace=True)
-                price = price.merge(russell1000[["ticker","GICS Sector"]],on="ticker",how="left")
                 price = price.merge(sim[["year","quarter","ticker","prediction"]],on=["year","quarter","ticker"],how="left")
-                price = price.merge(spy[["date","spy"]],on="date",how="left")
-                price = price.merge(market_yield[["date","rf"]],on="date",how="left")
-                price = self.index_factor_load(price)
+                price = self.index_factor_load(price,sp500,spy,market_yield)
                 price["sigma"] = price["adjclose"].rolling(262).std()
                 prices.append(price)
             except Exception as e:

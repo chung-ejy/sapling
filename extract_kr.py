@@ -9,7 +9,7 @@ import pandas as pd
 from time import sleep
 
 end = datetime.now()
-start = datetime.now() - timedelta(days=365.25*2)
+start = datetime.now() - timedelta(days=365.25*14)
 market = ADatabase("market")
 
 

@@ -17,7 +17,7 @@ class Backtester(object):
         for date in tqdm(sim["date"].unique()):      
             try:
                 today = sim[sim["date"] == date].copy()
-                if today.index.size > 0:
+                if today.index.size > self.portfolio.number_of_positions:
                     self.portfolio.update(today)
                     self.portfolio.buy(today)
                     trades.extend(self.portfolio.sell(today))

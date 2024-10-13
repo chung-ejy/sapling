@@ -26,8 +26,9 @@ spy = processor.column_date_processing(spy)
 spy = spy.sort_values("date")
 fred.disconnect()
 
-strategies = [   OptimalQuarterly()
-                ,KoreanTechQuarterly()
+strategies = [   
+            OptimalQuarterly()
+              ,KoreanTechQuarterly()
               , SingleIndexQuarterly()
               ,MagnificentSevenQuarterly()
               ,FinancialStatementQuarterly()

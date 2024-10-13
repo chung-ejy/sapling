@@ -10,6 +10,13 @@ class AStrategy(object):
         self.sec = ADatabase("sec")
         self.fred = ADatabase("fred")
     
+
+    def load_sp500(self):
+        self.market.connect()
+        sp500 = self.market.retrieve("sp500")
+        self.market.disconnect()
+        return sp500
+    
     def load_macro(self):
         self.fred.connect()
         market_yield = self.fred.retrieve("market_yield")
@@ -29,7 +36,10 @@ class AStrategy(object):
         self.fred.disconnect()
         return market_yield, spy
 
-    def index_factor_load(self,price):
+    def index_factor_load(self,price,constituents,spy,market_yield):
+        price = price.merge(constituents[["ticker","GICS Sector"]],on="ticker",how="left")
+        price = price.merge(spy[["date","spy"]],on="date",how="left")
+        price = price.merge(market_yield[["date","rf"]],on="date",how="left")
         price["expected_return"] = (price["prediction"] - price["adjclose"]) / price["adjclose"]
         price["historical_return"] = price["adjclose"].pct_change(90)
         price["factor_return"] = price["spy"].pct_change(90)
@@ -41,7 +51,7 @@ class AStrategy(object):
         return price
 
     def save_sim(self,sim):
-        sim = sim[["date","ticker","adjclose","market_cov",self.metric]].dropna()
+        sim = sim[["date","ticker","adjclose","market_cov","GICS Sector",self.metric]]
         self.db.connect()
         self.db.drop("sim")
         self.db.store("sim",sim)

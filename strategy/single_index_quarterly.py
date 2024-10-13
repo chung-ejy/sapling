@@ -18,20 +18,17 @@ class SingleIndexQuarterly(AStrategy):
         return (date.quarter != stock.buy_date.quarter)
     
     def load_dataset(self):
-
-        russell1000 = pd.read_html("https://en.wikipedia.org/wiki/Russell_1000_Index")[2].rename(columns={"Symbol":"ticker"})
+        sp500 = self.load_sp500()
         market_yield, spy = self.load_macro()
 
         prices = []
         self.market.connect()
-        for ticker in tqdm(russell1000["ticker"].unique()):
+        for ticker in tqdm(sp500["ticker"].unique()):
             try:
                 price = processor.column_date_processing(self.market.query("prices",{"ticker":ticker}))
                 price.sort_values("date",inplace=True)
-                price = price.merge(spy[["date","spy"]],on="date",how="left")
-                price = price.merge(market_yield[["date","rf"]],on="date",how="left")
                 price["prediction"] = price["adjclose"].shift(90)
-                price = self.index_factor_load(price)
+                price = self.index_factor_load(price,sp500,spy,market_yield)
                 prices.append(price)
             except Exception as e:
                 print(ticker,str(e))

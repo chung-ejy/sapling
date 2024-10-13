@@ -4,11 +4,12 @@ from strategy.financial_statement_quarterly import FinancialStatementQuarterly
 from strategy.korean_tech_quarterly import KoreanTechQuarterly
 from strategy.optimal_quarterly import OptimalQuarterly
 strategies = [
-                  OptimalQuarterly()
-                ,KoreanTechQuarterly()
-              ,MagnificentSevenQuarterly()
-              ,SingleIndexQuarterly()
-              ,FinancialStatementQuarterly()
+              #   OptimalQuarterly()
+            #   SingleIndexQuarterly()
+              KoreanTechQuarterly()
+            #   MagnificentSevenQuarterly()
+            #   ,FinancialStatementQuarterly()
+              
               ]
 
 for strategy in strategies:
