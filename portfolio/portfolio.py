@@ -39,15 +39,16 @@ class Portfolio(object):
         self.portfolio_return = (self.pv - self.initial_pv) / self.initial_pv
 
     def buy(self,todays_sim):
-        notional = float(self.cash / self.number_of_positions)
+        cash = float(self.cash)
         if len(self.stocks) == 0:
             for i in range(self.number_of_positions):
-                diversified_sim = self.diversifier.diversify(todays_sim,i)
+                diversified_sim = self.diversifier.diversify(todays_sim,i,self.number_of_positions)
                 if diversified_sim.index.size < 1:
                     row = todays_sim.sort_values(self.strategy.metric, ascending=self.strategy.growth).iloc[i]
                 else:
                     row = diversified_sim.sort_values(self.strategy.metric, ascending=self.strategy.growth).iloc[i]
                 stock = Stock()
+                notional = cash * row["weight"]
                 stock.buy(row, notional)
                 self.add_stock(stock)
                 self.withdraw(stock.pv)

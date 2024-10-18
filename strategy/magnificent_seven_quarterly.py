@@ -10,7 +10,7 @@ class MagnificentSevenQuarterly(AnAIStrategy):
     
     def __init__(self):
         super().__init__("magnificent_seven_quarterly",["AMZN","NVDA","AAPL","META","GOOGL","TSLA","MSFT"])
-        self.metric = "expected_return"
+        self.metric = "excess_return"
         self.growth = False
         self.start_year = 2013
         self.end_year = 2020
@@ -51,7 +51,7 @@ class MagnificentSevenQuarterly(AnAIStrategy):
                 price.sort_values("date",inplace=True)
                 price["year"] = [x.year for x in price["date"]]
                 price = price.merge(factors_df.reset_index(),on="date",how="left")
-                price["y"] = price["adjclose"].rolling(90).mean().shift(-90)
+                price["y"] = price["adjclose"].rolling(60).mean().shift(-60)
                 training_data = price[(price["year"]>=self.start_year) & (price["year"]<self.end_year)].dropna()
                 price = self.model(training_data,price)
                 price = price[(price["year"]>=self.end_year-1)]

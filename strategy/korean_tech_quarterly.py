@@ -5,14 +5,14 @@ from processor.processor import Processor as processor
 from tqdm import tqdm
 import numpy as np
 import warnings
-
+import math
 warnings.simplefilter(action="ignore")
 
 class KoreanTechQuarterly(AnAIStrategy):
     
     def __init__(self):
         super().__init__("korean_tech_quarterly",["AMZN","NVDA","AAPL","META","GOOGL","TSLA","MSFT"]) 
-        self.metric = "expected_return"
+        self.metric = "excess_return"
         self.growth = False
         self.start_year = 2013
         self.end_year = 2020
@@ -39,8 +39,9 @@ class KoreanTechQuarterly(AnAIStrategy):
         return factors_df
     
     def load_dataset(self):
-        sp500 = self.load_sp500()
         kospi = pd.read_csv("kospi.csv").rename(columns={"Issue code":"ticker"})
+        kospi["ticker"] = [str(x) for x in kospi["ticker"]]
+        kospi["GICS Sector"] = [round(math.log10(x)) for x in kospi["Total market cap."]]
         market_yield, spy = self.load_macro()
         factors_df = self.load_factors()
         prices = []
@@ -53,11 +54,11 @@ class KoreanTechQuarterly(AnAIStrategy):
                     price.sort_values("date",inplace=True)
                     price["year"] = [x.year for x in price["date"]]
                     price = price.merge(factors_df.reset_index(),on="date",how="left")
-                    price["y"] = price["adjclose"].rolling(90).mean().shift(-90)
+                    price["y"] = price["adjclose"].rolling(60).mean().shift(-60)
                     training_data = price[(price["year"]>=self.start_year) & (price["year"]<self.end_year)].dropna()
                     price = self.model(training_data,price)
                     price = price[(price["year"]>=self.end_year-1)]
-                    price = self.index_factor_load(price,sp500,spy,market_yield)
+                    price = self.index_factor_load(price,kospi,spy,market_yield)
                     prices.append(price)
             except Exception as e:
                 print(ticker,str(e))

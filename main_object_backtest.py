@@ -8,6 +8,7 @@ from strategy.korean_tech_quarterly import KoreanTechQuarterly
 from strategy.optimal_quarterly import OptimalQuarterly
 from diversifier.industry_diversifier import IndustryDiversifier
 from diversifier.base_diversifier import BaseDiversifier
+from diversifier.optimal_diversifier import OptimalDiversifier
 from datetime import datetime, timedelta 
 import pandas as pd
 
@@ -17,7 +18,7 @@ market = ADatabase("market")
 fred = ADatabase("fred")
 sapling = ADatabase("sapling")
 
-diversifier = IndustryDiversifier()
+diversifier = BaseDiversifier()
 strategies = [
                 OptimalQuarterly()
                 ,KoreanTechQuarterly()
@@ -28,8 +29,8 @@ strategies = [
               ]
 
 for strategy in strategies:
-    sim = strategy.get_sim()
-    portfolio = Portfolio(strategy,diversifier,start,1000000,11)
+    sim = strategy.get_sim().sort_values("date")
+    portfolio = Portfolio(strategy,diversifier,start,1000000,10)
     backtester = Backtester(portfolio,start,end)
     portfolio_dictionaries, trades = backtester.backtest(sim)
     states = pd.DataFrame(portfolio_dictionaries)

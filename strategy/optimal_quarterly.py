@@ -26,7 +26,7 @@ class OptimalQuarterly(AStrategy):
             try:
                 price = processor.column_date_processing(self.market.query("prices",{"ticker":ticker}))
                 price.sort_values("date",inplace=True)
-                price["prediction"] = price["adjclose"].shift(-90)
+                price["prediction"] = price["adjclose"].shift(-60)
                 price = self.index_factor_load(price,sp500,spy,market_yield)
                 prices.append(price)
             except Exception as e:
