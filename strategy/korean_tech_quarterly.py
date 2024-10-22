@@ -11,7 +11,8 @@ warnings.simplefilter(action="ignore")
 class KoreanTechQuarterly(AnAIStrategy):
     
     def __init__(self):
-        super().__init__("korean_tech_quarterly",["AMZN","NVDA","AAPL","META","GOOGL","TSLA","MSFT"]) 
+        # super().__init__("korean_tech_quarterly",["AMZN","NVDA","AAPL","META","GOOGL","TSLA","MSFT"]) 
+        super().__init__("korean_tech_quarterly",["5930","660","373220","207940","5380"]) 
         self.metric = "excess_return"
         self.growth = False
         self.start_year = 2013
@@ -27,7 +28,7 @@ class KoreanTechQuarterly(AnAIStrategy):
         factors_df = []
         for ticker in tqdm(self.factors):
             try:
-                price = processor.column_date_processing(self.market.query("prices",{"ticker":str(ticker)}).rename(columns={"Date":"date"}))
+                price = processor.column_date_processing(self.market.query("kr_prices",{"ticker":str(ticker)}).rename(columns={"Date":"date"}))
                 price["adjclose"] = [int(x) for x in price["close"]]
                 factors_df.append(price)
             except Exception as e:

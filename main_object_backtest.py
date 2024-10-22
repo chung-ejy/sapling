@@ -4,6 +4,7 @@ from backtester.backtester import Backtester
 from strategy.single_index_quarterly import SingleIndexQuarterly
 from strategy.magnificent_seven_quarterly import MagnificentSevenQuarterly
 from strategy.financial_statement_quarterly import FinancialStatementQuarterly
+from strategy.kr_financial_statement_yearly import KRFinancialStatementYearly
 from strategy.korean_tech_quarterly import KoreanTechQuarterly
 from strategy.optimal_quarterly import OptimalQuarterly
 from diversifier.industry_diversifier import IndustryDiversifier
@@ -13,18 +14,19 @@ from datetime import datetime, timedelta
 import pandas as pd
 
 end = datetime.now()
-start = datetime(2020,1,1)
+start = datetime(2022,1,1)
 market = ADatabase("market")
 fred = ADatabase("fred")
 sapling = ADatabase("sapling")
 
 diversifier = BaseDiversifier()
 strategies = [
-                OptimalQuarterly()
-                ,KoreanTechQuarterly()
-              , SingleIndexQuarterly()
-              ,MagnificentSevenQuarterly()
-              ,FinancialStatementQuarterly()
+            KRFinancialStatementYearly()
+              # ,KoreanTechQuarterly()
+              # ,OptimalQuarterly()
+              # ,SingleIndexQuarterly()
+              # ,MagnificentSevenQuarterly()
+              # ,FinancialStatementQuarterly()
  
               ]
 
