@@ -19,8 +19,8 @@ class Backtester(object):
                 today = sim[sim["date"] == date].copy()
                 if today.index.size > self.portfolio.number_of_positions:
                     self.portfolio.update(today)
-                    self.portfolio.buy(today)
                     trades.extend(self.portfolio.sell(today))
+                    self.portfolio.buy(today)
                     portfolio_dictionaries.append(self.portfolio.to_json())
             except Exception as e:
                 print(f"Error on date {date}: {str(e)}")

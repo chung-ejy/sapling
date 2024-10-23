@@ -30,7 +30,6 @@ fred.disconnect()
 strategies = [   
                 KRFinancialStatementYearly()
               ,KoreanTechQuarterly()
-              ,OptimalQuarterly()
               ,SingleIndexQuarterly()
               ,MagnificentSevenQuarterly()
               ,FinancialStatementQuarterly()

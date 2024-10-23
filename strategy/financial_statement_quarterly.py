@@ -68,7 +68,6 @@ class FinancialStatementQuarterly(AnAIStrategy):
                 price.sort_values("date",inplace=True)
                 price = price.merge(sim[["year","quarter","ticker","prediction"]],on=["year","quarter","ticker"],how="left")
                 price = self.index_factor_load(price,sp500,spy,market_yield)
-                price["sigma"] = price["adjclose"].rolling(262).std()
                 prices.append(price)
             except Exception as e:
                 print(ticker,str(e))

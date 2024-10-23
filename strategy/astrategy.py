@@ -43,10 +43,11 @@ class AStrategy(object):
         price["beta"] = price["cov"] / price["var"]
         price["excess_return"] = price["rf"] + price["beta"] * (price["expected_return"] - price["rf"])
         price["risk"] = price["adjclose"].rolling(100).var()
+        price["sigma"] = price["adjclose"].rolling(262).std()
         return price
 
     def save_sim(self,sim):
-        sim = sim[["date","ticker","adjclose","risk","GICS Sector",self.metric]]
+        sim = sim[["date","ticker","adjclose","risk","GICS Sector",self.metric,"sigma","rf"]]
         self.db.connect()
         self.db.drop("sim")
         self.db.store("sim",sim)

@@ -84,7 +84,6 @@ class KRFinancialStatementYearly(AnAIStrategy):
                 price.sort_values("date",inplace=True)
                 price = price.merge(sim[["year","ticker","prediction"]],on=["year","ticker"],how="left")
                 price = self.index_factor_load(price,kospi,spy,market_yield)
-                price["sigma"] = price["adjclose"].rolling(262).std()
                 prices.append(price)
             except Exception as e:
                 print(ticker,str(e))

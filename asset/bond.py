@@ -1,48 +1,33 @@
 class Bond(object):
 
-    @classmethod
-    def update(cls, row, asset):
-        updated = asset.copy()
-        # # Calculate bond price considering coupon payments
-        # updated["adjclose"] = cls.calculate_price(
-        #     face_value=1000,
-        #     rate=row["rf"],
-        #     coupon_rate=asset.get("coupon_rate", 0.05),  # Default 5% coupon rate
-        #     years=10
-        # )
-        # updated["pv"] = updated["adjclose"] * updated["quantity"]
-        return updated
+    def __init__(self,ticker="",adjclose=0,quantity=0):
+        self.ticker = ticker
+        self.adjclose = adjclose
+        self.quantity = quantity
+        self.coupon_rate = 0.05
+    
+    def update(self, row):
+        self.rate = row["rf"]
 
-    @classmethod
-    def sell(cls, row, asset):
-        updated = asset.copy()
-        updated["sell_date"] = row["date"]
-        return updated
-
-    @classmethod
-    def buy(cls, row, asset, notional, asset_type="bond", coupon_rate=0.05):
-        updated = asset.copy()
-        updated["ticker"] = row["ticker"]
-        updated["buy_date"] = row["date"]
-        updated["sell_date"] = None
-        updated["asset_type"] = asset_type
-        updated["coupon_rate"] = coupon_rate
+    def buy(self, row, notional):
+        self.ticker = row["ticker"]
+        self.buy_date = row["date"]
+        self.sell_date = None
+        
         
         # Calculate bond price considering coupon payments
-        updated["adjclose"] = cls.calculate_price(
+        self.adjclose = self.calculate_price(
             face_value=1000,
             rate=row["rf"],
-            coupon_rate=coupon_rate,
+            coupon_rate=self.coupon_rate,
             years=10
         )
         
-        updated["quantity"] = notional / updated["adjclose"]
-        updated["rate"] = row["rf"]
-        updated["pv"] = updated["adjclose"] * updated["quantity"]
-        return updated
+        self.quantity = notional / self.adjclose
+        self.rate = row["rf"]
+        self.pv = self.adjclose * self.quantity
     
-    @staticmethod
-    def calculate_price(face_value, rate, coupon_rate, years):
+    def calculate_price(self,face_value, rate, coupon_rate, years):
         """
         Calculate bond price considering coupon payments.
         face_value: The face value of the bond (e.g., $1000)

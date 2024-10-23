@@ -22,16 +22,14 @@ sapling = ADatabase("sapling")
 diversifier = BaseDiversifier()
 strategies = [
             KRFinancialStatementYearly()
-              # ,KoreanTechQuarterly()
-              # ,OptimalQuarterly()
-              # ,SingleIndexQuarterly()
-              # ,MagnificentSevenQuarterly()
-              # ,FinancialStatementQuarterly()
- 
+              ,KoreanTechQuarterly()
+              ,SingleIndexQuarterly()
+              ,MagnificentSevenQuarterly()
+              ,FinancialStatementQuarterly()
               ]
 
 for strategy in strategies:
-    sim = strategy.get_sim().sort_values("date")
+    sim = strategy.get_sim().sort_values("date").bfill()
     portfolio = Portfolio(strategy,diversifier,start,1000000,10)
     backtester = Backtester(portfolio,start,end)
     portfolio_dictionaries, trades = backtester.backtest(sim)

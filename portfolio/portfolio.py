@@ -1,6 +1,7 @@
 from datetime import datetime
 from asset.stock import Stock
-import copy
+from asset.option import Option
+from asset.bond import Bond
 class Portfolio(object):
     
     def __init__(self,strategy,diversifier,date=datetime(datetime.now().year,1,1),cash=100000,number_of_positions=50):
@@ -13,6 +14,9 @@ class Portfolio(object):
         self.portfolio_return = (self.pv - self.initial_pv) / self.initial_pv
         self.number_of_positions = number_of_positions
         self.stocks = []
+        self.options = []
+        self.bonds = []
+        self.asset_allocations = {"stock":0.6,"option":0,"bond":0.4}
     
     def update_date(self,date):
         self.date = date
@@ -35,7 +39,14 @@ class Portfolio(object):
             ticker = stock.ticker
             row = todays_sim[todays_sim["ticker"] == ticker].iloc[0]
             stock.update(row)
-        self.pv = sum([stock.adjclose * stock.quantity for stock in self.stocks]) + self.cash
+            option = [x for x in self.options if x.ticker == ticker][0]
+            bond = [x for x in self.bonds if x.ticker == ticker][0]
+            option.update(row)
+            bond.update(row)
+        self.stock_pv = sum([stock.adjclose * stock.quantity for stock in self.stocks])
+        self.option_pv = sum([option.pv for option in self.options])
+        self.bond_pv = sum([bond.pv for bond in self.bonds])
+        self.pv = self.stock_pv + self.option_pv + self.bond_pv + self.cash
         self.portfolio_return = (self.pv - self.initial_pv) / self.initial_pv
 
     def buy(self,todays_sim):
@@ -48,18 +59,32 @@ class Portfolio(object):
                 else:
                     row = diversified_sim.sort_values(self.strategy.metric, ascending=self.strategy.growth).iloc[i]
                 stock = Stock()
+                option = Option()
+                bond = Bond()
                 notional = cash * row["weight"]
-                stock.buy(row, notional)
+                stock.buy(row, notional*self.asset_allocations["stock"])
                 self.add_stock(stock)
                 self.withdraw(stock.pv)
+                option.buy(row,notional*self.asset_allocations["option"])
+                self.options.append(option)
+                self.withdraw(option.pv)
+                bond.buy(row,notional*self.asset_allocations["bond"])
+                self.bonds.append(bond)
+                self.withdraw(bond.pv)
 
     def sell(self,todays_sim):
         trades = []
         for stock in self.stocks:
             if self.strategy.sell_clause(self.date,stock):
                 self.remove_stock(stock)
+                option = [x for x in self.options if x.ticker == stock.ticker][0]
+                self.options.remove(option)
+                bond = [x for x in self.bonds if x.ticker == stock.ticker][0]
+                self.bonds.remove(bond)
                 trades.append(stock.__dict__)
                 self.deposit(stock.pv)
+                self.deposit(option.pv)
+                self.deposit(bond.pv)   
         return trades
     
     def to_json(self):
