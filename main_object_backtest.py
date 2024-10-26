@@ -8,6 +8,7 @@ from strategy.kr_financial_statement_yearly import KRFinancialStatementYearly
 from strategy.korean_tech_quarterly import KoreanTechQuarterly
 from strategy.optimal_quarterly import OptimalQuarterly
 from strategy.jp_single_index_quarterly import JPSingleIndexQuarterly
+from strategy.fama_french_quarterly import FamaFrenchQuarterly
 from diversifier.industry_diversifier import IndustryDiversifier
 from diversifier.base_diversifier import BaseDiversifier
 from diversifier.optimal_diversifier import OptimalDiversifier
@@ -21,13 +22,13 @@ fred = ADatabase("fred")
 sapling = ADatabase("sapling")
 
 diversifier = BaseDiversifier()
-strategies = [
-              JPSingleIndexQuarterly()
+strategies = [ FamaFrenchQuarterly()
+            # ,JPSingleIndexQuarterly()
             # ,KRFinancialStatementYearly()
-            #   ,KoreanTechQuarterly()
-            #   ,SingleIndexQuarterly()
-            #   ,MagnificentSevenQuarterly()
-            #   ,FinancialStatementQuarterly()
+            # ,KoreanTechQuarterly()
+            # ,SingleIndexQuarterly()
+            # ,MagnificentSevenQuarterly()
+            # ,FinancialStatementQuarterly()
               ]
 
 for strategy in strategies:

@@ -5,6 +5,7 @@ from strategy.single_index_quarterly import SingleIndexQuarterly
 from strategy.optimal_quarterly import OptimalQuarterly
 from strategy.kr_financial_statement_yearly import KRFinancialStatementYearly
 from strategy.jp_single_index_quarterly import JPSingleIndexQuarterly
+from strategy.fama_french_quarterly import FamaFrenchQuarterly
 from processor.processor import Processor as processor
 from database.adatabase import ADatabase
 import numpy as np
@@ -28,7 +29,8 @@ spy = processor.column_date_processing(spy)
 spy = spy.sort_values("date")
 fred.disconnect()
 
-strategies = [ JPSingleIndexQuarterly()  
+strategies = [ FamaFrenchQuarterly()
+            #   ,JPSingleIndexQuarterly()  
             #   ,KRFinancialStatementYearly()
             #   ,KoreanTechQuarterly()
             #   ,SingleIndexQuarterly()
@@ -55,7 +57,7 @@ for strategy in strategies:
         visualization["sharpe_return"] = (visualization["sharpe_ratio"] - visualization["sharpe_ratio"].iloc[1]) / visualization["sharpe_ratio"].iloc[1]
         plt.plot(visualization["date"].values,visualization["return"])
         plt.plot(visualization["date"].values,visualization["benchmark_return"])
-        plt.plot(visualization["date"].values,visualization["ir_return"])
+        plt.plot(visualization["date"].values,visualization["ir_return"])   
         plt.show()
         # print(states.iloc[-1]["stocks"])
 

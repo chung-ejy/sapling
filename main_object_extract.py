@@ -5,8 +5,10 @@ from strategy.korean_tech_quarterly import KoreanTechQuarterly
 from strategy.optimal_quarterly import OptimalQuarterly
 from strategy.jp_single_index_quarterly import JPSingleIndexQuarterly
 from strategy.kr_financial_statement_yearly import KRFinancialStatementYearly
+from strategy.fama_french_quarterly import FamaFrenchQuarterly
 strategies = [
-                JPSingleIndexQuarterly()
+                FamaFrenchQuarterly()
+              #  , JPSingleIndexQuarterly()
               #   ,KRFinancialStatementYearly()
               #   ,KoreanTechQuarterly()
               # ,SingleIndexQuarterly()
