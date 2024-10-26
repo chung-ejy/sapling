@@ -11,3 +11,4 @@ venv/
 unique_numbers/
 *.log
 *.txt
+*.xls
