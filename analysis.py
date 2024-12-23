@@ -5,7 +5,7 @@ from strategy.magnificent_seven_quarterly import MagnificentSevenQuarterly
 import pandas as pd
 import matplotlib.pyplot as plt
 
-strategy = MagnificentSevenQuarterly()
+strategy = COEVWeekly()
 strategy.db.connect()
 states = strategy.db.retrieve("states")
 strategy.db.disconnect()
