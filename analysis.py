@@ -6,7 +6,11 @@ from strategy.financial_statement_quarterly import FinancialStatementQuarterly
 import pandas as pd
 import matplotlib.pyplot as plt
 
+<<<<<<< HEAD
 strategy = FinancialStatementQuarterly()
+=======
+strategy = COEVWeekly()
+>>>>>>> c9b1d3072e1defbd16a17dab94d92f2aabe83739
 strategy.db.connect()
 states = strategy.db.retrieve("states")
 strategy.db.disconnect()

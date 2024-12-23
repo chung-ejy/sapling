@@ -21,7 +21,7 @@ class COEVWeekly(AStrategy):
             try:
                 price = standard_df[standard_df["ticker"]==ticker].sort_values("date")
                 price.sort_values("date",inplace=True)
-                price["factor"] = price["adjclose"].rolling(100).std() / price["adjclose"].rolling(100).mean()
+                price["factor"] = -1*price["adjclose"].pct_change(100)*price["adjclose"].rolling(100).std() / price["adjclose"].rolling(100).mean()
                 if price.index.size > 0:
                     prices.append(price)
             except Exception as e:
@@ -31,6 +31,6 @@ class COEVWeekly(AStrategy):
         return sim
     
     def signal(self,sim:pd.DataFrame):
-        sim["rank"] = sim.groupby("date",group_keys=False)["factor"].apply(pd.qcut,q=10,labels=False,duplicates="drop")
-        sim["exposure"] = [Exposure.LONG if x > 8 else Exposure.SHORT if x < 1 else Exposure.NONE for x in sim["rank"]]
+        sim["rank"] = sim.groupby("date",group_keys=False)["factor"].rank(method="dense", ascending=False).astype(int)
+        sim["exposure"] = [Exposure.LONG if x < 10 else Exposure.SHORT if x > 490 else Exposure.NONE for x in sim["rank"]]
         return sim.drop("rank",axis=1)
