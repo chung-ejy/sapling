@@ -3,6 +3,7 @@ from strategy.coev_weekly import COEVWeekly
 from strategy.rolling_average_quarterly import RollingAverageQuarterly
 from strategy.rolling_average_weekly import RollingAverageWeekly
 from strategy.magnificent_seven_quarterly import MagnificentSevenQuarterly
+from strategy.financial_statement_quarterly import FinancialStatementQuarterly
 from equations.date_columns import DateColumns
 from data.market_data import MarketData
 from portfolio.portfolio import Portfolio
@@ -13,7 +14,7 @@ import pandas as pd
 core_data = CoreData()
 core_data.load_index()
 standard_market = core_data.core_dataframe()
-strategy = MagnificentSevenQuarterly()
+strategy = FinancialStatementQuarterly()
 strategy.load_index()
 sim = strategy.factor_load(standard_market)
 sim = DateColumns.apply(sim)

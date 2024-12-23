@@ -2,10 +2,11 @@ from strategy.coev_weekly import COEVWeekly
 from strategy.rolling_average_quarterly import RollingAverageQuarterly
 from strategy.rolling_average_weekly import RollingAverageWeekly
 from strategy.magnificent_seven_quarterly import MagnificentSevenQuarterly
+from strategy.financial_statement_quarterly import FinancialStatementQuarterly
 import pandas as pd
 import matplotlib.pyplot as plt
 
-strategy = MagnificentSevenQuarterly()
+strategy = FinancialStatementQuarterly()
 strategy.db.connect()
 states = strategy.db.retrieve("states")
 strategy.db.disconnect()

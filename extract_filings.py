@@ -4,9 +4,10 @@ from processor.processor import Processor as p
 from tqdm import tqdm
 sec = ADatabase("sec")
 
-sec.connect()   
-for year in tqdm(range(2024,2025)):
-    for quarter in range(2,3):
+sec.connect()
+sec.drop("filings")
+for year in tqdm(range(2013,2025)):
+    for quarter in range(1,5):
         try:
             folder = f"./sec/{year}q{quarter}/"
             num = pd.read_csv(folder+"num.txt", quotechar='"',sep="\t",engine="c",low_memory=False,encoding="utf-8")
@@ -27,7 +28,7 @@ for year in tqdm(range(2024,2025)):
             num = num[num["tag"].isin(included)].pivot_table(index="adsh",columns="tag",values="value")
             sub = pd.read_csv(folder+"sub.txt", quotechar='"',sep="\t",engine="c",low_memory=False,encoding="utf-8")[["adsh","cik","filed"]]
             sub["cik"] = [int(x) for x in sub["cik"]]
-            filing = p.merge(num,sub,"adsh")
+            filing = num.merge(sub,on="adsh",how="left")
             filing["date"] = pd.to_datetime(filing["filed"],format="%Y%m%d")
             filing["year"] = year
             filing["quarter"] = quarter

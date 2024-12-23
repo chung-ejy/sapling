@@ -14,9 +14,9 @@ class AStrategy(object):
 
     def load_index(self):
         self.market.connect()
-        index = self.market.retrieve(self.index)
+        self.index = self.market.retrieve(self.index)
         self.market.disconnect()
-        self.tickers = list(index["ticker"].unique())
+        self.tickers = list(self.index["ticker"].unique())
     
     def buy_clause(self,market_data):
         return market_data.exposure != Exposure.NONE
