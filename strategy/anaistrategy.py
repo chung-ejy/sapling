@@ -5,8 +5,8 @@ import numpy as np
 from xgboost import XGBRegressor
 class AnAIStrategy(AStrategy):
 
-    def __init__(self,name,factors):
-        super().__init__(name)
+    def __init__(self,name,index,factors):
+        super().__init__(name,index)
         self.factors = factors
     
     def model(self,training_data,price):

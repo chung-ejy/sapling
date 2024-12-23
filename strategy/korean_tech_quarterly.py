@@ -11,7 +11,6 @@ warnings.simplefilter(action="ignore")
 class KoreanTechQuarterly(AnAIStrategy):
     
     def __init__(self):
-        # super().__init__("korean_tech_quarterly",["AMZN","NVDA","AAPL","META","GOOGL","TSLA","MSFT"]) 
         super().__init__("korean_tech_quarterly",["5930","660","373220","207940","5380"]) 
         self.metric = "excess_return"
         self.growth = False
