@@ -15,4 +15,4 @@ class CAPM(object):
         df["sigma"] = df["adjclose"].rolling(262).std()
         drop_cols = ["expected_return","historical_return","factor_return"
                      ,"cov","market_cov","var","beta","prediction","sp500_prediction","sp500"]
-        return df.drop(drop_cols,axis=1).dropna()   
+        return df.drop(drop_cols,axis=1)   
