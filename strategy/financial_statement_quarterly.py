@@ -10,7 +10,7 @@ warnings.simplefilter(action="ignore")
 class FinancialStatementQuarterly(AnAIStrategy):
     
     def __init__(self):
-        super().__init__("financial_statement_quarterly","sp500",["assets","liabilities","adjclose"])
+        super().__init__("financial_statement_quarterly","sp500",["assets","liabilities","reference_price"])
         self.metric = "excess_return"
         self.growth = False
         self.start_year = 2013
@@ -23,7 +23,7 @@ class FinancialStatementQuarterly(AnAIStrategy):
     
     def load_factors(self):       
         self.market.connect()
-        self.sec.connect()
+        self.sec.connect()  
         factors_df = []
         for row in tqdm(self.index.iterrows()):
             try:
@@ -38,6 +38,7 @@ class FinancialStatementQuarterly(AnAIStrategy):
                 price = price.drop(["date","ticker"],axis=1).merge(filings.drop(["date","cik"],axis=1),on=["year","quarter"],how="left").groupby(["year","quarter"]).mean().reset_index()
                 price["ticker"] = ticker
                 price["y"] = price["adjclose"].shift(-1)
+                price["reference_price"] = price["adjclose"].shift(1)
                 factors_df.append(price[["year","quarter","ticker","y"]+self.factors])
             except Exception as e:
                 print(ticker,str(e))
@@ -51,8 +52,8 @@ class FinancialStatementQuarterly(AnAIStrategy):
         
         factors_df = self.load_factors()
         training_data = factors_df[(factors_df["year"]>self.start_year) & (factors_df["year"]<self.end_year)].dropna()
-        sim = factors_df[(factors_df["year"]>=self.end_year-1)].drop("y",axis=1).dropna()
-        sim = self.model(training_data,sim).dropna()
+        sim = factors_df[(factors_df["year"]>=self.end_year-1)].drop("y",axis=1).dropna(subset=self.factors)
+        sim = self.model(training_data,sim).dropna(subset=self.factors)
         prices = []
         self.market.connect()
         for ticker in tqdm(self.index["ticker"].unique()):
@@ -63,6 +64,7 @@ class FinancialStatementQuarterly(AnAIStrategy):
                 price["quarter"] = [x.quarter for x in price["date"]]
                 price.sort_values("date",inplace=True)
                 price = price.merge(sim[["year","quarter","ticker","prediction"]],on=["year","quarter","ticker"],how="left")
+                price["factor"] = price["prediction"] / price["adjclose"] - 1
                 prices.append(price)
             except Exception as e:
                 print(ticker,str(e))
@@ -71,9 +73,10 @@ class FinancialStatementQuarterly(AnAIStrategy):
 
         sim = pd.concat(prices).reset_index(drop=True)
         sim = CAPM.apply(sim)
-        return sim
+        return sim.dropna(subset=["factor"])
     
     def signal(self,sim:pd.DataFrame):
+        tickers = list(sim["ticker"].unique())
         sim["rank"] = sim.groupby("date",group_keys=False)["factor"].rank(method="dense", ascending=False).astype(int)
-        sim["exposure"] = [Exposure.LONG if x < 10 else Exposure.SHORT if x > 490 else Exposure.NONE for x in sim["rank"]]
+        sim["exposure"] = [Exposure.LONG if x < len(tickers) * 0.1 else Exposure.SHORT if x > len(tickers) * 0.9 else Exposure.NONE for x in sim["rank"]]
         return sim.drop("rank",axis=1)

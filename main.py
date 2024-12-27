@@ -14,7 +14,7 @@ import pandas as pd
 core_data = CoreData()
 core_data.load_index()
 standard_market = core_data.core_dataframe()
-strategy = COEVWeekly()
+strategy = FinancialStatementQuarterly()
 strategy.load_index()
 sim = strategy.factor_load(standard_market)
 sim = DateColumns.apply(sim)
