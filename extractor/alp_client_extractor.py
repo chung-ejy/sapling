@@ -42,7 +42,7 @@ class ALPClientExtractor(object):
         }
         params = {
             "symbols":ticker,
-            "timeframe":"1Day",
+            "timeframe":"1min",
             "sort":"asc",
             "limit":str(10000),
             "start":start.strftime("%Y-%m-%d"),
@@ -50,7 +50,9 @@ class ALPClientExtractor(object):
         }
         url = "https://data.alpaca.markets/v1beta3/crypto/us/bars"
         requestBody = r.get(url,params=params,headers=headers)
-        return requestBody.json()
+        data =  pd.DataFrame(requestBody.json()["bars"][ticker]).rename(columns={"c":"adjclose","t":"date"})[["date","adjclose"]]
+        data["ticker"] = ticker
+        return data
     
     def prices(self,ticker,start,end):
         headers = {
