@@ -21,7 +21,7 @@ class COEVWeekly(AStrategy):
             try:
                 price = standard_df[standard_df["ticker"]==ticker].sort_values("date")
                 price.sort_values("date",inplace=True)
-                price["factor"] = -1*price["adjclose"].pct_change(100)*price["adjclose"].rolling(100).std() / price["adjclose"].rolling(100).mean()
+                price["factor"] = -1*(price["adjclose"].rolling(100).mean()-price["adjclose"])/price["adjclose"]*price["adjclose"].rolling(100).std() / price["adjclose"].rolling(100).mean()
                 if price.index.size > 0:
                     prices.append(price)
             except Exception as e:
