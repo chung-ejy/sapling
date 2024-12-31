@@ -42,7 +42,7 @@ class ALPClientExtractor(object):
         }
         params = {
             "symbols":ticker,
-            "timeframe":"1min",
+            "timeframe":"1day",
             "sort":"asc",
             "limit":str(10000),
             "start":start.strftime("%Y-%m-%d"),
